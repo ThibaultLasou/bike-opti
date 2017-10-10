@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 import ilog.concert.*;
 import ilog.cplex.*;
 
@@ -36,18 +38,17 @@ public class StationVelo
 			this.x = modele.intVar(0, k);
 			this.B = modele.intVarArray(this.demande.length, 0, Integer.MAX_VALUE);
 			
-			IloNumExpr res = modele.numExpr();
-			for(IloIntVar i : B)
-			{
-				res = modele.sum(res, i);
-			}
-			res = modele.diff(x, res);
-			this.Iplus = modele.max(0, res);
-			
+			this.Iplus = modele.max(0, modele.diff(x, modele.sum(B)));
+			this.Imoins = new IloNumExpr[this.demande.length];
 			for(int j=0;j<this.demande.length;j++)
 			{
 				this.Imoins[j] = modele.diff(B[j], x);
 				this.Imoins[j] = modele.max(0, this.Imoins[j]);
+			}
+			System.out.println(Iplus.toString());
+			for(int j=0;j<this.demande.length;j++)
+			{
+				System.out.println(Imoins[j].toString());
 			}
 		}
 		catch (IloException e) 
@@ -55,5 +56,23 @@ public class StationVelo
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void setOmoins(IloCplex modele, IloNumExpr Bj) throws IloException
+	{
+		this.Omoins = modele.diff(this.k, this.x);
+		this.Omoins = modele.sum(this.Omoins, modele.sum(B));
+		this.Omoins = modele.diff(this.Omoins, Bj);
+		this.Omoins = modele.max(0, this.Omoins);
+		System.out.println(Omoins.toString());
+	}
+	
+	public void setOplus(IloCplex modele, IloNumExpr Bj) throws IloException
+	{
+		this.Oplus = modele.sum(this.k, this.x);
+		this.Oplus = modele.diff(Bj, this.Oplus);
+		this.Oplus = modele.diff(this.Oplus, modele.sum(B));
+		this.Oplus = modele.max(0, this.Oplus);
+		System.out.println(Oplus.toString());
 	}
 }
