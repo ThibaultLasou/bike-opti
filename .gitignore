@@ -3,3 +3,8 @@
 *.aux
 .classpath
 .project
+*.swp
+*~
+.idea/
+.settings/
+*.iml
