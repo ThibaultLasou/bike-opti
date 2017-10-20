@@ -109,12 +109,12 @@
  	IbP==maxl(0,xb-(Bba+Bbc));
  	IcP==maxl(0,xc-(Bca+Bcb));
 
-	IabM == maxl(0,Bab-xa);	// d�ficit de v�lo dans i pour chaque parcours entre i et j
-	IacM == maxl(0,Bac-xa);
-	IbaM == maxl(0,Bba-xb);
-	IbcM == maxl(0,Bbc-xb);
-	IcaM == maxl(0,Bca-xc);
-	IcbM == maxl(0,Bcb-xc);
+	IabM == maxl(0,Eab-Bab);	// d�ficit de v�lo dans i pour chaque parcours entre i et j
+	IacM == maxl(0,Eac-Bac);
+	IbaM == maxl(0,Eba-Bba);
+	IbcM == maxl(0,Ebc-Bbc);
+	IcaM == maxl(0,Eca-Bca);
+	IcbM == maxl(0,Ecb-Bcb);
 	
 	OaP == maxl(0,ka-xa+(Bab+Bac)-(Bba+Bca));
 	ObP == maxl(0,kb-xb+(Bba+Bbc)-(Bab+Bcb));
