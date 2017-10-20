@@ -1,19 +1,28 @@
 package graphic;
 
-import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.swing.BrowserView;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.JFXPanel;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebEvent;
+import javafx.scene.web.WebView;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+
+import static javafx.concurrent.Worker.State.FAILED;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * @author Patrice Camousseigt
- */
-public class Interface extends JFrame {
-
+public class Interface extends JFrame 
+{
     private JPanel jpanel_lancement;
 
     private JButton button_validate;
@@ -41,7 +50,9 @@ public class Interface extends JFrame {
     private JFormattedTextField formattedTextField9;
     private JRadioButton recuitDéterministeRadioButton;
 
-
+    private final JFXPanel jfxPanel = new JFXPanel();
+    private WebEngine engine;
+    
     public Interface() {
 
         this.setTitle("Vélib");
@@ -79,13 +90,28 @@ public class Interface extends JFrame {
         comboBox1.addItem("semaines");
         comboBox1.addItem("mois");
 
-        Browser browser = new Browser();
-        BrowserView browserView = new BrowserView(browser);
-        jpanel_result_map.add(browserView);
-        browser.loadURL("http://maps.google.com");
-
+        createScene();
+        jpanel_result_map.add(jfxPanel);
+        
+        
         this.pack();
         this.setVisible(true);
+    }
+    
+    
+    private void createScene() {
+    	 
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+ 
+                WebView view = new WebView();
+                engine = view.getEngine();
+                engine.load(getClass().getResource("Connector.html").toExternalForm());
+ 
+                jfxPanel.setScene(new Scene(view));
+            }
+        });
     }
 
     {
