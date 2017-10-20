@@ -22,12 +22,12 @@
  int kc=15;
  
 /*******STOCHASTIQUES******/
- int Eab=5;	//demande de v�lo de i � j
- int Eac=8;
- int Eba=4;
+ int Eab=2;	//demande de v�lo de i � j
+ int Eac=2;
+ int Eba=8;
  int Ebc=2;
- int Eca=6;
- int Ecb=1;
+ int Eca=2;
+ int Ecb=8;
  
  /**********************************************************************************
  ***********************************  VARIABLES   **********************************
@@ -101,9 +101,9 @@
  	
  	
  	//const4 : OisP - OisM == ki-xi+ SOMME(Bijs) - SOMME(Eijs);
- 	const4a : OaP - OaM == ka - xa + (Bab+Bac) - (Eab+Eac);
- 	const4b : ObP - ObM == kb - xb + (Bba+Bbc) - (Eba+Ebc);
- 	const4c : OcP - OcM == kc - xc + (Bca+Bcb) - (Eca+Ecb);
+ 	const4a : OaP - OaM == ka - xa + (Bab+Bac) - (Bba+Bca);
+ 	const4b : ObP - ObM == kb - xb + (Bba+Bbc) - (Bab+Bcb);
+ 	const4c : OcP - OcM == kc - xc + (Bca+Bcb) - (Bac+Bbc);
  	
  	IaP==maxl(0,xa-(Bab+Bac));
  	IbP==maxl(0,xb-(Bba+Bbc));
@@ -123,5 +123,7 @@
 	OaM == maxl(0,(Bba+Bca)-ka+xa-(Bab+Bac));
 	ObM == maxl(0,(Bab+Bcb)-kb+xb-(Bba+Bbc));
 	OcM == maxl(0,(Bac+Bbc)-kc+xc-(Bca+Bcb));
+	
+	xa+xb+xc == 30;
 	
 }
