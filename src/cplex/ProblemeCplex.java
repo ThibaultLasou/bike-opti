@@ -6,26 +6,29 @@ import ilog.concert.IloException;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
 
-public class Probleme 
+public class ProblemeCplex 
 {
 	public IloCplex modele;
 	public ArrayList<StationVelo> stations;
 	
-	public Probleme()
+	public ProblemeCplex()
 	{
-		try {
+		try 
+		{
 			this.modele = new IloCplex();
-		} catch (IloException e) {
+		} 
+		catch (IloException e)
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		this.stations = new ArrayList<StationVelo>();
-		int[] demande1 = {1, 5, 2};
-		this.stations.add(new StationVelo(1, 5, 2, 3, 20, demande1, this.modele));
-		int[] demande2 = {5, 1, 2};
-		this.stations.add(new StationVelo(2, 5, 2, 3, 10, demande2, this.modele));
-		int[] demande3 = {5, 2, 2};
-		this.stations.add(new StationVelo(3, 5, 2, 3, 10, demande3, this.modele));
+		int[] demande1 = {0, 2, 2};
+		this.stations.add(new StationVelo(1, 5, 8, 16, 15, demande1, this.modele));
+		int[] demande2 = {8, 0, 2};
+		this.stations.add(new StationVelo(2, 8, 3, 2, 15, demande2, this.modele));
+		int[] demande3 = {2, 8, 0};
+		this.stations.add(new StationVelo(3, 2, 13, 8, 15, demande3, this.modele));
 		
 		IloNumExpr[] Bjs = new IloNumExpr[this.stations.size()]; 
 		
@@ -146,7 +149,7 @@ public class Probleme
 	
 	public static void main(String[] args) throws IloException 
 	{
-		Probleme p = new Probleme();
+		ProblemeCplex p = new ProblemeCplex();
 		System.out.println(p.modele.toString());
 		p.modele.solve();
 		System.out.println(p.modele.getObjValue());
