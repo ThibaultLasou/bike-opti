@@ -3,25 +3,22 @@ package graphic;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import static javafx.concurrent.Worker.State.FAILED;
-
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -49,9 +46,10 @@ public class Interface extends JFrame {
     private JFormattedTextField formattedTextField8;
     private JButton appliquerButton3;
     private JFormattedTextField formattedTextField9;
-    private JRadioButton recuitDéterministeRadioButton;
+    private JRadioButton recuitDeterministeRadioButton;
     private JSlider slider1;
     private JRadioButton radioStochastiqueRadioButton;
+    private JTextArea textAreaResultat;
 
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
@@ -63,11 +61,30 @@ public class Interface extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
+        // =================== ajout du menu ===================
+
         JMenuBar bar = new JMenuBar();
 
         JMenu menuFichier = new JMenu("Fichier");
         JMenuItem menuItemNouveau = new JMenuItem("Nouvelle simulation");
-        JMenuItem menuItemSauvegarder = new JMenuItem("Sauvegarder résultats");
+        JMenuItem menuItemSauvegarder = new JMenuItem(new AbstractAction("My Menu Item") {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                MyJFileChooser jFileChooser = new MyJFileChooser();
+                String path = jFileChooser.getCheminChoisi() + "/" + jFileChooser.NOM_FICHIER_DEFAUT;
+
+                PrintWriter writer = null;
+                try {
+                    writer = new PrintWriter(path, "UTF-8");
+                    writer.println(textAreaResultat.getText());
+                    writer.close();
+                } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        menuItemSauvegarder.setText("Sauvegarder résultats");
+
         JMenuItem menuItemQuitter = new JMenuItem("Quitter");
         menuFichier.add(menuItemNouveau);
         menuFichier.add(menuItemSauvegarder);
@@ -81,6 +98,46 @@ public class Interface extends JFrame {
         this.add(bar, BorderLayout.NORTH);
         this.add(jpanel_root, BorderLayout.CENTER);
 
+        // =================== gestion boutons granularite ===================
+
+        comboBox1.addItem("semaines");
+        comboBox1.addItem("mois");
+
+        // =================== gestion boutons choix algo ===================
+
+        recuitDeterministeRadioButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                radioStochastiqueRadioButton.setSelected(false);
+                SAARadioButton.setSelected(false);
+            }
+        });
+
+        radioStochastiqueRadioButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                recuitDeterministeRadioButton.setSelected(false);
+                SAARadioButton.setSelected(false);
+            }
+        });
+
+        SAARadioButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                super.mouseClicked(mouseEvent);
+                recuitDeterministeRadioButton.setSelected(false);
+                radioStochastiqueRadioButton.setSelected(false);
+            }
+        });
+
+        // =================== gestion precision ===================
+
+        //slider1.setMinorTickSpacing(1);
+
+        // =================== bouton valider ===================
+
         button_validate.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -90,8 +147,8 @@ public class Interface extends JFrame {
             }
         });
 
-        comboBox1.addItem("semaines");
-        comboBox1.addItem("mois");
+        // =================== resultat texte ===================
+
 
         createScene();
         jpanel_result_map.add(jfxPanel);
@@ -99,6 +156,10 @@ public class Interface extends JFrame {
 
         this.pack();
         this.setVisible(true);
+    }
+
+    void ecrireResultat(String texte) {
+        textAreaResultat.append(texte + '\n');
     }
 
 
@@ -211,12 +272,12 @@ public class Interface extends JFrame {
         panel4.setPreferredSize(new Dimension(110, 50));
         panel3.add(panel4, BorderLayout.CENTER);
         panel4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Algorithme", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, panel4.getFont())));
-        recuitDéterministeRadioButton = new JRadioButton();
-        recuitDéterministeRadioButton.setAlignmentY(0.0f);
-        recuitDéterministeRadioButton.setMargin(new Insets(0, 1, 0, 1));
-        recuitDéterministeRadioButton.setText("Recuit déterministe");
-        recuitDéterministeRadioButton.setVerticalAlignment(1);
-        panel4.add(recuitDéterministeRadioButton);
+        recuitDeterministeRadioButton = new JRadioButton();
+        recuitDeterministeRadioButton.setAlignmentY(0.0f);
+        recuitDeterministeRadioButton.setMargin(new Insets(0, 1, 0, 1));
+        recuitDeterministeRadioButton.setText("Recuit déterministe");
+        recuitDeterministeRadioButton.setVerticalAlignment(1);
+        panel4.add(recuitDeterministeRadioButton);
         radioStochastiqueRadioButton = new JRadioButton();
         radioStochastiqueRadioButton.setActionCommand("Radio Stoch");
         radioStochastiqueRadioButton.setAlignmentY(0.0f);
@@ -238,15 +299,22 @@ public class Interface extends JFrame {
         panel5.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Précision"));
         final JLabel label2 = new JLabel();
         label2.setText("-");
+        label2.setVerticalAlignment(1);
+        label2.setVerticalTextPosition(1);
         panel5.add(label2);
         slider1 = new JSlider();
         slider1.setAlignmentX(0.0f);
         slider1.setAlignmentY(0.0f);
         slider1.setDoubleBuffered(false);
         slider1.setMaximum(2);
+        slider1.setMinorTickSpacing(1);
+        slider1.setPaintLabels(false);
+        slider1.setPaintTicks(true);
         panel5.add(slider1);
         final JLabel label3 = new JLabel();
         label3.setText("+");
+        label3.setVerticalAlignment(1);
+        label3.setVerticalTextPosition(1);
         panel5.add(label3);
         jpanel_results = new JPanel();
         jpanel_results.setLayout(new GridBagLayout());
@@ -276,6 +344,8 @@ public class Interface extends JFrame {
         label4.setHorizontalAlignment(0);
         label4.setText("Résultats");
         jpanel_result_txt.add(label4, BorderLayout.NORTH);
+        textAreaResultat = new JTextArea();
+        jpanel_result_txt.add(textAreaResultat, BorderLayout.CENTER);
         jpanel_parametrage = new JPanel();
         jpanel_parametrage.setLayout(new GridBagLayout());
         jpanel_parametrage.setPreferredSize(new Dimension(800, 600));

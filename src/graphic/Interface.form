@@ -105,7 +105,7 @@
                           <font/>
                         </border>
                         <children>
-                          <component id="7824e" class="javax.swing.JRadioButton" binding="recuitDéterministeRadioButton" default-binding="true">
+                          <component id="7824e" class="javax.swing.JRadioButton" binding="recuitDeterministeRadioButton" default-binding="true">
                             <constraints/>
                             <properties>
                               <alignmentY value="0.0"/>
@@ -146,6 +146,8 @@
                             <constraints/>
                             <properties>
                               <text value="-"/>
+                              <verticalAlignment value="1"/>
+                              <verticalTextPosition value="1"/>
                             </properties>
                           </component>
                           <component id="df8fd" class="javax.swing.JSlider" binding="slider1" default-binding="true">
@@ -155,12 +157,17 @@
                               <alignmentY value="0.0"/>
                               <doubleBuffered value="false"/>
                               <maximum value="2"/>
+                              <minorTickSpacing value="1"/>
+                              <paintLabels value="false"/>
+                              <paintTicks value="true"/>
                             </properties>
                           </component>
                           <component id="c49bc" class="javax.swing.JLabel">
                             <constraints/>
                             <properties>
                               <text value="+"/>
+                              <verticalAlignment value="1"/>
+                              <verticalTextPosition value="1"/>
                             </properties>
                           </component>
                         </children>
@@ -213,6 +220,10 @@
                               <horizontalAlignment value="0"/>
                               <text value="Résultats"/>
                             </properties>
+                          </component>
+                          <component id="dd0" class="javax.swing.JTextArea" binding="textAreaResultat">
+                            <constraints border-constraint="Center"/>
+                            <properties/>
                           </component>
                         </children>
                       </grid>
