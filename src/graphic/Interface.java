@@ -15,10 +15,10 @@ import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -38,21 +38,25 @@ public class Interface extends JFrame {
     private JList list4;
     private JPanel jpanel_result_txt;
     private JPanel jpanel_results;
-    private JFormattedTextField formattedTextField6;
-    private JButton appliquerButton;
-    private JFormattedTextField formattedTextField7;
+    private JTextArea textArea6;
     private JButton appliquerButton1;
     private JButton appliquerButton2;
-    private JFormattedTextField formattedTextField8;
     private JButton appliquerButton3;
-    private JFormattedTextField formattedTextField9;
+    private JButton appliquerButton4;
     private JRadioButton recuitDeterministeRadioButton;
     private JSlider slider1;
     private JRadioButton radioStochastiqueRadioButton;
     private JTextArea textAreaResultat;
+    private JButton chargerFichierConfigurationButton;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JTextField textField4;
 
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
+
+    private final int NOMBRE_STATION = 10;
 
     public Interface() {
 
@@ -97,6 +101,44 @@ public class Interface extends JFrame {
 
         this.add(bar, BorderLayout.NORTH);
         this.add(jpanel_root, BorderLayout.CENTER);
+
+        // =====================================
+        // ======== Paramétrage avancé =========
+        // =====================================
+
+        ArrayList<String> coutsCi = new ArrayList<String>();
+        coutsCi.add("1");
+        coutsCi.add("6");
+        coutsCi.add("3");
+        ecrireCoutStation(list1, coutsCi);
+
+        ArrayList<String> coutsVi = new ArrayList<String>();
+        coutsVi.add("6");
+        coutsVi.add("9");
+        coutsVi.add("4");
+        ecrireCoutStation(list2, coutsVi);
+
+        ArrayList<String> coutsWi = new ArrayList<String>();
+        coutsWi.add("5");
+        coutsWi.add("7");
+        coutsWi.add("8");
+        ecrireCoutStation(list3, coutsWi);
+
+        ArrayList<String> coutsKi = new ArrayList<String>();
+        coutsKi.add("4");
+        coutsKi.add("8");
+        coutsKi.add("3");
+        ecrireCoutStation(list4, coutsKi);
+
+
+        // =====================================
+        // ============ Lancement ==============
+        // =====================================
+
+        appliquerCoutPartoutListener(appliquerButton1, textField1, list1);
+        appliquerCoutPartoutListener(appliquerButton2, textField2, list2);
+        appliquerCoutPartoutListener(appliquerButton3, textField3, list3);
+        appliquerCoutPartoutListener(appliquerButton4, textField4, list4);
 
         // =================== gestion boutons granularite ===================
 
@@ -162,6 +204,36 @@ public class Interface extends JFrame {
         textAreaResultat.append(texte + '\n');
     }
 
+    void ecrireCoutStation(JList jList, ArrayList<String> couts) {
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < couts.size(); i++) {
+            listModel.addElement("Station " + (i + 1) + couts.get(i));
+        }
+        jList.setModel(listModel);
+    }
+
+    void ecrireCoutStation(JList jList, String cout, int nombreStation) {
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < nombreStation; i++) {
+            listModel.addElement("Station " + (i + 1) + cout);
+        }
+        jList.setModel(listModel);
+    }
+
+    void appliquerCoutPartoutListener(JButton jButton, JTextField jText, JList jList) {
+        jButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                /*if (jFormattedTextField.getValue().toString().isEmpty()) {
+                    System.out.println("Erreur rien n'est saisi");
+                    return;
+                }*/
+                System.out.println(jText.getText());
+                // check jFormattedTextField si bien un nombre
+                ecrireCoutStation(jList, jText.getText(), NOMBRE_STATION);
+            }
+        });
+    }
 
     private void createScene() {
 
@@ -298,6 +370,8 @@ public class Interface extends JFrame {
         panel3.add(panel5, BorderLayout.EAST);
         panel5.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Précision"));
         final JLabel label2 = new JLabel();
+        label2.setAlignmentY(0.0f);
+        label2.setDoubleBuffered(false);
         label2.setText("-");
         label2.setVerticalAlignment(1);
         label2.setVerticalTextPosition(1);
@@ -310,8 +384,10 @@ public class Interface extends JFrame {
         slider1.setMinorTickSpacing(1);
         slider1.setPaintLabels(false);
         slider1.setPaintTicks(true);
+        slider1.setPreferredSize(new Dimension(200, 20));
         panel5.add(slider1);
         final JLabel label3 = new JLabel();
+        label3.setAlignmentY(0.0f);
         label3.setText("+");
         label3.setVerticalAlignment(1);
         label3.setVerticalTextPosition(1);
@@ -350,12 +426,22 @@ public class Interface extends JFrame {
         jpanel_parametrage.setLayout(new GridBagLayout());
         jpanel_parametrage.setPreferredSize(new Dimension(800, 600));
         tabbedPane1.addTab("Paramètres avancés", jpanel_parametrage);
+        chargerFichierConfigurationButton = new JButton();
+        chargerFichierConfigurationButton.setHorizontalAlignment(0);
+        chargerFichierConfigurationButton.setText("Charger fichier configuration");
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 5, 5, 0);
+        jpanel_parametrage.add(chargerFichierConfigurationButton, gbc);
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridBagLayout());
         panel6.setPreferredSize(new Dimension(600, 200));
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
@@ -378,12 +464,12 @@ public class Interface extends JFrame {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         panel7.add(panel8, gbc);
-        formattedTextField6 = new JFormattedTextField();
-        formattedTextField6.setPreferredSize(new Dimension(40, 26));
-        panel8.add(formattedTextField6);
-        appliquerButton = new JButton();
-        appliquerButton.setText("Appliquer");
-        panel8.add(appliquerButton);
+        textField1 = new JTextField();
+        textField1.setPreferredSize(new Dimension(40, 26));
+        panel8.add(textField1);
+        appliquerButton1 = new JButton();
+        appliquerButton1.setText("Appliquer");
+        panel8.add(appliquerButton1);
         list1 = new JList();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -410,13 +496,12 @@ public class Interface extends JFrame {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         panel9.add(panel10, gbc);
-        formattedTextField7 = new JFormattedTextField();
-        formattedTextField7.setMinimumSize(new Dimension(40, 26));
-        formattedTextField7.setPreferredSize(new Dimension(40, 26));
-        panel10.add(formattedTextField7);
-        appliquerButton1 = new JButton();
-        appliquerButton1.setText("Appliquer");
-        panel10.add(appliquerButton1);
+        textField2 = new JTextField();
+        textField2.setPreferredSize(new Dimension(40, 26));
+        panel10.add(textField2);
+        appliquerButton2 = new JButton();
+        appliquerButton2.setText("Appliquer");
+        panel10.add(appliquerButton2);
         list2 = new JList();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -443,12 +528,12 @@ public class Interface extends JFrame {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.VERTICAL;
         panel11.add(panel12, gbc);
-        formattedTextField9 = new JFormattedTextField();
-        formattedTextField9.setPreferredSize(new Dimension(40, 26));
-        panel12.add(formattedTextField9);
-        appliquerButton2 = new JButton();
-        appliquerButton2.setText("Appliquer");
-        panel12.add(appliquerButton2);
+        textField3 = new JTextField();
+        textField3.setPreferredSize(new Dimension(40, 26));
+        panel12.add(textField3);
+        appliquerButton3 = new JButton();
+        appliquerButton3.setText("Appliquer");
+        panel12.add(appliquerButton3);
         list3 = new JList();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -475,12 +560,12 @@ public class Interface extends JFrame {
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel13.add(panel14, gbc);
-        formattedTextField8 = new JFormattedTextField();
-        formattedTextField8.setPreferredSize(new Dimension(40, 26));
-        panel14.add(formattedTextField8);
-        appliquerButton3 = new JButton();
-        appliquerButton3.setText("Appliquer");
-        panel14.add(appliquerButton3);
+        textField4 = new JTextField();
+        textField4.setPreferredSize(new Dimension(40, 26));
+        panel14.add(textField4);
+        appliquerButton4 = new JButton();
+        appliquerButton4.setText("Appliquer");
+        panel14.add(appliquerButton4);
         list4 = new JList();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;

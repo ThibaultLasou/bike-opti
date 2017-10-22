@@ -145,6 +145,8 @@
                           <component id="cd9b0" class="javax.swing.JLabel">
                             <constraints/>
                             <properties>
+                              <alignmentY value="0.0"/>
+                              <doubleBuffered value="false"/>
                               <text value="-"/>
                               <verticalAlignment value="1"/>
                               <verticalTextPosition value="1"/>
@@ -160,11 +162,13 @@
                               <minorTickSpacing value="1"/>
                               <paintLabels value="false"/>
                               <paintTicks value="true"/>
+                              <preferredSize width="200" height="20"/>
                             </properties>
                           </component>
                           <component id="c49bc" class="javax.swing.JLabel">
                             <constraints/>
                             <properties>
+                              <alignmentY value="0.0"/>
                               <text value="+"/>
                               <verticalAlignment value="1"/>
                               <verticalTextPosition value="1"/>
@@ -242,9 +246,19 @@
             </properties>
             <border type="none"/>
             <children>
+              <component id="8895a" class="javax.swing.JButton" binding="chargerFichierConfigurationButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag top="5" left="5" bottom="5" right="0" weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <horizontalAlignment value="0"/>
+                  <text value="Charger fichier configuration"/>
+                </properties>
+              </component>
               <grid id="6adb" layout-manager="GridBagLayout">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="1.0" weighty="1.0"/>
                 </constraints>
                 <properties>
@@ -268,13 +282,13 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="bc41" class="javax.swing.JFormattedTextField" binding="formattedTextField6" default-binding="true">
+                          <component id="21be" class="javax.swing.JTextField" binding="textField1" default-binding="true">
                             <constraints/>
                             <properties>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="32fcb" class="javax.swing.JButton" binding="appliquerButton" default-binding="true">
+                          <component id="32fcb" class="javax.swing.JButton" binding="appliquerButton1" default-binding="true">
                             <constraints/>
                             <properties>
                               <text value="Appliquer"/>
@@ -309,14 +323,13 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="abddb" class="javax.swing.JFormattedTextField" binding="formattedTextField7" default-binding="true">
+                          <component id="94392" class="javax.swing.JTextField" binding="textField2" default-binding="true">
                             <constraints/>
                             <properties>
-                              <minimumSize width="40" height="26"/>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="efbfb" class="javax.swing.JButton" binding="appliquerButton1" default-binding="true">
+                          <component id="efbfb" class="javax.swing.JButton" binding="appliquerButton2" default-binding="true">
                             <constraints/>
                             <properties>
                               <text value="Appliquer"/>
@@ -351,13 +364,13 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="84cf9" class="javax.swing.JFormattedTextField" binding="formattedTextField9" default-binding="true">
+                          <component id="39afd" class="javax.swing.JTextField" binding="textField3" default-binding="true">
                             <constraints/>
                             <properties>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="35467" class="javax.swing.JButton" binding="appliquerButton2" default-binding="true">
+                          <component id="35467" class="javax.swing.JButton" binding="appliquerButton3" default-binding="true">
                             <constraints/>
                             <properties>
                               <text value="Appliquer"/>
@@ -392,13 +405,13 @@
                         <properties/>
                         <border type="none"/>
                         <children>
-                          <component id="37d5d" class="javax.swing.JFormattedTextField" binding="formattedTextField8" default-binding="true">
+                          <component id="85144" class="javax.swing.JTextField" binding="textField4" default-binding="true">
                             <constraints/>
                             <properties>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="a1a7a" class="javax.swing.JButton" binding="appliquerButton3" default-binding="true">
+                          <component id="a1a7a" class="javax.swing.JButton" binding="appliquerButton4" default-binding="true">
                             <constraints/>
                             <properties>
                               <text value="Appliquer"/>
