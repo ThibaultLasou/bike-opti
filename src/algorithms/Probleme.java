@@ -5,6 +5,7 @@ import java.util.ArrayList;
 abstract public class Probleme
 {
 	protected ArrayList<Integer> varPremierNiv;
+	protected boolean minimize; // true : minimisation, false : maximisation
 	
 	final public int fonctionObj()
 	{
