@@ -2,7 +2,7 @@ package algorithms;
 
 import java.util.ArrayList;
 
-public class Recuit implements Algorithme
+public class Recuit extends Algorithme
 {
 	private Probleme p;
 	private int nbPaliers;
@@ -36,12 +36,13 @@ public class Recuit implements Algorithme
 		temperatureInit = 00000;
 	}
 	
+	@Override
 	public void solve()
 	{
 		solve(this.p);
 	}
 	
-	@Override
+	
 	public void solve(Probleme p)
 	{
 		int valObj;

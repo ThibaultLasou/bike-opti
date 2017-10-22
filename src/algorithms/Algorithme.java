@@ -1,6 +1,7 @@
 package algorithms;
 
-public interface Algorithme 
+abstract public class Algorithme 
 {
-	public void solve(Probleme p);
+	Probleme p;
+	abstract public void solve();
 }
