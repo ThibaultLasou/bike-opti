@@ -3,8 +3,16 @@ package cplex;
 import ilog.concert.*;
 import ilog.cplex.*;
 
-public class StationVelo 
-{
+import java.awt.*;
+
+public class StationVelo {
+
+	private int number;
+	private int bikeStands;
+	private String address;
+	private int availableBikes;
+	private Position position;
+
 	// Parametres deterministes
 	public int pbID;
 	public int c; // cout acquisition
@@ -22,9 +30,16 @@ public class StationVelo
 	public IloNumExpr[] Imoins;
 	public IloNumExpr Oplus;
 	public IloNumExpr Omoins;
-	
-	public StationVelo(int id, int cc, int cv, int cw, int ck, int[] cdemande, IloCplex modele)
-	{
+
+	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes) {
+		this.number = number;
+		this.bikeStands = bikeStands;
+		this.address = address;
+		this.position = position;
+		this.availableBikes = availableBikes;
+	}
+
+	public StationVelo(int id, int cc, int cv, int cw, int ck, int[] cdemande, IloCplex modele) {
 		this.pbID = id;
 		this.c = cc;
 		this.v = cv;
@@ -72,5 +87,24 @@ public class StationVelo
 		this.Oplus = modele.diff(this.Oplus, modele.sum(B));
 		this.Oplus = modele.max(0, this.Oplus);
 		System.out.println(Oplus.toString());
+	}
+
+	public static class Position extends Point {
+
+		private double lng;
+		private double lat;
+
+		public Position(double lng, double lat) {
+			this.lng = lng;
+			this.lat = lat;
+		}
+
+		public double getLng() {
+			return lng;
+		}
+
+		public double getLat() {
+			return lat;
+		}
 	}
 }
