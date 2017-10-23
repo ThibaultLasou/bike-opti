@@ -89,6 +89,26 @@ public class StationVelo {
 		System.out.println(Oplus.toString());
 	}
 
+	public int getNumber() {
+		return number;
+	}
+
+	public int getBikeStands() {
+		return bikeStands;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public int getAvailableBikes() {
+		return availableBikes;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
 	public static class Position extends Point {
 
 		private double lng;

@@ -3,13 +3,16 @@ package graphic;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import cplex.StationVelo;
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.control.Separator;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
+import javax.lang.model.element.Element;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
@@ -18,7 +21,10 @@ import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.ElementType;
 import java.util.ArrayList;
+
+import static gestionnaireFichier.GestionnaireFichier.parserFichier;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -56,7 +62,7 @@ public class Interface extends JFrame {
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
 
-    private final int NOMBRE_STATION = 10;
+    private ArrayList<StationVelo> stationVelos = parserFichier();
 
     public Interface() {
 
@@ -106,29 +112,6 @@ public class Interface extends JFrame {
         // ======== Paramétrage avancé =========
         // =====================================
 
-        ArrayList<String> coutsCi = new ArrayList<String>();
-        coutsCi.add("1");
-        coutsCi.add("6");
-        coutsCi.add("3");
-        ecrireCoutStation(list1, coutsCi);
-
-        ArrayList<String> coutsVi = new ArrayList<String>();
-        coutsVi.add("6");
-        coutsVi.add("9");
-        coutsVi.add("4");
-        ecrireCoutStation(list2, coutsVi);
-
-        ArrayList<String> coutsWi = new ArrayList<String>();
-        coutsWi.add("5");
-        coutsWi.add("7");
-        coutsWi.add("8");
-        ecrireCoutStation(list3, coutsWi);
-
-        ArrayList<String> coutsKi = new ArrayList<String>();
-        coutsKi.add("4");
-        coutsKi.add("8");
-        coutsKi.add("3");
-        ecrireCoutStation(list4, coutsKi);
 
 
         // =====================================
@@ -212,10 +195,10 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, String cout, int nombreStation) {
+    void ecrireCoutStation(JList jList, String cout, ArrayList<StationVelo> stationVelos) {
         DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < nombreStation; i++) {
-            listModel.addElement("Station " + (i + 1) + cout);
+        for (int i = 0; i < stationVelos.size(); i++) {
+            listModel.addElement("Station n°" + stationVelos.get(i).getNumber() + "  :  " + cout);
         }
         jList.setModel(listModel);
     }
@@ -230,7 +213,7 @@ public class Interface extends JFrame {
                 }*/
                 System.out.println(jText.getText());
                 // check jFormattedTextField si bien un nombre
-                ecrireCoutStation(jList, jText.getText(), NOMBRE_STATION);
+                ecrireCoutStation(jList, jText.getText(), stationVelos);
             }
         });
     }
@@ -470,14 +453,16 @@ public class Interface extends JFrame {
         appliquerButton1 = new JButton();
         appliquerButton1.setText("Appliquer");
         panel8.add(appliquerButton1);
-        list1 = new JList();
+        final JScrollPane scrollPane1 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel7.add(list1, gbc);
+        panel7.add(scrollPane1, gbc);
+        list1 = new JList();
+        scrollPane1.setViewportView(list1);
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -502,14 +487,16 @@ public class Interface extends JFrame {
         appliquerButton2 = new JButton();
         appliquerButton2.setText("Appliquer");
         panel10.add(appliquerButton2);
-        list2 = new JList();
+        final JScrollPane scrollPane2 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel9.add(list2, gbc);
+        panel9.add(scrollPane2, gbc);
+        list2 = new JList();
+        scrollPane2.setViewportView(list2);
         final JPanel panel11 = new JPanel();
         panel11.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -534,14 +521,16 @@ public class Interface extends JFrame {
         appliquerButton3 = new JButton();
         appliquerButton3.setText("Appliquer");
         panel12.add(appliquerButton3);
-        list3 = new JList();
+        final JScrollPane scrollPane3 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel11.add(list3, gbc);
+        panel11.add(scrollPane3, gbc);
+        list3 = new JList();
+        scrollPane3.setViewportView(list3);
         final JPanel panel13 = new JPanel();
         panel13.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -566,14 +555,16 @@ public class Interface extends JFrame {
         appliquerButton4 = new JButton();
         appliquerButton4.setText("Appliquer");
         panel14.add(appliquerButton4);
-        list4 = new JList();
+        final JScrollPane scrollPane4 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel13.add(list4, gbc);
+        panel13.add(scrollPane4, gbc);
+        list4 = new JList();
+        scrollPane4.setViewportView(list4);
     }
 
     /**
