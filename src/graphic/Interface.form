@@ -65,6 +65,7 @@
                             <properties>
                               <maximumSize width="10" height="2147483647"/>
                               <minimumSize width="15" height="26"/>
+                              <name value="granularité"/>
                               <preferredSize width="25" height="26"/>
                             </properties>
                           </component>
@@ -110,6 +111,7 @@
                             <properties>
                               <alignmentY value="0.0"/>
                               <margin top="0" left="1" bottom="0" right="1"/>
+                              <selected value="false"/>
                               <text value="Recuit déterministe"/>
                               <verticalAlignment value="1"/>
                             </properties>
@@ -285,6 +287,7 @@
                           <component id="21be" class="javax.swing.JTextField" binding="textField1" default-binding="true">
                             <constraints/>
                             <properties>
+                              <name value="c"/>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
@@ -325,6 +328,7 @@
                           <component id="94392" class="javax.swing.JTextField" binding="textField2" default-binding="true">
                             <constraints/>
                             <properties>
+                              <name value="v"/>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
@@ -352,7 +356,7 @@
                       <gridbag weightx="1.0" weighty="1.0"/>
                     </constraints>
                     <properties/>
-                    <border type="etched" title="&lt;html&gt;Coût W&lt;sub&gt;i&lt;/sub&gt;&lt;/html&gt;"/>
+                    <border type="etched" title="&lt;html&gt;Coût w&lt;sub&gt;i&lt;/sub&gt;&lt;/html&gt;"/>
                     <children>
                       <grid id="5b773" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
                         <constraints>
@@ -365,6 +369,7 @@
                           <component id="39afd" class="javax.swing.JTextField" binding="textField3" default-binding="true">
                             <constraints/>
                             <properties>
+                              <name value="w"/>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
@@ -405,6 +410,7 @@
                           <component id="85144" class="javax.swing.JTextField" binding="textField4" default-binding="true">
                             <constraints/>
                             <properties>
+                              <name value="k"/>
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>

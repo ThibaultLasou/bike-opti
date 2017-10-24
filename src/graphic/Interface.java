@@ -8,11 +8,9 @@ import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.control.Separator;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
-import javax.lang.model.element.Element;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.CaretEvent;
@@ -23,8 +21,9 @@ import java.awt.event.*;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.ElementType;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.parserFichier;
 
@@ -69,7 +68,9 @@ public class Interface extends JFrame {
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setLayout(new BorderLayout());
 
-        // =================== ajout du menu ===================
+        // =====================================
+        // =========== Ajout du menu ===========
+        // =====================================
 
         JMenuBar bar = new JMenuBar();
 
@@ -110,15 +111,14 @@ public class Interface extends JFrame {
         // ======== Paramétrage avancé =========
         // =====================================
 
-
-        // =====================================
-        // ============ Lancement ==============
-        // =====================================
-
         appliquerCoutPartoutListener(textField1, list1);
         appliquerCoutPartoutListener(textField2, list2);
         appliquerCoutPartoutListener(textField3, list3);
         appliquerCoutPartoutListener(textField4, list4);
+
+        // =====================================
+        // ============ Lancement ==============
+        // =====================================
 
         // =================== gestion boutons granularite ===================
 
@@ -165,7 +165,9 @@ public class Interface extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 System.out.print("CLICKE OK");
-                //JOptionPane.showConfirmDialog(null, "CLICKE OK");
+                if (verificationInputUser()) {
+                    JOptionPane.showMessageDialog(null, "C'est parti !");
+                }
             }
         });
 
@@ -179,6 +181,10 @@ public class Interface extends JFrame {
         this.pack();
         this.setVisible(true);
     }
+
+    // ============================================
+    // ================ écriture ==================
+    // ============================================
 
     void ecrireResultat(String texte) {
         textAreaResultat.append(texte + '\n');
@@ -200,6 +206,10 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
+    // ============================================
+    // ================ listener ==================
+    // ============================================
+
     void appliquerCoutPartoutListener(JTextField jText, JList jList) {
         CaretListener update = new CaretListener() {
             public void caretUpdate(CaretEvent e) {
@@ -213,6 +223,55 @@ public class Interface extends JFrame {
             }
         };
         jText.addCaretListener(update);
+    }
+
+    // ============================================
+    // ========= verification input user ==========
+    // ============================================
+
+    private boolean verifSelectionAlgo() {
+        return recuitDeterministeRadioButton.isSelected()
+                || radioStochastiqueRadioButton.isSelected()
+                || SAARadioButton.isSelected();
+    }
+
+    private boolean verifSyntaxeTextfield(JTextField jTextField) {
+        try {
+            Integer.valueOf(jTextField.getText());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean verifTextfield(JTextField jTextField) {
+        if (jTextField.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur pour : " + jTextField.getName());
+            return false;
+        }
+
+        if (!verifSyntaxeTextfield(jTextField)) {
+            JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur correcte pour : " + jTextField.getName());
+            return false;
+        }
+        return true;
+    }
+
+    private boolean verificationInputUser() {
+
+        if (!verifSelectionAlgo()) {
+            JOptionPane.showMessageDialog(null, "Veuillez sélectionner un algorithme");
+            return false;
+        }
+
+        List<JTextField> jTextFields = Arrays.asList(formattedTextField3, textField1, textField2, textField3, textField4);
+        for (JTextField jTextField : jTextFields) {
+            if (!verifTextfield(jTextField)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void createScene() {
@@ -301,6 +360,7 @@ public class Interface extends JFrame {
         formattedTextField3 = new JFormattedTextField();
         formattedTextField3.setMaximumSize(new Dimension(10, 2147483647));
         formattedTextField3.setMinimumSize(new Dimension(15, 26));
+        formattedTextField3.setName("granularité");
         formattedTextField3.setPreferredSize(new Dimension(25, 26));
         panel2.add(formattedTextField3, BorderLayout.CENTER);
         comboBox1 = new JComboBox();
@@ -327,6 +387,7 @@ public class Interface extends JFrame {
         recuitDeterministeRadioButton = new JRadioButton();
         recuitDeterministeRadioButton.setAlignmentY(0.0f);
         recuitDeterministeRadioButton.setMargin(new Insets(0, 1, 0, 1));
+        recuitDeterministeRadioButton.setSelected(false);
         recuitDeterministeRadioButton.setText("Recuit déterministe");
         recuitDeterministeRadioButton.setVerticalAlignment(1);
         panel4.add(recuitDeterministeRadioButton);
@@ -445,6 +506,7 @@ public class Interface extends JFrame {
         gbc.fill = GridBagConstraints.VERTICAL;
         panel7.add(panel8, gbc);
         textField1 = new JTextField();
+        textField1.setName("c");
         textField1.setPreferredSize(new Dimension(40, 26));
         panel8.add(textField1);
         final JScrollPane scrollPane1 = new JScrollPane();
@@ -476,6 +538,7 @@ public class Interface extends JFrame {
         gbc.fill = GridBagConstraints.VERTICAL;
         panel9.add(panel10, gbc);
         textField2 = new JTextField();
+        textField2.setName("v");
         textField2.setPreferredSize(new Dimension(40, 26));
         panel10.add(textField2);
         final JScrollPane scrollPane2 = new JScrollPane();
@@ -497,7 +560,7 @@ public class Interface extends JFrame {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         panel6.add(panel11, gbc);
-        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût W<sub>i</sub></html>"));
+        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût w<sub>i</sub></html>"));
         final JPanel panel12 = new JPanel();
         panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         gbc = new GridBagConstraints();
@@ -507,6 +570,7 @@ public class Interface extends JFrame {
         gbc.fill = GridBagConstraints.VERTICAL;
         panel11.add(panel12, gbc);
         textField3 = new JTextField();
+        textField3.setName("w");
         textField3.setPreferredSize(new Dimension(40, 26));
         panel12.add(textField3);
         final JScrollPane scrollPane3 = new JScrollPane();
@@ -538,6 +602,7 @@ public class Interface extends JFrame {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel13.add(panel14, gbc);
         textField4 = new JTextField();
+        textField4.setName("k");
         textField4.setPreferredSize(new Dimension(40, 26));
         panel14.add(textField4);
         final JScrollPane scrollPane4 = new JScrollPane();
