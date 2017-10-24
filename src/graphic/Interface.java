@@ -3,13 +3,14 @@ package graphic;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import cplex.StationVelo;
+
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import vls.StationVelo;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

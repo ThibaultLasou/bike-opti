@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 public class Recuit extends Algorithme
 {
-	private Probleme p;
 	private int nbPaliers;
 	private int nbIters;
 	private int temperatureInit;
-	private int temperature;
 	private float reducTemp;
 	private int minimize;
 	
@@ -47,6 +45,7 @@ public class Recuit extends Algorithme
 	{
 		int valObj;
 		int valObjIter;
+		int temperature;
 		ArrayList<Integer> varIter;
 		temperature = temperatureInit;
 		

@@ -1,7 +1,8 @@
 package gestionnaireFichier;
 
-import cplex.StationVelo;
 import jdk.nashorn.internal.parser.JSONParser;
+import vls.StationVelo;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 

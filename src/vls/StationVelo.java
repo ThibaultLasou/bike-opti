@@ -1,6 +1,7 @@
 package vls;
 
 import java.awt.*;
+import java.util.stream.IntStream;
 
 public class StationVelo {
 
@@ -30,23 +31,27 @@ public class StationVelo {
 		this.availableBikes = availableBikes;
 	}
 	
-	/*public int getImoins_J(int j)
+	public int getImoins_J(int j)
 	{
-		B[j]-
+		return Math.max(B[j]-x,0);
 	}
 	
 	public int getIplus()
 	{
-		
+		return Math.max(x-IntStream.of(B).sum(),0);
 	}
-	
+
 	public int getOmoins()
 	{
+		//TODO
+		return Math.max(x-IntStream.of(B).sum(),0);
 	}
 	
 	public int getOplus()
 	{
-	}*/
+		//TODO
+		return Math.max(x-IntStream.of(B).sum(),0);
+	}
 
 	public int getNumber() {
 		return number;
