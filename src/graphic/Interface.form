@@ -288,12 +288,6 @@
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="32fcb" class="javax.swing.JButton" binding="appliquerButton1" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <text value="Appliquer"/>
-                            </properties>
-                          </component>
                         </children>
                       </grid>
                       <scrollpane id="7bc42">
@@ -332,12 +326,6 @@
                             <constraints/>
                             <properties>
                               <preferredSize width="40" height="26"/>
-                            </properties>
-                          </component>
-                          <component id="efbfb" class="javax.swing.JButton" binding="appliquerButton2" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <text value="Appliquer"/>
                             </properties>
                           </component>
                         </children>
@@ -380,12 +368,6 @@
                               <preferredSize width="40" height="26"/>
                             </properties>
                           </component>
-                          <component id="35467" class="javax.swing.JButton" binding="appliquerButton3" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <text value="Appliquer"/>
-                            </properties>
-                          </component>
                         </children>
                       </grid>
                       <scrollpane id="43629">
@@ -424,12 +406,6 @@
                             <constraints/>
                             <properties>
                               <preferredSize width="40" height="26"/>
-                            </properties>
-                          </component>
-                          <component id="a1a7a" class="javax.swing.JButton" binding="appliquerButton4" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <text value="Appliquer"/>
                             </properties>
                           </component>
                         </children>

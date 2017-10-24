@@ -15,6 +15,8 @@ import javafx.scene.web.WebView;
 import javax.lang.model.element.Element;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -45,10 +47,6 @@ public class Interface extends JFrame {
     private JPanel jpanel_result_txt;
     private JPanel jpanel_results;
     private JTextArea textArea6;
-    private JButton appliquerButton1;
-    private JButton appliquerButton2;
-    private JButton appliquerButton3;
-    private JButton appliquerButton4;
     private JRadioButton recuitDeterministeRadioButton;
     private JSlider slider1;
     private JRadioButton radioStochastiqueRadioButton;
@@ -113,15 +111,14 @@ public class Interface extends JFrame {
         // =====================================
 
 
-
         // =====================================
         // ============ Lancement ==============
         // =====================================
 
-        appliquerCoutPartoutListener(appliquerButton1, textField1, list1);
-        appliquerCoutPartoutListener(appliquerButton2, textField2, list2);
-        appliquerCoutPartoutListener(appliquerButton3, textField3, list3);
-        appliquerCoutPartoutListener(appliquerButton4, textField4, list4);
+        appliquerCoutPartoutListener(textField1, list1);
+        appliquerCoutPartoutListener(textField2, list2);
+        appliquerCoutPartoutListener(textField3, list3);
+        appliquerCoutPartoutListener(textField4, list4);
 
         // =================== gestion boutons granularite ===================
 
@@ -198,24 +195,24 @@ public class Interface extends JFrame {
     void ecrireCoutStation(JList jList, String cout, ArrayList<StationVelo> stationVelos) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
-            listModel.addElement("Station n°" + stationVelos.get(i).getNumber() + "  :  " + cout);
+            listModel.addElement("Station n°" + stationVelos.get(i).getNumber() + "  :  " + cout + "€");
         }
         jList.setModel(listModel);
     }
 
-    void appliquerCoutPartoutListener(JButton jButton, JTextField jText, JList jList) {
-        jButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                /*if (jFormattedTextField.getValue().toString().isEmpty()) {
-                    System.out.println("Erreur rien n'est saisi");
-                    return;
-                }*/
-                System.out.println(jText.getText());
-                // check jFormattedTextField si bien un nombre
-                ecrireCoutStation(jList, jText.getText(), stationVelos);
+    void appliquerCoutPartoutListener(JTextField jText, JList jList) {
+        CaretListener update = new CaretListener() {
+            public void caretUpdate(CaretEvent e) {
+                JTextField text = (JTextField) e.getSource();
+                // TODO : check jFormattedTextField si bien un nombre
+                String value = text.getText();
+                if (!value.isEmpty()) {
+                    System.out.println(value);
+                    ecrireCoutStation(jList, value, stationVelos);
+                }
             }
-        });
+        };
+        jText.addCaretListener(update);
     }
 
     private void createScene() {
@@ -450,9 +447,6 @@ public class Interface extends JFrame {
         textField1 = new JTextField();
         textField1.setPreferredSize(new Dimension(40, 26));
         panel8.add(textField1);
-        appliquerButton1 = new JButton();
-        appliquerButton1.setText("Appliquer");
-        panel8.add(appliquerButton1);
         final JScrollPane scrollPane1 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -484,9 +478,6 @@ public class Interface extends JFrame {
         textField2 = new JTextField();
         textField2.setPreferredSize(new Dimension(40, 26));
         panel10.add(textField2);
-        appliquerButton2 = new JButton();
-        appliquerButton2.setText("Appliquer");
-        panel10.add(appliquerButton2);
         final JScrollPane scrollPane2 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -518,9 +509,6 @@ public class Interface extends JFrame {
         textField3 = new JTextField();
         textField3.setPreferredSize(new Dimension(40, 26));
         panel12.add(textField3);
-        appliquerButton3 = new JButton();
-        appliquerButton3.setText("Appliquer");
-        panel12.add(appliquerButton3);
         final JScrollPane scrollPane3 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -552,9 +540,6 @@ public class Interface extends JFrame {
         textField4 = new JTextField();
         textField4.setPreferredSize(new Dimension(40, 26));
         panel14.add(textField4);
-        appliquerButton4 = new JButton();
-        appliquerButton4.setText("Appliquer");
-        panel14.add(appliquerButton4);
         final JScrollPane scrollPane4 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
