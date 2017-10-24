@@ -5,11 +5,14 @@ import java.util.ArrayList;
 import ilog.concert.IloException;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
+import vls.ProblemeVLS;
+import vls.StationVelo;
 
 public class ProblemeCplex 
 {
+	public ProblemeVLS p;
 	public IloCplex modele;
-	public ArrayList<StationVelo> stations;
+	public ArrayList<StationVeloCPlex> stations;
 	
 	public ProblemeCplex()
 	{
@@ -22,13 +25,11 @@ public class ProblemeCplex
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.stations = new ArrayList<StationVelo>();
-		int[] demande1 = {0, 2, 2};
-		this.stations.add(new StationVelo(1, 5, 8, 16, 15, demande1, this.modele));
-		int[] demande2 = {8, 0, 2};
-		this.stations.add(new StationVelo(2, 8, 3, 2, 15, demande2, this.modele));
-		int[] demande3 = {2, 8, 0};
-		this.stations.add(new StationVelo(3, 2, 13, 8, 15, demande3, this.modele));
+		this.stations = new ArrayList<StationVeloCPlex>();
+		for(StationVelo s : p.stations)
+		{
+			this.stations.add(new StationVeloCPlex(s, this.modele));
+		}
 		
 		IloNumExpr[] Bjs = new IloNumExpr[this.stations.size()]; 
 		
@@ -42,7 +43,7 @@ public class ProblemeCplex
 			}
 		}
 		
-		for(StationVelo s : this.stations)
+		for(StationVeloCPlex s : this.stations)
 		{
 			for(int j=0;j<s.B.length;j++)
 			{
@@ -72,7 +73,7 @@ public class ProblemeCplex
 		
 		IloNumExpr lo;
 		IloNumExpr ro;
-		for(StationVelo s : this.stations)
+		for(StationVeloCPlex s : this.stations)
 		{
 			// 1b
 			for(int j=0;j<s.B.length;j++)
@@ -80,7 +81,7 @@ public class ProblemeCplex
 				try 
 				{
 					lo = s.B[j];
-					ro =  modele.diff(s.demande[j],s.Imoins[j]);
+					ro =  modele.diff(s.station.demande[j],s.Imoins[j]);
 					modele.addEq(lo, ro);
 				}
 				catch(IloException e)
@@ -90,12 +91,12 @@ public class ProblemeCplex
 			}	
 		}
 		// 1c
-		for(StationVelo s : this.stations)
+		for(StationVeloCPlex s : this.stations)
 		{
 			try 
 			{
 				lo = modele.diff(s.Iplus, modele.sum(s.Imoins));
-				ro = modele.diff(s.x, java.util.stream.IntStream.of(s.demande).sum());
+				ro = modele.diff(s.x, java.util.stream.IntStream.of(s.station.demande).sum());
 				modele.addEq(lo, ro);
 			}
 			catch(IloException e)
@@ -105,12 +106,12 @@ public class ProblemeCplex
 		}
 		
 		// 1d
-		for(StationVelo s : this.stations)
+		for(StationVeloCPlex s : this.stations)
 		{
 			try 
 			{
 				lo = modele.diff(s.Oplus, s.Omoins);
-				ro = modele.diff(s.k, modele.sum(s.x, modele.diff(modele.sum(s.B),java.util.stream.IntStream.of(s.demande).sum())));
+				ro = modele.diff(s.station.k, modele.sum(s.x, modele.diff(modele.sum(s.B),java.util.stream.IntStream.of(s.station.demande).sum())));
 				modele.addEq(0,ro);
 			}
 			catch(IloException e)
@@ -126,13 +127,13 @@ public class ProblemeCplex
 			IloNumExpr ctMan = modele.numExpr();
 			IloNumExpr ctPla = modele.numExpr();
 			
-			for(StationVelo s : this.stations)
+			for(StationVeloCPlex s : this.stations)
 			{
 				try 
 				{
-					ctAcq = modele.sum(ctAcq,modele.prod(s.c, s.x));
-					ctMan = modele.sum(ctMan, modele.prod(s.v, modele.sum(s.Imoins)));
-					ctPla = modele.sum(ctPla, modele.prod(s.w, s.Omoins));
+					ctAcq = modele.sum(ctAcq,modele.prod(s.station.c, s.x));
+					ctMan = modele.sum(ctMan, modele.prod(s.station.v, modele.sum(s.Imoins)));
+					ctPla = modele.sum(ctPla, modele.prod(s.station.w, s.Omoins));
 				}
 				catch(IloException e)
 				{
@@ -153,10 +154,10 @@ public class ProblemeCplex
 		System.out.println(p.modele.toString());
 		p.modele.solve();
 		System.out.println(p.modele.getObjValue());
-		for(StationVelo s : p.stations)
+		for(StationVeloCPlex s : p.stations)
 		{
 			System.out.println("------------------------");
-			System.out.println(s.pbID);
+			System.out.println(s.station.pbID);
 			System.out.println(p.modele.getValue(s.x));
 			for(int j=0;j<s.B.length;j++)
 			{
