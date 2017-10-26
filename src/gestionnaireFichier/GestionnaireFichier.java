@@ -10,13 +10,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GestionnaireFichier {
 
@@ -63,6 +61,45 @@ public class GestionnaireFichier {
         }
         System.out.println(stationsVelo);
         return stationsVelo;
+    }
+
+    public static void creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
+        PrintWriter pw = null;
+        ArrayList<String> couts = new ArrayList<>();
+        couts.add("c");
+        couts.add("v");
+        couts.add("w");
+        couts.add("k");
+        int min = 100, max = 8000;
+        try {
+            pw = new PrintWriter(cheminFichier + "/fichier_configuration.csv", "UTF-8");
+            StringBuilder sb = new StringBuilder();
+            sb.append("number");
+            for(String cout : couts) {
+                sb.append(',');
+                sb.append(cout);
+            }
+            sb.append('\n');
+
+            for(Integer numero : numeroStations) {
+
+                sb.append(numero);
+
+                for(int i = 0; i < couts.size(); i++) {
+                    sb.append(',');
+                    sb.append(ThreadLocalRandom.current().nextInt(min, max + 1));
+                }
+                sb.append('\n');
+            }
+
+            pw.write(sb.toString());
+            pw.close();
+            System.out.println("done!");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
 }
