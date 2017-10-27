@@ -73,6 +73,22 @@ public class StationVelo {
 		return position;
 	}
 
+	public void setC(int c) {
+		this.c = c;
+	}
+
+	public void setV(int v) {
+		this.v = v;
+	}
+
+	public void setW(int w) {
+		this.w = w;
+	}
+
+	public void setK(int k) {
+		this.k = k;
+	}
+
 	public static class Position extends Point {
 
 		private double lng;

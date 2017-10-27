@@ -248,16 +248,6 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="8895a" class="javax.swing.JButton" binding="chargerFichierConfigurationButton" default-binding="true">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <gridbag top="5" left="5" bottom="5" right="0" weightx="1.0" weighty="0.0"/>
-                </constraints>
-                <properties>
-                  <horizontalAlignment value="0"/>
-                  <text value="Charger fichier configuration"/>
-                </properties>
-              </component>
               <grid id="6adb" layout-manager="GridBagLayout">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -432,6 +422,38 @@
                       </scrollpane>
                     </children>
                   </grid>
+                </children>
+              </grid>
+              <grid id="dcc9" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag top="5" left="5" bottom="5" right="0" weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+                <border type="etched" title="Fichier configuration"/>
+                <children>
+                  <component id="57a95" class="javax.swing.JButton" binding="downloadConfigButton">
+                    <constraints/>
+                    <properties>
+                      <horizontalAlignment value="11"/>
+                      <horizontalTextPosition value="11"/>
+                      <text value="Télécharger"/>
+                    </properties>
+                  </component>
+                  <component id="8895a" class="javax.swing.JButton" binding="chargerFichierConfigurationButton" default-binding="true">
+                    <constraints/>
+                    <properties>
+                      <horizontalAlignment value="0"/>
+                      <text value="Charger"/>
+                    </properties>
+                  </component>
+                  <component id="e4459" class="javax.swing.JLabel" binding="labelFichierConfig">
+                    <constraints/>
+                    <properties>
+                      <background color="-1"/>
+                      <text value="Aucun fichier sélectionné"/>
+                    </properties>
+                  </component>
                 </children>
               </grid>
             </children>

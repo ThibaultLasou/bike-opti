@@ -19,13 +19,14 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GestionnaireFichier {
 
+    public final static String NOM_DEFAUT_FICHIER_CONFIG = "/fichier_configuration.csv";
     private final static String SEPARATION = ",";
     private final static String NOUVELLE_LIGNE = ";";
 
-    public static String readFile(String path, String filename) {
+    public static String readFile(String path) throws FileNotFoundException {
         String result = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader(path + filename));
+            BufferedReader br = new BufferedReader(new FileReader(path));
             StringBuilder sb = new StringBuilder();
             String line = br.readLine();
             while (line != null) {
@@ -34,44 +35,49 @@ public class GestionnaireFichier {
             }
             result = sb.toString();
         } catch(Exception e) {
-            e.printStackTrace();
+            throw new FileNotFoundException();
         }
         return result;
     }
 
-    public static String readFileFromAssets(String filename) {
-        return readFile("assets/", filename);
+    public static String readFileFromAssets(String filename) throws FileNotFoundException {
+        return readFile("assets/" + filename);
     }
 
     public static ArrayList<StationVelo> parserFichier() {
 
-        String jsonData = readFileFromAssets("velib.json");
-        System.out.println(jsonData);
-        JSONObject jobj = new JSONObject(jsonData);
-        JSONArray jarr = new JSONArray(jobj.getJSONArray("main").toString());
-
         ArrayList<StationVelo> stationsVelo = new ArrayList<>();
+        try {
+            String jsonData = readFileFromAssets("velib.json");
 
-        for(int i = 0; i < jarr.length(); i++) {
-            JSONObject element = jarr.getJSONObject(i);
+            System.out.println(jsonData);
+            JSONObject jobj = new JSONObject(jsonData);
+            JSONArray jarr = new JSONArray(jobj.getJSONArray("main").toString());
 
-            int number = element.getInt("number");
-            int bikeStands = element.getInt("bike_stands");
-            String address = element.getString("address");
-            int availableBikes = element.getInt("available_bikes");
+            for(int i = 0; i < jarr.length(); i++) {
+                JSONObject element = jarr.getJSONObject(i);
 
-            JSONObject position = element.getJSONObject("position");
-            Double lng = position.getDouble("lng");
-            Double lat = position.getDouble("lat");
-            StationVelo.Position positionStation = new StationVelo.Position(lng, lat);
+                int number = element.getInt("number");
+                int bikeStands = element.getInt("bike_stands");
+                String address = element.getString("address");
+                int availableBikes = element.getInt("available_bikes");
 
-            stationsVelo.add(new StationVelo(number, bikeStands, address, positionStation, availableBikes));
+                JSONObject position = element.getJSONObject("position");
+                Double lng = position.getDouble("lng");
+                Double lat = position.getDouble("lat");
+                StationVelo.Position positionStation = new StationVelo.Position(lng, lat);
+
+                stationsVelo.add(new StationVelo(number, bikeStands, address, positionStation, availableBikes));
+            }
+            System.out.println(stationsVelo);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        System.out.println(stationsVelo);
         return stationsVelo;
     }
 
-    public static void creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
+
+    public static boolean creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
         PrintWriter pw = null;
         ArrayList<String> couts = new ArrayList<>();
         couts.add("c");
@@ -80,7 +86,7 @@ public class GestionnaireFichier {
         couts.add("k");
         int min = 100, max = 8000;
         try {
-            pw = new PrintWriter(cheminFichier + "/fichier_configuration.csv", "UTF-8");
+            pw = new PrintWriter(cheminFichier + NOM_DEFAUT_FICHIER_CONFIG, "UTF-8");
             StringBuilder sb = new StringBuilder();
             sb.append("number");
             for(String cout : couts) {
@@ -103,18 +109,16 @@ public class GestionnaireFichier {
             pw.write(sb.toString());
             pw.close();
             System.out.println("done!");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            return false;
         }
+        return true;
     }
 
-    public static HashMap<Integer, ArrayList<Integer>> parserFichierConfiguration(String chemin, String nomFichier) {
-        String csvFile = readFile(chemin, nomFichier);
-        System.out.println("csvFile size : " + csvFile.length());
+    public static HashMap<Integer, ArrayList<Integer>> parserFichierConfiguration(String chemin) throws Exception {
         HashMap<Integer, ArrayList<Integer>> stations = new HashMap<>();
         try {
+            String csvFile = readFile(chemin);
             String[] csvLignes = csvFile.split(NOUVELLE_LIGNE);
             System.out.println("csvLignes size : " + csvLignes.length);
             for (int l = 1; l < csvLignes.length; l++) {
@@ -127,9 +131,8 @@ public class GestionnaireFichier {
                     stations.put(Integer.valueOf(elements[0]), couts);
                 }
             }
-        } catch (NumberFormatException ne) {
-            ne.printStackTrace();
-            return null;
+        } catch (Exception ne) {
+            throw new Exception();
         }
         System.out.println("size stations : " + stations.size());
         return stations;

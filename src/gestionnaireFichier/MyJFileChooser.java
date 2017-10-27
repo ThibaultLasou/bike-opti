@@ -13,27 +13,19 @@ public class MyJFileChooser extends JPanel {
 
     private String cheminChoisi = CHEMIN_DEFAUT;
 
-    private javax.swing.JFileChooser chooser;
-    private String choosertitle;
-
     public MyJFileChooser() {
-        int result;
 
-        chooser = new javax.swing.JFileChooser();
+        JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new File(CHEMIN_DEFAUT));
-        chooser.setDialogTitle(choosertitle);
-        chooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-        //
-        // disable the "All files" option.
-        //
-        chooser.setAcceptAllFileFilterUsed(false);
-        //
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+
         if (chooser.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
             cheminChoisi = chooser.getSelectedFile().toString();
             System.out.println(cheminChoisi);
         } else {
+            cheminChoisi = null;
             System.out.println("No Selection ");
         }
 
@@ -43,7 +35,7 @@ public class MyJFileChooser extends JPanel {
         return new Dimension(200, 200);
     }
 
-    void ouvrirExplorateurFichier() {
+    /*void ouvrirExplorateurFichier() {
         JFrame frame = new JFrame("");
         MyJFileChooser panel = new MyJFileChooser();
         frame.addWindowListener(
@@ -56,7 +48,7 @@ public class MyJFileChooser extends JPanel {
         frame.getContentPane().add(panel, "Center");
         frame.setSize(panel.getPreferredSize());
         frame.setVisible(true);
-    }
+    }*/
 
     public String getCheminChoisi() {
         return cheminChoisi;
