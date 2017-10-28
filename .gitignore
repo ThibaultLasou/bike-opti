@@ -10,3 +10,5 @@
 *.iml
 *.opl*
 .metadata
+out/
+production/
