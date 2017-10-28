@@ -2,8 +2,9 @@ package algorithms;
 
 import java.util.ArrayList;
 
-public class Recuit extends Algorithme
+public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 {
+	private Probleme<Type1, Type2> p;
 	private int nbPaliers;
 	private int nbIters;
 	private int temperatureInit;
@@ -11,7 +12,7 @@ public class Recuit extends Algorithme
 	private int minimize;
 	
 
-	public Recuit(Probleme p, int nbPaliers, int nbIters, int reducTemp) 
+	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, int reducTemp) 
 	{
 		this.p = p;
 		this.nbPaliers = nbPaliers;
@@ -41,12 +42,13 @@ public class Recuit extends Algorithme
 	}
 	
 	
-	public void solve(Probleme p)
+	public void solve(Probleme<Type1, Type2> p)
 	{
 		int valObj;
 		int valObjIter;
 		int temperature;
-		ArrayList<Integer> varIter;
+		ArrayList<Type1> varPremIter = new ArrayList<>();
+		ArrayList<Type2> varDeuxIter = new ArrayList<>();
 		temperature = temperatureInit;
 		
 		for(int i=0;i<nbPaliers;i ++)
@@ -54,17 +56,19 @@ public class Recuit extends Algorithme
 			for(int j=0;j<nbIters;j++)
 			{
 				valObj = p.fonctionObj(); 
-				varIter = p.voisinage();
-				valObjIter = p.fonctionObj(varIter);
+				p.voisinage(varPremIter, varDeuxIter);
+				valObjIter = p.fonctionObj(varPremIter, varDeuxIter);
 				if(valObjIter*minimize <= valObj*minimize)
 				{
-					p.varPremierNiv = varIter;
+					p.setVarPremNiv(varPremIter);
+					p.setVarDeuxNiv(varDeuxIter);
 				}
 				else
 				{
 					if(Math.exp(-valObjIter/temperature) >= Math.random())
 					{
-						p.varPremierNiv = varIter;
+						p.setVarPremNiv(varPremIter);
+						p.setVarDeuxNiv(varDeuxIter);
 					}
 				}
 			}

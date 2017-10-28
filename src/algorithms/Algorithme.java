@@ -1,7 +1,7 @@
 package algorithms;
 
-abstract public class Algorithme 
+abstract public class Algorithme<Type1, Type2> 
 {
-	Probleme p;
+	Probleme<Type1, Type2> p;
 	abstract public void solve();
 }
