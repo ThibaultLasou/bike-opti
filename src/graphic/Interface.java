@@ -14,17 +14,13 @@ import vls.StationVelo;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.text.JTextComponent;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
@@ -81,8 +77,14 @@ public class Interface extends JFrame {
         JMenuBar bar = new JMenuBar();
 
         JMenu menuFichier = new JMenu("Fichier");
-        JMenuItem menuItemNouveau = new JMenuItem("Nouvelle simulation");
-        JMenuItem menuItemSauvegarder = new JMenuItem(new AbstractAction("My Menu Item") {
+        JMenuItem menuItemNouveau = new JMenuItem(new AbstractAction("My Menu Item") {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                nouvelleSimulation();
+            }
+        });
+        menuItemNouveau.setText("Nouvelle simulation");
+        JMenuItem menuItemSauvegarder = new JMenuItem(new AbstractAction("My Menu Item 2") {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 MyJFileChooser jFileChooser = new MyJFileChooser();
@@ -151,10 +153,10 @@ public class Interface extends JFrame {
                             ecrireCoutStation(list2, varV, coutsFichierConfig);
                             ecrireCoutStation(list3, varW, coutsFichierConfig);
                             ecrireCoutStation(list4, varK, coutsFichierConfig);
-                            effacerChamps(textField1);
-                            effacerChamps(textField2);
-                            effacerChamps(textField3);
-                            effacerChamps(textField4);
+                            effacerAffichage(textField1);
+                            effacerAffichage(textField2);
+                            effacerAffichage(textField3);
+                            effacerAffichage(textField4);
                             labelFichierConfig.setText("Fichier chargé de " + path);
                         } catch (Exception e1) {
                         }
@@ -235,16 +237,42 @@ public class Interface extends JFrame {
     // ================ écriture ==================
     // ============================================
 
-    void ecrireResultat(String texte) {
+    private void nouvelleSimulation() {
+        // parametrages avances
+        effacerAffichage(labelFichierConfig);
+        effacerAffichage(textField1);
+        effacerAffichage(textField2);
+        effacerAffichage(textField3);
+        effacerAffichage(textField4);
+        effacerAffichage(list1);
+        effacerAffichage(list2);
+        effacerAffichage(list3);
+        effacerAffichage(list4);
+        // lancement
+        effacerAffichage(textAreaResultat);
+        effacerAffichage(formattedTextField3);
+        recuitDeterministeRadioButton.setSelected(false);
+        radioStochastiqueRadioButton.setSelected(false);
+        SAARadioButton.setSelected(false);
+    }
+
+    private void effacerAffichage(JLabel labelFichierConfig) {
+        labelFichierConfig.setText("");
+    }
+
+    private void effacerAffichage(JTextComponent jTextComponent) {
+        jTextComponent.setText("");
+    }
+
+    private void effacerAffichage(JList jList) {
+        jList.setListData(new Vector());
+    }
+
+    public void ecrireResultat(String texte) {
         textAreaResultat.append(texte + '\n');
     }
 
-    void effacerChamps(JTextField jTextField) {
-        jTextField.setText("");
-        //jTextField.setText(jTextField.getText().replaceAll("[.*]", ""));
-    }
-
-    void ecrireCoutStation(JList jList, ArrayList<String> couts) {
+    private void ecrireCoutStation(JList jList, ArrayList<String> couts) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < couts.size(); i++) {
             listModel.addElement("Station " + (i + 1) + couts.get(i));
@@ -252,7 +280,7 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, VarPremierNiveau varPremierNiveau, String cout) {
+    private void ecrireCoutStation(JList jList, VarPremierNiveau varPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             StationVelo stationVelo = stationVelos.get(i);
@@ -262,7 +290,7 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, VarPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
+    private void ecrireCoutStation(JList jList, VarPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             int numeroStation = stationVelos.get(i).getNumber();
@@ -275,7 +303,7 @@ public class Interface extends JFrame {
     // ================ listener ==================
     // ============================================
 
-    void appliquerCoutPartoutListener(JTextField jText, JList jList, VarPremierNiveau varPremierNiveau) {
+    private void appliquerCoutPartoutListener(JTextField jText, JList jList, VarPremierNiveau varPremierNiveau) {
         CaretListener update = e -> {
             JTextField text = (JTextField) e.getSource();
             String value = text.getText();

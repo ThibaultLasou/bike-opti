@@ -113,7 +113,7 @@ public class StationVelo {
 	public void setK(int k) {
 		this.k = k;
 	}
-	
+
 	public void setVarPremierNiveau(VarPremierNiveau var, int cvwk){
 		switch(var.indice){
 			case INDICE_COUT_C: setC(cvwk); break;
