@@ -61,27 +61,25 @@ public class StationVelo {
 	{
 		return Math.max(x-B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
+	
+	public int getOmoins(int Bj)
+	{
+		return getOmoins(x, B, Bj);
+	}
 
-	public int getOmoins(ArrayList<StationVelo> stations)
+	public int getOmoins(int x, ArrayList<Integer>B, int Bj)
 	{	
-		int Bj=0;
-		for(StationVelo s : stations)
-		{
-			Bj += s.B.get(this.pbID);
-		}
-		
 		return Math.max(Bj - k + x- B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 	
-	public int getOplus(ArrayList<StationVelo> stations)
+	public int getOplus(int Bj)
 	{
-		int Bj=0;
-		for (StationVelo s : stations)
-		{
-			Bj += s.B.get(this.pbID);
-		}
-		
-		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum(),0) - Bj;	
+		return getOplus(x, B, Bj);	
+	}
+	
+	public int getOplus(int x, ArrayList<Integer>B, int Bj)
+	{
+		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum() - Bj, 0);	
 	}
 
 	public int getNumber() {

@@ -31,7 +31,7 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	private void initTemp()
 	{
 		//TODO
-		temperatureInit = 80;
+		temperatureInit = 5;
 	}
 	
 	@Override
@@ -39,7 +39,6 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	{
 		solve(this.p);
 	}
-	
 	
 	public void solve(Probleme<Type1, Type2> p)
 	{
@@ -72,8 +71,10 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 				}
 				else
 				{
-					System.out.println(Math.exp(-(valObjIter-valObj)/(float) temperature));
-					if(Math.exp(-valObjIter/temperature) >= Math.random())
+					double p1 = Math.exp(-(valObjIter-valObj)/(double) temperature);
+					double p2 = Math.random();
+					System.out.print("("+p1+", "+p2+") ");
+					if(p1 >= p2)
 					{
 						p.setVarPremNiv(varPremIter);
 						p.setVarDeuxNiv(varDeuxIter);
