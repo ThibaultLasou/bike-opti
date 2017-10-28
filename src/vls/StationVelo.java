@@ -9,7 +9,7 @@ public class StationVelo {
 	public static final int INDICE_COUT_V = 1;
 	public static final int INDICE_COUT_W = 2;
 	public static final int INDICE_CAPACITE_K = 3;
-	
+
 	private int number;
 	private int bikeStands;
 	private String address;
@@ -138,7 +138,10 @@ public class StationVelo {
 		public String nom;
 		public int indice;
 
-		ParamPremierNiveau(String nom, int indice) { }
+		ParamPremierNiveau(String nom, int indice) {
+			this.nom = nom;
+			this.indice = indice;
+		}
 
 	}
 

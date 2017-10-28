@@ -69,6 +69,7 @@ public class Interface extends JFrame {
 
     private ArrayList<StationVelo> stationVelos = parserFichier();
     private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
+    private boolean[] parametresFixes = {false, false, false, false};
 
     public Interface() {
 
@@ -156,6 +157,7 @@ public class Interface extends JFrame {
                                 stationVelo.setVarPremierNiveau(varW, cout.get(varW.indice));
                                 stationVelo.setVarPremierNiveau(varK, cout.get(varK.indice));
                             }
+                            parametresFixes = new boolean[]{true, true, true, true};
                             ecrireCoutStation(list1, varC, coutsFichierConfig);
                             ecrireCoutStation(list2, varV, coutsFichierConfig);
                             ecrireCoutStation(list3, varW, coutsFichierConfig);
@@ -259,6 +261,7 @@ public class Interface extends JFrame {
         effacerAffichage(list2);
         effacerAffichage(list3);
         effacerAffichage(list4);
+        parametresFixes = new boolean[]{false, false, false, false};
         // lancement
         effacerAffichage(textAreaResultat);
         effacerAffichage(formattedTextField3);
@@ -323,6 +326,7 @@ public class Interface extends JFrame {
                     Integer.valueOf(value);
                     System.out.println(value);
                     ecrireCoutStation(jList, varPremierNiveau, value);
+                    parametresFixes[varPremierNiveau.indice] = true;
                 }
             } catch (Exception ex) {
             }
@@ -369,9 +373,14 @@ public class Interface extends JFrame {
             return false;
         }
 
-        List<JTextField> jTextFields = Arrays.asList(formattedTextField3, textField1, textField2, textField3, textField4);
-        for (JTextField jTextField : jTextFields) {
-            if (!verifTextfield(jTextField)) {
+        if (!verifTextfield(formattedTextField3)) {
+            return false;
+        }
+
+        for (int i = 0; i < parametresFixes.length; i++) {
+            boolean parametresStationInit = parametresFixes[i];
+            if (!parametresStationInit) {
+                JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur pour : " + ParamPremierNiveau.values()[i].nom);
                 return false;
             }
         }
