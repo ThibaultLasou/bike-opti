@@ -14,6 +14,7 @@ public class StationVelo {
 	private int bikeStands;
 	private String address;
 	private int availableBikes;
+	private int availableBikeStands;
 	private Position position;
 
 	// Parametres deterministes
@@ -27,13 +28,18 @@ public class StationVelo {
 	
 	public int x;
 	public ArrayList<Integer> B;
-	
+
 	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes) {
 		this.number = number;
 		this.bikeStands = bikeStands;
 		this.address = address;
 		this.position = position;
 		this.availableBikes = availableBikes;
+	}
+	
+	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes, int availableBikeStands) {
+		this(number, bikeStands, address, position, availableBikes);
+		this.availableBikeStands = availableBikeStands;
 	}
 	
 	public int getImoins_J(int j, int x, ArrayList<Integer> B)

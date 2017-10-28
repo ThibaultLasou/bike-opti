@@ -240,7 +240,7 @@ public class Interface extends JFrame {
 
     private void nouvelleSimulation() {
         // parametrages avances
-        effacerAffichage(labelFichierConfig);
+        labelFichierConfig.setText("Aucun fichier sélectionné");
         effacerAffichage(textField1);
         effacerAffichage(textField2);
         effacerAffichage(textField3);
