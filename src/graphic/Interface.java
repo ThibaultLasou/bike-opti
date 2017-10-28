@@ -372,7 +372,7 @@ public class Interface extends JFrame {
         return true;
     }
 
-    public void afficherManuelUtilisateur() {
+    private void afficherManuelUtilisateur() {
         JFrame frame = new JFrame();
         frame.setTitle("Aide");
         frame.setPreferredSize(new Dimension(800, 800));
