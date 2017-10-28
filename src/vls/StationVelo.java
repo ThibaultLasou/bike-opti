@@ -31,12 +31,22 @@ public class StationVelo {
 		this.availableBikes = availableBikes;
 	}
 	
-	public int getImoins_J(int j)
+	public int getImoins_J(int j, int x, ArrayList<Integer> B)
 	{
 		return Math.max(B.get(j)-x,0);
 	}
 	
+	public int getImoins_J(int j)
+	{
+		return getImoins_J(j, x, B);
+	}
+	
 	public int getIplus()
+	{
+		return getIplus(x, B);
+	}
+	
+	public int getIplus(int x, ArrayList<Integer> B)
 	{
 		return Math.max(x-B.stream().mapToInt(Integer::intValue).sum(),0);
 	}

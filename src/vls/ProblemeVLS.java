@@ -13,21 +13,25 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 	public ProblemeVLS(ArrayList<StationVelo> stations) 
 	{
 		this.stations = stations;
+		for(int i=0;i<stations.size();i++)
+		{
+			stations.get(i).pbID = i;
+		}
+		this.minimize = true;
 	}
 	
 	@Override
 	public int fonctionObj(ArrayList<Integer> vars1, ArrayList<ArrayList<Integer>> vars2) 
 	{
 		int val = 0;
+		
 		for(int i=0;i<stations.size();i++)
 		{
-			val += vars1.get(i)*stations.get(i).c;
-		}
-		for(StationVelo sv : stations)
-		{
+			StationVelo sv = stations.get(i);
+			val += vars1.get(i)*sv.c;
 			for(int j=0;j<stations.size();j++)
 			{
-				val += sv.v*sv.getImoins_J(j);
+				val += sv.v*sv.getImoins_J(j, vars1.get(i), vars2.get(i));
 			}
 			val += sv.w*sv.getOmoins(stations);
 		}
@@ -39,10 +43,10 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		for(int i=0;i<vars1.size();i++)
 		{
 			StationVelo s = stations.get(i);
-			
 			// 1a
 			if(!(vars1.get(i) <= s.k))
 			{
+				//System.out.println(i + " : 1a");
 				return false;
 			}
 			//1b
@@ -50,6 +54,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			{
 				if(!(vars2.get(i).get(j) == s.demande.get(j)))
 				{
+					//System.out.println(i + " : 1b");
 					return false;
 				}
 			}
@@ -57,10 +62,11 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			int Ij = 0;
 			for(int j=0;j<stations.size();j++)
 			{
-				Ij += s.getImoins_J(j);
+				Ij += s.getImoins_J(j, vars1.get(i), vars2.get(i));
 			}
-			if(!(s.getIplus()-Ij == vars1.get(i) - s.demande.stream().mapToInt(Integer::intValue).sum()))
+			if(!(s.getIplus(vars1.get(i), vars2.get(i))-Ij == vars1.get(i) - s.demande.stream().mapToInt(Integer::intValue).sum()))
 			{
+				//System.out.println(i + " : 1c");
 				return false;
 			}
 		}
@@ -87,13 +93,21 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			{
 				s2 = r.nextInt(v1bis.size());
 			}while(s2 == s1);
-			nbVel = r.nextInt(v1bis.get(s1));
+			nbVel = r.nextInt(v1bis.get(s1)-1)+1;
 			v1bis.set(s1, v1bis.get(s1)-nbVel);
 			v1bis.set(s2, v1bis.get(s2)+nbVel);
 			// TODO ajuster B
+			//System.out.println(v1bis);
+			//System.out.println(v2bis);
 		}while(!constraints(v1bis, v2bis));
-		vars1 = v1bis;
+		vars1.clear();
+		for(Integer i : v1bis)
+		{
+			vars1.add(i); 
+		}
 		vars2 = v2bis;
+		System.out.println(v1bis);
+		//System.out.println("i");
 	}
 
 	@Override
