@@ -1,7 +1,7 @@
 package vls;
 
 import java.awt.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
 
 public class StationVelo {
 
@@ -18,10 +18,10 @@ public class StationVelo {
 	public int w; // cout pas de place
 	public int k; // capacite
 	//Parametres stochastiques
-	public int[] demande; // demande stochastique
+	public ArrayList<Integer> demande; // demande stochastique
 	
 	public int x;
-	public int[] B;
+	public ArrayList<Integer> B;
 	
 	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes) {
 		this.number = number;
@@ -33,24 +33,34 @@ public class StationVelo {
 	
 	public int getImoins_J(int j)
 	{
-		return Math.max(B[j]-x,0);
+		return Math.max(B.get(j)-x,0);
 	}
 	
 	public int getIplus()
 	{
-		return Math.max(x-IntStream.of(B).sum(),0);
+		return Math.max(x-B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 
-	public int getOmoins()
-	{
-		//TODO
-		return Math.max(x-IntStream.of(B).sum(),0);
+	public int getOmoins(ArrayList<StationVelo> stations)
+	{	
+		int Bj=0;
+		for(StationVelo s : stations)
+		{
+			Bj += s.B.get(this.pbID);
+		}
+		
+		return Math.max(Bj - k + x- B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 	
-	public int getOplus()
+	public int getOplus(ArrayList<StationVelo> stations)
 	{
-		//TODO
-		return Math.max(x-IntStream.of(B).sum(),0);
+		int Bj=0;
+		for (StationVelo s : stations)
+		{
+			Bj += s.B.get(this.pbID);
+		}
+		
+		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum(),0) - Bj;	
 	}
 
 	public int getNumber() {
@@ -73,6 +83,7 @@ public class StationVelo {
 		return position;
 	}
 
+	@SuppressWarnings("serial")
 	public static class Position extends Point {
 
 		private double lng;
