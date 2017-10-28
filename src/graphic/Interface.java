@@ -181,10 +181,10 @@ public class Interface extends JFrame {
                             HashMap<Integer, ArrayList<Integer>> coutsFichierConfig = parserFichierConfiguration(path);
                             for (StationVelo stationVelo : stationVelos) {
                                 ArrayList<Integer> cout = coutsFichierConfig.get(stationVelo.getNumber());
-                                stationVelo.setVarPremierNiveau(varC, cout.get(varC.indice));
-                                stationVelo.setVarPremierNiveau(varV, cout.get(varV.indice));
-                                stationVelo.setVarPremierNiveau(varW, cout.get(varW.indice));
-                                stationVelo.setVarPremierNiveau(varK, cout.get(varK.indice));
+                                stationVelo.setParamPremierNiveau(varC, cout.get(varC.indice));
+                                stationVelo.setParamPremierNiveau(varV, cout.get(varV.indice));
+                                stationVelo.setParamPremierNiveau(varW, cout.get(varW.indice));
+                                stationVelo.setParamPremierNiveau(varK, cout.get(varK.indice));
                             }
                             parametresFixes = new boolean[]{true, true, true, true};
                             ecrireCoutStation(list1, varC, coutsFichierConfig);
@@ -325,7 +325,7 @@ public class Interface extends JFrame {
         for (int i = 0; i < stationVelos.size(); i++) {
             StationVelo stationVelo = stationVelos.get(i);
             listModel.addElement("Station n°" + stationVelo.getNumber() + "  :  " + cout + "€");
-            stationVelo.setVarPremierNiveau(varPremierNiveau, Integer.valueOf(cout));
+            stationVelo.setParamPremierNiveau(varPremierNiveau, Integer.valueOf(cout));
         }
         jList.setModel(listModel);
     }

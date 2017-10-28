@@ -18,4 +18,5 @@ abstract public class Probleme<Type1, Type2>
 	abstract public void setVarPremNiv(ArrayList<Type1> vars);
 	abstract public ArrayList<Type2> getVarDeuxNiv();
 	abstract public void setVarDeuxNiv(ArrayList<Type2> vars);
+	abstract public Probleme<Type1, Type2>clone();
 }

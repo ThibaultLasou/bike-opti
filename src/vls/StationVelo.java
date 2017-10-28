@@ -48,6 +48,20 @@ public class StationVelo {
 		this.availableBikeStands = availableBikeStands;
 	}
 	
+	@Override
+	protected StationVelo clone() 
+	{
+		StationVelo s = new StationVelo(this.number, this.bikeStands, this.address, this.position, this.availableBikes, this.availableBikeStands);
+		s.setC(this.c);
+		s.setK(this.k);
+		s.setV(this.v);
+		s.setW(this.w);
+		s.demande = (ArrayList<Integer>) this.demande.clone();
+		s.x = this.x;
+		s.B = (ArrayList<Integer>) this.B.clone();
+		return s;
+	}
+	
 	public int getImoins_J(int j, int x, ArrayList<Integer> B)
 	{
 		return Math.max(B.get(j)-x,0);
@@ -75,7 +89,7 @@ public class StationVelo {
 
 	public int getOmoins(int x, ArrayList<Integer>B, int Bj)
 	{	
-		return Math.max(Bj - k + x- B.stream().mapToInt(Integer::intValue).sum(),0);
+		return Math.max(Bj - k + x - B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 	
 	public int getOplus(int Bj)
@@ -128,7 +142,7 @@ public class StationVelo {
 		this.k = k;
 	}
 
-	public void setVarPremierNiveau(ParamPremierNiveau var, int cvwk){
+	public void setParamPremierNiveau(ParamPremierNiveau var, int cvwk){
 		switch(var.indice){
 			case INDICE_COUT_C: setC(cvwk); break;
 			case INDICE_COUT_V: setV(cvwk); break;
