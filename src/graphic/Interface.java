@@ -16,6 +16,8 @@ import vls.StationVelo.ParamPremierNiveau;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
 import java.awt.*;
@@ -25,6 +27,9 @@ import java.util.*;
 import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
+import static graphic.Interface.NiveauPrecision.PRECISION_BASSE;
+import static graphic.Interface.NiveauPrecision.PRECISION_HAUTE;
+import static graphic.Interface.NiveauPrecision.PRECISION_MOYENNE;
 import static vls.StationVelo.*;
 import static vls.StationVelo.ParamPremierNiveau.*;
 
@@ -38,8 +43,6 @@ public class Interface extends JFrame {
     private JPanel jpanel_parametrage;
     private JPanel jpanel_root;
     private JRadioButton SAARadioButton;
-    private JFormattedTextField formattedTextField3;
-    private JComboBox comboBox1;
     private JList list1;
     private JList list2;
     private JList list3;
@@ -63,6 +66,8 @@ public class Interface extends JFrame {
     private WebEngine engine;
 
     private ArrayList<StationVelo> stationVelos = parserFichier();
+    private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
+    private boolean[] parametresFixes = {false, false, false, false};
 
     public Interface() {
 
@@ -102,7 +107,14 @@ public class Interface extends JFrame {
         });
         menuItemSauvegarder.setText("Sauvegarder résultats");
 
-        JMenuItem menuItemQuitter = new JMenuItem("Quitter");
+        JMenuItem menuItemQuitter = new JMenuItem(new AbstractAction("My Menu Item 2") {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                This().dispose();
+                return;
+            }
+        });
+        menuItemQuitter.setText("Quitter");
         menuFichier.add(menuItemNouveau);
         menuFichier.add(menuItemSauvegarder);
         menuFichier.add(menuItemQuitter);
@@ -150,6 +162,7 @@ public class Interface extends JFrame {
                                 stationVelo.setVarPremierNiveau(varW, cout.get(varW.indice));
                                 stationVelo.setVarPremierNiveau(varK, cout.get(varK.indice));
                             }
+                            parametresFixes = new boolean[]{true, true, true, true};
                             ecrireCoutStation(list1, varC, coutsFichierConfig);
                             ecrireCoutStation(list2, varV, coutsFichierConfig);
                             ecrireCoutStation(list3, varW, coutsFichierConfig);
@@ -173,11 +186,6 @@ public class Interface extends JFrame {
         // =====================================
         // ============ Lancement ==============
         // =====================================
-
-        // =================== gestion boutons granularite ===================
-
-        comboBox1.addItem("semaines");
-        comboBox1.addItem("mois");
 
         // =================== gestion boutons choix algo ===================
 
@@ -210,7 +218,10 @@ public class Interface extends JFrame {
 
         // =================== gestion precision ===================
 
-        //slider1.setMinorTickSpacing(1);
+        slider1.addChangeListener(event -> {
+            int value = slider1.getValue();
+            niveauPrecision = NiveauPrecision.values()[value];
+        });
 
         // =================== bouton valider ===================
 
@@ -234,13 +245,17 @@ public class Interface extends JFrame {
         this.setVisible(true);
     }
 
+    private Interface This() {
+        return this;
+    }
+
     // ============================================
     // ================ écriture ==================
     // ============================================
 
     private void nouvelleSimulation() {
         // parametrages avances
-        effacerAffichage(labelFichierConfig);
+        labelFichierConfig.setText("Aucun fichier sélectionné");
         effacerAffichage(textField1);
         effacerAffichage(textField2);
         effacerAffichage(textField3);
@@ -249,9 +264,9 @@ public class Interface extends JFrame {
         effacerAffichage(list2);
         effacerAffichage(list3);
         effacerAffichage(list4);
+        parametresFixes = new boolean[]{false, false, false, false};
         // lancement
         effacerAffichage(textAreaResultat);
-        effacerAffichage(formattedTextField3);
         recuitDeterministeRadioButton.setSelected(false);
         radioStochastiqueRadioButton.setSelected(false);
         SAARadioButton.setSelected(false);
@@ -313,6 +328,7 @@ public class Interface extends JFrame {
                     Integer.valueOf(value);
                     System.out.println(value);
                     ecrireCoutStation(jList, varPremierNiveau, value);
+                    parametresFixes[varPremierNiveau.indice] = true;
                 }
             } catch (Exception ex) {
             }
@@ -330,28 +346,6 @@ public class Interface extends JFrame {
                 || SAARadioButton.isSelected();
     }
 
-    private boolean verifSyntaxeTextfield(JTextField jTextField) {
-        try {
-            Integer.valueOf(jTextField.getText());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean verifTextfield(JTextField jTextField) {
-        if (jTextField.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur pour : " + jTextField.getName());
-            return false;
-        }
-
-        if (!verifSyntaxeTextfield(jTextField)) {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur correcte pour : " + jTextField.getName());
-            return false;
-        }
-        return true;
-    }
-
     private boolean verificationInputUser() {
 
         if (!verifSelectionAlgo()) {
@@ -359,15 +353,340 @@ public class Interface extends JFrame {
             return false;
         }
 
-        List<JTextField> jTextFields = Arrays.asList(formattedTextField3, textField1, textField2, textField3, textField4);
-        for (JTextField jTextField : jTextFields) {
-            if (!verifTextfield(jTextField)) {
+        for (int i = 0; i < parametresFixes.length; i++) {
+            boolean parametresStationInit = parametresFixes[i];
+            if (!parametresStationInit) {
+                JOptionPane.showMessageDialog(null, "Veuillez entrer une valeur pour : " + ParamPremierNiveau.values()[i].nom);
                 return false;
             }
         }
 
         return true;
     }
+
+    {
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
+        $$$setupUI$$$();
+    }
+
+    /**
+     * Method generated by IntelliJ IDEA GUI Designer
+     * >>> IMPORTANT!! <<<
+     * DO NOT edit this method OR call it in your code!
+     *
+     * @noinspection ALL
+     */
+    private void $$$setupUI$$$() {
+        jpanel_root = new JPanel();
+        jpanel_root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        jpanel_root.setPreferredSize(new Dimension(1200, 600));
+        tabbedPane1 = new JTabbedPane();
+        tabbedPane1.setToolTipText("tooltiptext");
+        jpanel_root.add(tabbedPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
+        jpanel_lancement = new JPanel();
+        jpanel_lancement.setLayout(new BorderLayout(0, 0));
+        jpanel_lancement.setPreferredSize(new Dimension(800, 600));
+        jpanel_lancement.setToolTipText("");
+        tabbedPane1.addTab("Lancement", jpanel_lancement);
+        jpanel_input_user = new JPanel();
+        jpanel_input_user.setLayout(new BorderLayout(0, 0));
+        jpanel_input_user.setMinimumSize(new Dimension(300, 106));
+        jpanel_input_user.setPreferredSize(new Dimension(270, 50));
+        jpanel_lancement.add(jpanel_input_user, BorderLayout.SOUTH);
+        button_validate = new JButton();
+        button_validate.setHorizontalAlignment(0);
+        button_validate.setHorizontalTextPosition(11);
+        button_validate.setPreferredSize(new Dimension(60, 27));
+        button_validate.setRolloverEnabled(false);
+        button_validate.setSelected(false);
+        button_validate.setText("Ok");
+        button_validate.setVerticalAlignment(0);
+        jpanel_input_user.add(button_validate, BorderLayout.EAST);
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new BorderLayout(0, 0));
+        jpanel_input_user.add(panel1, BorderLayout.CENTER);
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel2.setMinimumSize(new Dimension(10, 50));
+        panel2.setPreferredSize(new Dimension(110, 50));
+        panel1.add(panel2, BorderLayout.CENTER);
+        panel2.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Algorithme", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, panel2.getFont())));
+        recuitDeterministeRadioButton = new JRadioButton();
+        recuitDeterministeRadioButton.setAlignmentY(0.0f);
+        recuitDeterministeRadioButton.setMargin(new Insets(0, 1, 0, 1));
+        recuitDeterministeRadioButton.setSelected(false);
+        recuitDeterministeRadioButton.setText("Recuit déterministe");
+        recuitDeterministeRadioButton.setVerticalAlignment(1);
+        panel2.add(recuitDeterministeRadioButton);
+        radioStochastiqueRadioButton = new JRadioButton();
+        radioStochastiqueRadioButton.setActionCommand("Radio Stoch");
+        radioStochastiqueRadioButton.setAlignmentY(0.0f);
+        radioStochastiqueRadioButton.setLabel("Recuit stochastique");
+        radioStochastiqueRadioButton.setMargin(new Insets(0, 1, 0, 1));
+        radioStochastiqueRadioButton.setText("Recuit stochastique");
+        radioStochastiqueRadioButton.setVerticalAlignment(1);
+        panel2.add(radioStochastiqueRadioButton);
+        SAARadioButton = new JRadioButton();
+        SAARadioButton.setAlignmentY(0.0f);
+        SAARadioButton.setAutoscrolls(false);
+        SAARadioButton.setMargin(new Insets(0, 1, 0, 1));
+        SAARadioButton.setText("SAA");
+        SAARadioButton.setVerticalAlignment(1);
+        panel2.add(SAARadioButton);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        panel1.add(panel3, BorderLayout.EAST);
+        panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Précision"));
+        final JLabel label1 = new JLabel();
+        label1.setAlignmentY(0.0f);
+        label1.setDoubleBuffered(false);
+        label1.setText("-");
+        label1.setVerticalAlignment(1);
+        label1.setVerticalTextPosition(1);
+        panel3.add(label1);
+        slider1 = new JSlider();
+        slider1.setAlignmentX(0.0f);
+        slider1.setAlignmentY(0.0f);
+        slider1.setDoubleBuffered(false);
+        slider1.setMaximum(2);
+        slider1.setMinorTickSpacing(1);
+        slider1.setPaintLabels(false);
+        slider1.setPaintTicks(true);
+        slider1.setPreferredSize(new Dimension(200, 20));
+        panel3.add(slider1);
+        final JLabel label2 = new JLabel();
+        label2.setAlignmentY(0.0f);
+        label2.setText("+");
+        label2.setVerticalAlignment(1);
+        label2.setVerticalTextPosition(1);
+        panel3.add(label2);
+        jpanel_results = new JPanel();
+        jpanel_results.setLayout(new GridBagLayout());
+        jpanel_lancement.add(jpanel_results, BorderLayout.CENTER);
+        final JSplitPane splitPane1 = new JSplitPane();
+        splitPane1.setDividerLocation(400);
+        GridBagConstraints gbc;
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        jpanel_results.add(splitPane1, gbc);
+        jpanel_result_map = new JPanel();
+        jpanel_result_map.setLayout(new BorderLayout(0, 0));
+        splitPane1.setRightComponent(jpanel_result_map);
+        jpanel_result_txt = new JPanel();
+        jpanel_result_txt.setLayout(new BorderLayout(0, 0));
+        jpanel_result_txt.setBackground(new Color(-1));
+        jpanel_result_txt.setMinimumSize(new Dimension(0, 0));
+        jpanel_result_txt.setPreferredSize(new Dimension(0, 0));
+        splitPane1.setLeftComponent(jpanel_result_txt);
+        final JLabel label3 = new JLabel();
+        label3.setAlignmentX(0.0f);
+        Font label3Font = this.$$$getFont$$$(null, Font.BOLD, -1, label3.getFont());
+        if (label3Font != null) label3.setFont(label3Font);
+        label3.setHorizontalAlignment(0);
+        label3.setText("Résultats");
+        jpanel_result_txt.add(label3, BorderLayout.NORTH);
+        textAreaResultat = new JTextArea();
+        jpanel_result_txt.add(textAreaResultat, BorderLayout.CENTER);
+        jpanel_parametrage = new JPanel();
+        jpanel_parametrage.setLayout(new GridBagLayout());
+        jpanel_parametrage.setPreferredSize(new Dimension(800, 600));
+        tabbedPane1.addTab("Paramètres avancés", jpanel_parametrage);
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridBagLayout());
+        panel4.setPreferredSize(new Dimension(600, 200));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        jpanel_parametrage.add(panel4, gbc);
+        final JPanel panel5 = new JPanel();
+        panel5.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel4.add(panel5, gbc);
+        panel5.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût c<sub>i</sub></html>"));
+        final JPanel panel6 = new JPanel();
+        panel6.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        panel5.add(panel6, gbc);
+        textField1 = new JTextField();
+        textField1.setName("c");
+        textField1.setPreferredSize(new Dimension(40, 26));
+        panel6.add(textField1);
+        final JScrollPane scrollPane1 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel5.add(scrollPane1, gbc);
+        list1 = new JList();
+        scrollPane1.setViewportView(list1);
+        final JPanel panel7 = new JPanel();
+        panel7.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel4.add(panel7, gbc);
+        panel7.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût v<sub>i</sub></html>"));
+        final JPanel panel8 = new JPanel();
+        panel8.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        panel7.add(panel8, gbc);
+        textField2 = new JTextField();
+        textField2.setName("v");
+        textField2.setPreferredSize(new Dimension(40, 26));
+        panel8.add(textField2);
+        final JScrollPane scrollPane2 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel7.add(scrollPane2, gbc);
+        list2 = new JList();
+        scrollPane2.setViewportView(list2);
+        final JPanel panel9 = new JPanel();
+        panel9.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 2;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel4.add(panel9, gbc);
+        panel9.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût w<sub>i</sub></html>"));
+        final JPanel panel10 = new JPanel();
+        panel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.VERTICAL;
+        panel9.add(panel10, gbc);
+        textField3 = new JTextField();
+        textField3.setName("w");
+        textField3.setPreferredSize(new Dimension(40, 26));
+        panel10.add(textField3);
+        final JScrollPane scrollPane3 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel9.add(scrollPane3, gbc);
+        list3 = new JList();
+        scrollPane3.setViewportView(list3);
+        final JPanel panel11 = new JPanel();
+        panel11.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel4.add(panel11, gbc);
+        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Capacité k<sub>i</sub></html>"));
+        final JPanel panel12 = new JPanel();
+        panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel11.add(panel12, gbc);
+        textField4 = new JTextField();
+        textField4.setName("k");
+        textField4.setPreferredSize(new Dimension(40, 26));
+        panel12.add(textField4);
+        final JScrollPane scrollPane4 = new JScrollPane();
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel11.add(scrollPane4, gbc);
+        list4 = new JList();
+        scrollPane4.setViewportView(list4);
+        final JPanel panel13 = new JPanel();
+        panel13.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 5, 5, 0);
+        jpanel_parametrage.add(panel13, gbc);
+        panel13.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Fichier configuration"));
+        downloadConfigButton = new JButton();
+        downloadConfigButton.setHorizontalAlignment(11);
+        downloadConfigButton.setHorizontalTextPosition(11);
+        downloadConfigButton.setText("Télécharger");
+        panel13.add(downloadConfigButton);
+        chargerFichierConfigurationButton = new JButton();
+        chargerFichierConfigurationButton.setHorizontalAlignment(0);
+        chargerFichierConfigurationButton.setText("Charger");
+        panel13.add(chargerFichierConfigurationButton);
+        labelFichierConfig = new JLabel();
+        labelFichierConfig.setBackground(new Color(-1));
+        labelFichierConfig.setText("Aucun fichier sélectionné");
+        panel13.add(labelFichierConfig);
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    public JComponent $$$getRootComponent$$$() {
+        return jpanel_root;
+    }
+
+    enum NiveauPrecision {
+
+        PRECISION_BASSE(1, 1),
+        PRECISION_MOYENNE(2, 2),
+        PRECISION_HAUTE(4, 4);
+
+        int nombrePaliers;
+        int nombreIterations;
+
+        NiveauPrecision(int nombrePaliers, int nombreIterations) {
+            this.nombrePaliers = nombrePaliers;
+            this.nombreIterations = nombreIterations;
+        }
+    }
+
+
+    // ===================================================
+    // ====== interface dynamique - ne pas toucher =======
+    // ===================================================
+
 
     private void createScene() {
 
@@ -403,332 +722,4 @@ public class Interface extends JFrame {
         return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
-    {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
-
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        jpanel_root = new JPanel();
-        jpanel_root.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        jpanel_root.setPreferredSize(new Dimension(1200, 600));
-        tabbedPane1 = new JTabbedPane();
-        tabbedPane1.setToolTipText("tooltiptext");
-        jpanel_root.add(tabbedPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(200, 200), null, 0, false));
-        jpanel_lancement = new JPanel();
-        jpanel_lancement.setLayout(new BorderLayout(0, 0));
-        jpanel_lancement.setPreferredSize(new Dimension(800, 600));
-        jpanel_lancement.setToolTipText("");
-        tabbedPane1.addTab("Lancement", jpanel_lancement);
-        jpanel_input_user = new JPanel();
-        jpanel_input_user.setLayout(new BorderLayout(0, 0));
-        jpanel_input_user.setMinimumSize(new Dimension(300, 106));
-        jpanel_input_user.setPreferredSize(new Dimension(270, 50));
-        jpanel_lancement.add(jpanel_input_user, BorderLayout.SOUTH);
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridBagLayout());
-        panel1.setPreferredSize(new Dimension(300, 50));
-        jpanel_input_user.add(panel1, BorderLayout.WEST);
-        panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Granularité"));
-        final JPanel panel2 = new JPanel();
-        panel2.setLayout(new BorderLayout(0, 0));
-        GridBagConstraints gbc;
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(0, 20, 0, 20);
-        panel1.add(panel2, gbc);
-        final JLabel label1 = new JLabel();
-        label1.setText("Les dernières ");
-        panel2.add(label1, BorderLayout.WEST);
-        formattedTextField3 = new JFormattedTextField();
-        formattedTextField3.setMaximumSize(new Dimension(10, 2147483647));
-        formattedTextField3.setMinimumSize(new Dimension(15, 26));
-        formattedTextField3.setName("granularité");
-        formattedTextField3.setPreferredSize(new Dimension(25, 26));
-        panel2.add(formattedTextField3, BorderLayout.CENTER);
-        comboBox1 = new JComboBox();
-        comboBox1.setPreferredSize(new Dimension(120, 26));
-        panel2.add(comboBox1, BorderLayout.EAST);
-        button_validate = new JButton();
-        button_validate.setHorizontalAlignment(0);
-        button_validate.setHorizontalTextPosition(11);
-        button_validate.setPreferredSize(new Dimension(60, 27));
-        button_validate.setRolloverEnabled(false);
-        button_validate.setSelected(false);
-        button_validate.setText("Ok");
-        button_validate.setVerticalAlignment(0);
-        jpanel_input_user.add(button_validate, BorderLayout.EAST);
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new BorderLayout(0, 0));
-        jpanel_input_user.add(panel3, BorderLayout.CENTER);
-        final JPanel panel4 = new JPanel();
-        panel4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel4.setMinimumSize(new Dimension(10, 50));
-        panel4.setPreferredSize(new Dimension(110, 50));
-        panel3.add(panel4, BorderLayout.CENTER);
-        panel4.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Algorithme", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, this.$$$getFont$$$(null, -1, -1, panel4.getFont())));
-        recuitDeterministeRadioButton = new JRadioButton();
-        recuitDeterministeRadioButton.setAlignmentY(0.0f);
-        recuitDeterministeRadioButton.setMargin(new Insets(0, 1, 0, 1));
-        recuitDeterministeRadioButton.setSelected(false);
-        recuitDeterministeRadioButton.setText("Recuit déterministe");
-        recuitDeterministeRadioButton.setVerticalAlignment(1);
-        panel4.add(recuitDeterministeRadioButton);
-        radioStochastiqueRadioButton = new JRadioButton();
-        radioStochastiqueRadioButton.setActionCommand("Radio Stoch");
-        radioStochastiqueRadioButton.setAlignmentY(0.0f);
-        radioStochastiqueRadioButton.setLabel("Recuit stochastique");
-        radioStochastiqueRadioButton.setMargin(new Insets(0, 1, 0, 1));
-        radioStochastiqueRadioButton.setText("Recuit stochastique");
-        radioStochastiqueRadioButton.setVerticalAlignment(1);
-        panel4.add(radioStochastiqueRadioButton);
-        SAARadioButton = new JRadioButton();
-        SAARadioButton.setAlignmentY(0.0f);
-        SAARadioButton.setAutoscrolls(false);
-        SAARadioButton.setMargin(new Insets(0, 1, 0, 1));
-        SAARadioButton.setText("SAA");
-        SAARadioButton.setVerticalAlignment(1);
-        panel4.add(SAARadioButton);
-        final JPanel panel5 = new JPanel();
-        panel5.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        panel3.add(panel5, BorderLayout.EAST);
-        panel5.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Précision"));
-        final JLabel label2 = new JLabel();
-        label2.setAlignmentY(0.0f);
-        label2.setDoubleBuffered(false);
-        label2.setText("-");
-        label2.setVerticalAlignment(1);
-        label2.setVerticalTextPosition(1);
-        panel5.add(label2);
-        slider1 = new JSlider();
-        slider1.setAlignmentX(0.0f);
-        slider1.setAlignmentY(0.0f);
-        slider1.setDoubleBuffered(false);
-        slider1.setMaximum(2);
-        slider1.setMinorTickSpacing(1);
-        slider1.setPaintLabels(false);
-        slider1.setPaintTicks(true);
-        slider1.setPreferredSize(new Dimension(200, 20));
-        panel5.add(slider1);
-        final JLabel label3 = new JLabel();
-        label3.setAlignmentY(0.0f);
-        label3.setText("+");
-        label3.setVerticalAlignment(1);
-        label3.setVerticalTextPosition(1);
-        panel5.add(label3);
-        jpanel_results = new JPanel();
-        jpanel_results.setLayout(new GridBagLayout());
-        jpanel_lancement.add(jpanel_results, BorderLayout.CENTER);
-        final JSplitPane splitPane1 = new JSplitPane();
-        splitPane1.setDividerLocation(400);
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        jpanel_results.add(splitPane1, gbc);
-        jpanel_result_map = new JPanel();
-        jpanel_result_map.setLayout(new BorderLayout(0, 0));
-        splitPane1.setRightComponent(jpanel_result_map);
-        jpanel_result_txt = new JPanel();
-        jpanel_result_txt.setLayout(new BorderLayout(0, 0));
-        jpanel_result_txt.setBackground(new Color(-1));
-        jpanel_result_txt.setMinimumSize(new Dimension(0, 0));
-        jpanel_result_txt.setPreferredSize(new Dimension(0, 0));
-        splitPane1.setLeftComponent(jpanel_result_txt);
-        final JLabel label4 = new JLabel();
-        label4.setAlignmentX(0.0f);
-        Font label4Font = this.$$$getFont$$$(null, Font.BOLD, -1, label4.getFont());
-        if (label4Font != null) label4.setFont(label4Font);
-        label4.setHorizontalAlignment(0);
-        label4.setText("Résultats");
-        jpanel_result_txt.add(label4, BorderLayout.NORTH);
-        textAreaResultat = new JTextArea();
-        jpanel_result_txt.add(textAreaResultat, BorderLayout.CENTER);
-        jpanel_parametrage = new JPanel();
-        jpanel_parametrage.setLayout(new GridBagLayout());
-        jpanel_parametrage.setPreferredSize(new Dimension(800, 600));
-        tabbedPane1.addTab("Paramètres avancés", jpanel_parametrage);
-        final JPanel panel6 = new JPanel();
-        panel6.setLayout(new GridBagLayout());
-        panel6.setPreferredSize(new Dimension(600, 200));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        jpanel_parametrage.add(panel6, gbc);
-        final JPanel panel7 = new JPanel();
-        panel7.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel6.add(panel7, gbc);
-        panel7.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût c<sub>i</sub></html>"));
-        final JPanel panel8 = new JPanel();
-        panel8.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        panel7.add(panel8, gbc);
-        textField1 = new JTextField();
-        textField1.setName("c");
-        textField1.setPreferredSize(new Dimension(40, 26));
-        panel8.add(textField1);
-        final JScrollPane scrollPane1 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel7.add(scrollPane1, gbc);
-        list1 = new JList();
-        scrollPane1.setViewportView(list1);
-        final JPanel panel9 = new JPanel();
-        panel9.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel6.add(panel9, gbc);
-        panel9.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût v<sub>i</sub></html>"));
-        final JPanel panel10 = new JPanel();
-        panel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        panel9.add(panel10, gbc);
-        textField2 = new JTextField();
-        textField2.setName("v");
-        textField2.setPreferredSize(new Dimension(40, 26));
-        panel10.add(textField2);
-        final JScrollPane scrollPane2 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel9.add(scrollPane2, gbc);
-        list2 = new JList();
-        scrollPane2.setViewportView(list2);
-        final JPanel panel11 = new JPanel();
-        panel11.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel6.add(panel11, gbc);
-        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Coût w<sub>i</sub></html>"));
-        final JPanel panel12 = new JPanel();
-        panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.VERTICAL;
-        panel11.add(panel12, gbc);
-        textField3 = new JTextField();
-        textField3.setName("w");
-        textField3.setPreferredSize(new Dimension(40, 26));
-        panel12.add(textField3);
-        final JScrollPane scrollPane3 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel11.add(scrollPane3, gbc);
-        list3 = new JList();
-        scrollPane3.setViewportView(list3);
-        final JPanel panel13 = new JPanel();
-        panel13.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel6.add(panel13, gbc);
-        panel13.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Capacité k<sub>i</sub></html>"));
-        final JPanel panel14 = new JPanel();
-        panel14.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel13.add(panel14, gbc);
-        textField4 = new JTextField();
-        textField4.setName("k");
-        textField4.setPreferredSize(new Dimension(40, 26));
-        panel14.add(textField4);
-        final JScrollPane scrollPane4 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel13.add(scrollPane4, gbc);
-        list4 = new JList();
-        scrollPane4.setViewportView(list4);
-        final JPanel panel15 = new JPanel();
-        panel15.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 5, 5, 0);
-        jpanel_parametrage.add(panel15, gbc);
-        panel15.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Fichier configuration"));
-        downloadConfigButton = new JButton();
-        downloadConfigButton.setHorizontalAlignment(11);
-        downloadConfigButton.setHorizontalTextPosition(11);
-        downloadConfigButton.setText("Télécharger");
-        panel15.add(downloadConfigButton);
-        chargerFichierConfigurationButton = new JButton();
-        chargerFichierConfigurationButton.setHorizontalAlignment(0);
-        chargerFichierConfigurationButton.setText("Charger");
-        panel15.add(chargerFichierConfigurationButton);
-        labelFichierConfig = new JLabel();
-        labelFichierConfig.setBackground(new Color(-1));
-        labelFichierConfig.setText("Aucun fichier sélectionné");
-        panel15.add(labelFichierConfig);
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return jpanel_root;
-    }
 }

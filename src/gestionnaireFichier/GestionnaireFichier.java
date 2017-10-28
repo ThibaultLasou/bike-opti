@@ -57,13 +57,14 @@ public class GestionnaireFichier {
                 int bikeStands = element.getInt("bike_stands");
                 String address = element.getString("address");
                 int availableBikes = element.getInt("available_bikes");
+                int availableBikeStands = element.getInt("available_bike_stands");
 
                 JSONObject position = element.getJSONObject("position");
                 Double lng = position.getDouble("lng");
                 Double lat = position.getDouble("lat");
                 StationVelo.Position positionStation = new StationVelo.Position(lng, lat);
 
-                stationsVelo.add(new StationVelo(number, bikeStands, address, positionStation, availableBikes));
+                stationsVelo.add(new StationVelo(number, bikeStands, address, positionStation, availableBikes, availableBikeStands));
             }
             System.out.println(stationsVelo);
         } catch (FileNotFoundException e) {

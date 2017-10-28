@@ -39,46 +39,6 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <grid id="70401" layout-manager="GridBagLayout">
-                    <constraints border-constraint="West"/>
-                    <properties>
-                      <preferredSize width="300" height="50"/>
-                    </properties>
-                    <border type="etched" title="Granularité"/>
-                    <children>
-                      <grid id="43cc0" layout-manager="BorderLayout" hgap="0" vgap="0">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                          <gridbag top="0" left="20" bottom="0" right="20" weightx="1.0" weighty="0.0"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children>
-                          <component id="bd9c8" class="javax.swing.JLabel">
-                            <constraints border-constraint="West"/>
-                            <properties>
-                              <text value="Les dernières "/>
-                            </properties>
-                          </component>
-                          <component id="c1f87" class="javax.swing.JFormattedTextField" binding="formattedTextField3" default-binding="true">
-                            <constraints border-constraint="Center"/>
-                            <properties>
-                              <maximumSize width="10" height="2147483647"/>
-                              <minimumSize width="15" height="26"/>
-                              <name value="granularité"/>
-                              <preferredSize width="25" height="26"/>
-                            </properties>
-                          </component>
-                          <component id="d1b28" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
-                            <constraints border-constraint="East"/>
-                            <properties>
-                              <preferredSize width="120" height="26"/>
-                            </properties>
-                          </component>
-                        </children>
-                      </grid>
-                    </children>
-                  </grid>
                   <component id="c059d" class="javax.swing.JButton" binding="button_validate">
                     <constraints border-constraint="East"/>
                     <properties>
