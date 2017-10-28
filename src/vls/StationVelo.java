@@ -1,7 +1,7 @@
 package vls;
 
 import java.awt.*;
-import java.util.stream.IntStream;
+import java.util.ArrayList;
 
 public class StationVelo {
 
@@ -23,10 +23,10 @@ public class StationVelo {
 	public int w; // cout pas de place
 	public int k; // capacite
 	//Parametres stochastiques
-	public int[] demande; // demande stochastique
+	public ArrayList<Integer> demande; // demande stochastique
 	
 	public int x;
-	public int[] B;
+	public ArrayList<Integer> B;
 	
 	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes) {
 		this.number = number;
@@ -36,26 +36,46 @@ public class StationVelo {
 		this.availableBikes = availableBikes;
 	}
 	
+	public int getImoins_J(int j, int x, ArrayList<Integer> B)
+	{
+		return Math.max(B.get(j)-x,0);
+	}
+	
 	public int getImoins_J(int j)
 	{
-		return Math.max(B[j]-x,0);
+		return getImoins_J(j, x, B);
 	}
 	
 	public int getIplus()
 	{
-		return Math.max(x-IntStream.of(B).sum(),0);
-	}
-
-	public int getOmoins()
-	{
-		//TODO
-		return Math.max(x-IntStream.of(B).sum(),0);
+		return getIplus(x, B);
 	}
 	
-	public int getOplus()
+	public int getIplus(int x, ArrayList<Integer> B)
 	{
-		//TODO
-		return Math.max(x-IntStream.of(B).sum(),0);
+		return Math.max(x-B.stream().mapToInt(Integer::intValue).sum(),0);
+	}
+
+	public int getOmoins(ArrayList<StationVelo> stations)
+	{	
+		int Bj=0;
+		for(StationVelo s : stations)
+		{
+			Bj += s.B.get(this.pbID);
+		}
+		
+		return Math.max(Bj - k + x- B.stream().mapToInt(Integer::intValue).sum(),0);
+	}
+	
+	public int getOplus(ArrayList<StationVelo> stations)
+	{
+		int Bj=0;
+		for (StationVelo s : stations)
+		{
+			Bj += s.B.get(this.pbID);
+		}
+		
+		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum(),0) - Bj;	
 	}
 
 	public int getNumber() {
@@ -93,7 +113,7 @@ public class StationVelo {
 	public void setK(int k) {
 		this.k = k;
 	}
-
+	
 	public void setVarPremierNiveau(VarPremierNiveau var, int cvwk){
 		switch(var.indice){
 			case INDICE_COUT_C: setC(cvwk); break;

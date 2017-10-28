@@ -2,16 +2,16 @@ package algorithms;
 
 import java.util.ArrayList;
 
-public class Recuit extends Algorithme
+public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 {
+	private Probleme<Type1, Type2> p;
 	private int nbPaliers;
 	private int nbIters;
 	private int temperatureInit;
 	private float reducTemp;
 	private int minimize;
-	
 
-	public Recuit(Probleme p, int nbPaliers, int nbIters, int reducTemp) 
+	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, float reducTemp) 
 	{
 		this.p = p;
 		this.nbPaliers = nbPaliers;
@@ -31,7 +31,7 @@ public class Recuit extends Algorithme
 	private void initTemp()
 	{
 		//TODO
-		temperatureInit = 00000;
+		temperatureInit = 80;
 	}
 	
 	@Override
@@ -41,32 +41,49 @@ public class Recuit extends Algorithme
 	}
 	
 	
-	public void solve(Probleme p)
+	public void solve(Probleme<Type1, Type2> p)
 	{
 		int valObj;
 		int valObjIter;
 		int temperature;
-		ArrayList<Integer> varIter;
+		ArrayList<Type1> varPremIter = p.getVarPremNiv();
+		ArrayList<Type2> varDeuxIter = p.getVarDeuxNiv();
 		temperature = temperatureInit;
 		
 		for(int i=0;i<nbPaliers;i ++)
 		{
+			System.out.println("Palier "+i);
 			for(int j=0;j<nbIters;j++)
 			{
-				valObj = p.fonctionObj(); 
-				varIter = p.voisinage();
-				valObjIter = p.fonctionObj(varIter);
+				System.out.print(j + "|");
+				valObj = p.fonctionObj();
+				System.out.print(valObj + "|");
+				p.voisinage(varPremIter, varDeuxIter);
+				System.out.print(varPremIter+ "|");
+				valObjIter = p.fonctionObj(varPremIter, varDeuxIter);
+				System.out.print(valObjIter + "|");
 				if(valObjIter*minimize <= valObj*minimize)
 				{
-					p.varPremierNiv = varIter;
+					p.setVarPremNiv(varPremIter);
+					p.setVarDeuxNiv(varDeuxIter);
+					System.out.print("Acceptée");
+					System.out.println("|" + temperature);
+					continue;
 				}
 				else
 				{
+					System.out.println(Math.exp(-(valObjIter-valObj)/(float) temperature));
 					if(Math.exp(-valObjIter/temperature) >= Math.random())
 					{
-						p.varPremierNiv = varIter;
+						p.setVarPremNiv(varPremIter);
+						p.setVarDeuxNiv(varDeuxIter);
+						System.out.print("Acceptée");
+						System.out.println("|" + temperature);
+						continue;
 					}
+					System.out.print("Refusée");
 				}
+				System.out.println("|" + temperature);
 			}
 			temperature = (int) (temperature*reducTemp);
 		}

@@ -1,7 +1,6 @@
 package cplex;
 
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 import ilog.concert.IloException;
 import ilog.concert.IloNumExpr;
 import ilog.cplex.IloCplex;
@@ -81,7 +80,7 @@ public class ProblemeCplex
 				try 
 				{
 					lo = s.B[j];
-					ro =  modele.diff(s.station.demande[j],s.Imoins[j]);
+					ro =  modele.diff(s.station.demande.get(j),s.Imoins[j]);
 					modele.addEq(lo, ro);
 				}
 				catch(IloException e)
@@ -96,7 +95,7 @@ public class ProblemeCplex
 			try 
 			{
 				lo = modele.diff(s.Iplus, modele.sum(s.Imoins));
-				ro = modele.diff(s.x, IntStream.of(s.station.demande).sum());
+				ro = modele.diff(s.x, s.station.demande.stream().mapToInt(Integer::intValue).sum());
 				modele.addEq(lo, ro);
 			}
 			catch(IloException e)
@@ -111,7 +110,7 @@ public class ProblemeCplex
 			try 
 			{
 				lo = modele.diff(s.Oplus, s.Omoins);
-				ro = modele.diff(s.station.k, modele.sum(s.x, modele.diff(modele.sum(s.B),IntStream.of(s.station.demande).sum())));
+				ro = modele.diff(s.station.k, modele.sum(s.x, modele.diff(modele.sum(s.B),s.station.demande.stream().mapToInt(Integer::intValue).sum())));
 				modele.addEq(0,ro);
 			}
 			catch(IloException e)
