@@ -19,17 +19,17 @@ public class StationVeloCPlex
 		this.station = station;
 		try {
 			this.x = modele.intVar(0, station.k);
-			this.B = modele.intVarArray(this.station.demande.length, 0, Integer.MAX_VALUE);
+			this.B = modele.intVarArray(this.station.demande.size(), 0, Integer.MAX_VALUE);
 			
 			this.Iplus = modele.max(0, modele.diff(x, modele.sum(B)));
-			this.Imoins = new IloNumExpr[this.station.demande.length];
-			for(int j=0;j<this.station.demande.length;j++)
+			this.Imoins = new IloNumExpr[this.station.demande.size()];
+			for(int j=0;j<this.station.demande.size();j++)
 			{
 				this.Imoins[j] = modele.diff(B[j], x);
 				this.Imoins[j] = modele.max(0, this.Imoins[j]);
 			}
 			System.out.println(Iplus.toString());
-			for(int j=0;j<this.station.demande.length;j++)
+			for(int j=0;j<this.station.demande.size();j++)
 			{
 				System.out.println(Imoins[j].toString());
 			}
