@@ -15,9 +15,7 @@ import vls.StationVelo.ParamPremierNiveau;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.CaretListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.event.*;
 import javax.swing.text.JTextComponent;
 
 import java.awt.*;
@@ -120,6 +118,16 @@ public class Interface extends JFrame {
         menuFichier.add(menuItemQuitter);
 
         JMenu menuAide = new JMenu("Aide");
+        menuAide.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                afficherManuelUtilisateur();
+            }
+            @Override
+            public void menuDeselected(MenuEvent e) { }
+            @Override
+            public void menuCanceled(MenuEvent e) { }
+        });
 
         bar.add(menuFichier);
         bar.add(menuAide);
@@ -362,6 +370,31 @@ public class Interface extends JFrame {
         }
 
         return true;
+    }
+
+    private void afficherManuelUtilisateur() {
+        JFrame frame = new JFrame();
+        frame.setTitle("Aide");
+        frame.setPreferredSize(new Dimension(800, 800));
+        frame.setLayout(new BorderLayout());
+
+        final JFXPanel jfxPanel = new JFXPanel();
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                WebView view = new WebView();
+                WebEngine engine = view.getEngine();
+                engine.load(getClass().getResource("manuelUtilisateur/Utilisateur.html").toExternalForm());
+
+                jfxPanel.setScene(new Scene(view));
+            }
+        });
+
+        frame.add(jfxPanel);
+        frame.pack();
+        frame.setVisible(true);
     }
 
     {
