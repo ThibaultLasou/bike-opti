@@ -7,22 +7,34 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import org.jsoup.Jsoup;
 import vls.StationVelo;
 import vls.StationVelo.ParamPremierNiveau;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.*;
+import javax.swing.text.Document;
+import javax.swing.text.Element;
 import javax.swing.text.JTextComponent;
+import javax.swing.text.html.HTML;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.PrintWriter;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.util.*;
 import java.util.List;
+import java.util.Timer;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
 import static graphic.Interface.NiveauPrecision.PRECISION_BASSE;
@@ -123,10 +135,14 @@ public class Interface extends JFrame {
             public void menuSelected(MenuEvent e) {
                 afficherManuelUtilisateur();
             }
+
             @Override
-            public void menuDeselected(MenuEvent e) { }
+            public void menuDeselected(MenuEvent e) {
+            }
+
             @Override
-            public void menuCanceled(MenuEvent e) { }
+            public void menuCanceled(MenuEvent e) {
+            }
         });
 
         bar.add(menuFichier);
@@ -720,19 +736,45 @@ public class Interface extends JFrame {
     // ====== interface dynamique - ne pas toucher =======
     // ===================================================
 
+    private String creerMarqueurs() {
+        String content = "";
+        for (StationVelo stationVelo : stationVelos) {
+            content += genererMarqueur(stationVelo);
+            content += ",\n";
+        }
+        if (!content.isEmpty()) {
+            content = content.substring(0, content.length() - 2);
+        }
+        content = "const stations = [\n" + content + "];";
+        return content;
+    }
+
+    private String genererMarqueur(StationVelo stationVelo) {
+        return "new StationVelo(\"" + stationVelo.getNom()
+                + "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
+                + "}," + "\"" + stationVelo.getNom() + "\"" + ")";
+    }
 
     private void createScene() {
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+        Platform.runLater(() -> {
+
+            try {
+                File file = new File("src/graphic/Connector.html");
+                org.jsoup.nodes.Document doc = Jsoup.parse(file, "UTF-8");
+                org.jsoup.nodes.Element div = doc.getElementById("stations");
+                div.text(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
-                engine.load(getClass().getResource("Connector.html").toExternalForm());
+                engine.setJavaScriptEnabled(true);
+                engine.loadContent(doc.toString());
 
                 jfxPanel.setScene(new Scene(view));
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
         });
     }
 

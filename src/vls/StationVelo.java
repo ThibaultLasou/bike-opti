@@ -11,6 +11,7 @@ public class StationVelo {
 	public static final int INDICE_CAPACITE_K = 3;
 
 	private int number;
+	private String nom;
 	private int bikeStands;
 	private String address;
 	private int availableBikes;
@@ -36,9 +37,14 @@ public class StationVelo {
 		this.position = position;
 		this.availableBikes = availableBikes;
 	}
-	
-	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes, int availableBikeStands) {
+
+	public StationVelo(String nom, int number, int bikeStands, String address, Position position, int availableBikes) {
 		this(number, bikeStands, address, position, availableBikes);
+		this.nom = nom;
+	}
+	
+	public StationVelo(String nom, int number, int bikeStands, String address, Position position, int availableBikes, int availableBikeStands) {
+		this(nom, number, bikeStands, address, position, availableBikes);
 		this.availableBikeStands = availableBikeStands;
 	}
 	
@@ -80,6 +86,10 @@ public class StationVelo {
 	public int getOplus(int x, ArrayList<Integer>B, int Bj)
 	{
 		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum() - Bj, 0);	
+	}
+
+	public String getNom() {
+		return nom;
 	}
 
 	public int getNumber() {

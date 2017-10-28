@@ -54,6 +54,7 @@ public class GestionnaireFichier {
                 JSONObject element = jarr.getJSONObject(i);
 
                 int number = element.getInt("number");
+                String nom = element.getString("name");
                 int bikeStands = element.getInt("bike_stands");
                 String address = element.getString("address");
                 int availableBikes = element.getInt("available_bikes");
@@ -64,7 +65,7 @@ public class GestionnaireFichier {
                 Double lat = position.getDouble("lat");
                 StationVelo.Position positionStation = new StationVelo.Position(lng, lat);
 
-                stationsVelo.add(new StationVelo(number, bikeStands, address, positionStation, availableBikes, availableBikeStands));
+                stationsVelo.add(new StationVelo(nom, number, bikeStands, address, positionStation, availableBikes, availableBikeStands));
             }
             System.out.println(stationsVelo);
         } catch (FileNotFoundException e) {
