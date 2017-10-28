@@ -1,21 +1,16 @@
 package gestionnaireFichier;
 
-import jdk.nashorn.internal.parser.JSONParser;
 import vls.StationVelo;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static vls.StationVelo.VarPremierNiveau.*;
 
 public class GestionnaireFichier {
 
@@ -80,10 +75,10 @@ public class GestionnaireFichier {
     public static boolean creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
         PrintWriter pw = null;
         ArrayList<String> couts = new ArrayList<>();
-        couts.add("c");
-        couts.add("v");
-        couts.add("w");
-        couts.add("k");
+        couts.add(varC.nom);
+        couts.add(varV.nom);
+        couts.add(varW.nom);
+        couts.add(varK.nom);
         int min = 100, max = 8000;
         try {
             pw = new PrintWriter(cheminFichier + NOM_DEFAUT_FICHIER_CONFIG, "UTF-8");

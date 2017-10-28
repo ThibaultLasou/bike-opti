@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
+import static vls.StationVelo.*;
+import static vls.StationVelo.VarPremierNiveau.*;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -140,15 +142,19 @@ public class Interface extends JFrame {
                             HashMap<Integer, ArrayList<Integer>> coutsFichierConfig = parserFichierConfiguration(path);
                             for (StationVelo stationVelo : stationVelos) {
                                 ArrayList<Integer> cout = coutsFichierConfig.get(stationVelo.getNumber());
-                                stationVelo.setC(cout.get(0));
-                                stationVelo.setV(cout.get(1));
-                                stationVelo.setW(cout.get(2));
-                                stationVelo.setK(cout.get(3));
+                                stationVelo.setVarPremierNiveau(varC, cout.get(varC.indice));
+                                stationVelo.setVarPremierNiveau(varV, cout.get(varV.indice));
+                                stationVelo.setVarPremierNiveau(varW, cout.get(varW.indice));
+                                stationVelo.setVarPremierNiveau(varK, cout.get(varK.indice));
                             }
-                            ecrireCoutStation(list1, 0, coutsFichierConfig);
-                            ecrireCoutStation(list2, 1, coutsFichierConfig);
-                            ecrireCoutStation(list3, 2, coutsFichierConfig);
-                            ecrireCoutStation(list4, 3, coutsFichierConfig);
+                            ecrireCoutStation(list1, varC, coutsFichierConfig);
+                            ecrireCoutStation(list2, varV, coutsFichierConfig);
+                            ecrireCoutStation(list3, varW, coutsFichierConfig);
+                            ecrireCoutStation(list4, varK, coutsFichierConfig);
+                            effacerChamps(textField1);
+                            effacerChamps(textField2);
+                            effacerChamps(textField3);
+                            effacerChamps(textField4);
                             labelFichierConfig.setText("Fichier chargé de " + path);
                         } catch (Exception e1) {
                         }
@@ -156,10 +162,10 @@ public class Interface extends JFrame {
                 }
         );
 
-        appliquerCoutPartoutListener(textField1, list1);
-        appliquerCoutPartoutListener(textField2, list2);
-        appliquerCoutPartoutListener(textField3, list3);
-        appliquerCoutPartoutListener(textField4, list4);
+        appliquerCoutPartoutListener(textField1, list1, varC);
+        appliquerCoutPartoutListener(textField2, list2, varV);
+        appliquerCoutPartoutListener(textField3, list3, varW);
+        appliquerCoutPartoutListener(textField4, list4, varK);
 
         // =====================================
         // ============ Lancement ==============
@@ -221,7 +227,6 @@ public class Interface extends JFrame {
         createScene();
         jpanel_result_map.add(jfxPanel);
 
-
         this.pack();
         this.setVisible(true);
     }
@@ -234,6 +239,11 @@ public class Interface extends JFrame {
         textAreaResultat.append(texte + '\n');
     }
 
+    void effacerChamps(JTextField jTextField) {
+        jTextField.setText("");
+        //jTextField.setText(jTextField.getText().replaceAll("[.*]", ""));
+    }
+
     void ecrireCoutStation(JList jList, ArrayList<String> couts) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < couts.size(); i++) {
@@ -242,19 +252,21 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, String cout) {
+    void ecrireCoutStation(JList jList, VarPremierNiveau varPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
-            listModel.addElement("Station n°" + stationVelos.get(i).getNumber() + "  :  " + cout + "€");
+            StationVelo stationVelo = stationVelos.get(i);
+            listModel.addElement("Station n°" + stationVelo.getNumber() + "  :  " + cout + "€");
+            stationVelo.setVarPremierNiveau(varPremierNiveau, Integer.valueOf(cout));
         }
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, int indiceCout, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
+    void ecrireCoutStation(JList jList, VarPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             int numeroStation = stationVelos.get(i).getNumber();
-            listModel.addElement("Station n°" + numeroStation + "  :  " + coutsParStation.get(numeroStation).get(indiceCout) + "€");
+            listModel.addElement("Station n°" + numeroStation + "  :  " + coutsParStation.get(numeroStation).get(var.indice) + "€");
         }
         jList.setModel(listModel);
     }
@@ -263,15 +275,17 @@ public class Interface extends JFrame {
     // ================ listener ==================
     // ============================================
 
-    void appliquerCoutPartoutListener(JTextField jText, JList jList) {
-        CaretListener update = new CaretListener() {
-            public void caretUpdate(CaretEvent e) {
-                JTextField text = (JTextField) e.getSource();
-                String value = text.getText();
+    void appliquerCoutPartoutListener(JTextField jText, JList jList, VarPremierNiveau varPremierNiveau) {
+        CaretListener update = e -> {
+            JTextField text = (JTextField) e.getSource();
+            String value = text.getText();
+            try {
                 if (!value.isEmpty()) {
+                    Integer.valueOf(value);
                     System.out.println(value);
-                    ecrireCoutStation(jList, value);
+                    ecrireCoutStation(jList, varPremierNiveau, value);
                 }
+            } catch (Exception ex) {
             }
         };
         jText.addCaretListener(update);
