@@ -33,7 +33,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			{
 				val += sv.v*sv.getImoins_J(j, vars1.get(i), vars2.get(i));
 			}
-			val += sv.w*sv.getOmoins(stations);
+			val += sv.w*sv.getOmoins(vars1.get(i), vars2.get(i), sumOfBj(i, vars2));
 		}
 		return val;
 	}
@@ -46,7 +46,6 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			// 1a
 			if(!(vars1.get(i) <= s.k))
 			{
-				//System.out.println(i + " : 1a");
 				return false;
 			}
 			//1b
@@ -54,7 +53,6 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			{
 				if(!(vars2.get(i).get(j) == s.demande.get(j)))
 				{
-					//System.out.println(i + " : 1b");
 					return false;
 				}
 			}
@@ -66,7 +64,12 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			}
 			if(!(s.getIplus(vars1.get(i), vars2.get(i))-Ij == vars1.get(i) - s.demande.stream().mapToInt(Integer::intValue).sum()))
 			{
-				//System.out.println(i + " : 1c");
+				return false;
+			}
+			//1d
+			if(!(s.getOplus(vars1.get(i), vars2.get(i), sumOfBj(i, vars2))-s.getOmoins(vars1.get(i), vars2.get(i), sumOfBj(i, vars2)) == 
+					s.k - vars1.get(i) + vars2.get(i).stream().mapToInt(Integer::intValue).sum() - sumOfBj(i, vars2)))
+			{
 				return false;
 			}
 		}
@@ -96,18 +99,36 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 			nbVel = r.nextInt(v1bis.get(s1)-1)+1;
 			v1bis.set(s1, v1bis.get(s1)-nbVel);
 			v1bis.set(s2, v1bis.get(s2)+nbVel);
-			// TODO ajuster B
-			//System.out.println(v1bis);
-			//System.out.println(v2bis);
+			
+			// On retire les vélos qu'on vient de déplacer de s1.B
+			int diffB1 = v2bis.get(s1).stream().mapToInt(Integer::intValue).sum() - v1bis.get(s1); //Nb vélos loués - Nb vélos affectés  
+			while(diffB1 > 0)
+			{
+				int b = r.nextInt(v2bis.get(s1).size());// tirage de la station vers où on retire des vélos
+				v2bis.get(s1).set(b, Math.max(v2bis.get(s1).get(b)-diffB1,0)); // on retire un maximum de vélo
+				diffB1 = v2bis.get(s1).stream().mapToInt(Integer::intValue).sum() - v1bis.get(s1); // on regarde combien de vélos il reste à enlever
+			}
+			
+			// On ajoute les vélos qu'on vient de déplacer à s2.B
+			int diffB2 = v1bis.get(s2) - v2bis.get(s2).stream().mapToInt(Integer::intValue).sum(); // nb de vélos affectés - nb de vélos loués
+			int diffEB = stations.get(s2).demande.stream().mapToInt(Integer::intValue).sum() - v2bis.get(s2).stream().mapToInt(Integer::intValue).sum(); //nb de vélos demandés - nb de vélos loués
+			while(diffB2 > 0 && diffEB != 0) // tant qu'il reste des vélos non affectés et de la demande insatisfaite
+			{
+				int b = r.nextInt(v2bis.get(s1).size()); // tirage de la station vers où on retire des vélos
+				v2bis.get(s1).set(b, Math.min(v2bis.get(s1).get(b)+diffB2, stations.get(s2).demande.get(b))); // on rajoute un maximum de vélos
+				diffB2 = v2bis.get(s1).stream().mapToInt(Integer::intValue).sum() - v1bis.get(s1); // on regarde 
+			}
 		}while(!constraints(v1bis, v2bis));
 		vars1.clear();
 		for(Integer i : v1bis)
 		{
 			vars1.add(i); 
 		}
-		vars2 = v2bis;
-		System.out.println(v1bis);
-		//System.out.println("i");
+		vars2.clear();
+		for(ArrayList<Integer> i : v2bis)
+		{
+			vars2.add(i); 
+		}
 	}
 
 	@Override
@@ -142,10 +163,22 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 	}
 
 	@Override
-	public void setVarDeuxNiv(ArrayList<ArrayList<Integer>> vars) {
+	public void setVarDeuxNiv(ArrayList<ArrayList<Integer>> vars) 
+	{
 		for(int i=0;i<stations.size();i++)
 		{
 			stations.get(i).B = vars.get(i);
 		}		
 	}
+	
+	public int sumOfBj(int j, ArrayList<ArrayList<Integer>> B)
+	{
+		int Bj = 0;
+		for(int i=0;i<B.size();i++)
+		{
+			Bj += B.get(i).get(j);
+		}
+		return Bj;
+	}
+	
 }
