@@ -24,9 +24,10 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
-import static gestionnaireFichier.GestionnaireFichier.parserFichier;
+import static gestionnaireFichier.GestionnaireFichier.*;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -56,6 +57,8 @@ public class Interface extends JFrame {
     private JTextField textField2;
     private JTextField textField3;
     private JTextField textField4;
+    private JButton downloadConfigButton;
+    private JLabel labelFichierConfig;
 
     private final JFXPanel jfxPanel = new JFXPanel();
     private WebEngine engine;
@@ -81,15 +84,14 @@ public class Interface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 MyJFileChooser jFileChooser = new MyJFileChooser();
-                String path = jFileChooser.getCheminChoisi() + "/" + jFileChooser.NOM_FICHIER_DEFAUT;
-
-                PrintWriter writer = null;
-                try {
-                    writer = new PrintWriter(path, "UTF-8");
-                    writer.println(textAreaResultat.getText());
-                    writer.close();
-                } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                if (jFileChooser.getCheminChoisi() != null) {
+                    String path = jFileChooser.getCheminChoisi() + "/" + jFileChooser.NOM_FICHIER_DEFAUT;
+                    try {
+                        PrintWriter writer = new PrintWriter(path, "UTF-8");
+                        writer.println(textAreaResultat.getText());
+                        writer.close();
+                    } catch (Exception e) {
+                    }
                 }
             }
         });
@@ -111,6 +113,48 @@ public class Interface extends JFrame {
         // =====================================
         // ======== Paramétrage avancé =========
         // =====================================
+
+        downloadConfigButton.addActionListener(e -> {
+                    MyJFileChooser jFileChooser = new MyJFileChooser();
+                    if (jFileChooser.getCheminChoisi() != null) {
+                        String path = jFileChooser.getCheminChoisi();
+                        ArrayList<Integer> numeroStations = new ArrayList<>();
+                        for (StationVelo stationVelo : stationVelos) {
+                            numeroStations.add(stationVelo.getNumber());
+                        }
+                        boolean fichierCree = creerFichierConfiguration(numeroStations, path);
+                        if (fichierCree) {
+                            labelFichierConfig.setText("Fichier téléchargé dans " + path + NOM_DEFAUT_FICHIER_CONFIG);
+                        } else {
+                            labelFichierConfig.setText("Erreur : veuillez sélectionner un dossier.");
+                        }
+                    }
+                }
+        );
+
+        chargerFichierConfigurationButton.addActionListener(e -> {
+                    MyJFileChooser jFileChooser = new MyJFileChooser();
+                    if (jFileChooser.getCheminChoisi() != null) {
+                        String path = jFileChooser.getCheminChoisi();
+                        try {
+                            HashMap<Integer, ArrayList<Integer>> coutsFichierConfig = parserFichierConfiguration(path);
+                            for (StationVelo stationVelo : stationVelos) {
+                                ArrayList<Integer> cout = coutsFichierConfig.get(stationVelo.getNumber());
+                                stationVelo.setC(cout.get(0));
+                                stationVelo.setV(cout.get(1));
+                                stationVelo.setW(cout.get(2));
+                                stationVelo.setK(cout.get(3));
+                            }
+                            ecrireCoutStation(list1, 0, coutsFichierConfig);
+                            ecrireCoutStation(list2, 1, coutsFichierConfig);
+                            ecrireCoutStation(list3, 2, coutsFichierConfig);
+                            ecrireCoutStation(list4, 3, coutsFichierConfig);
+                            labelFichierConfig.setText("Fichier chargé de " + path);
+                        } catch (Exception e1) {
+                        }
+                    }
+                }
+        );
 
         appliquerCoutPartoutListener(textField1, list1);
         appliquerCoutPartoutListener(textField2, list2);
@@ -165,7 +209,6 @@ public class Interface extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                System.out.print("CLICKE OK");
                 if (verificationInputUser()) {
                     JOptionPane.showMessageDialog(null, "C'est parti !");
                 }
@@ -199,10 +242,19 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    void ecrireCoutStation(JList jList, String cout, ArrayList<StationVelo> stationVelos) {
+    void ecrireCoutStation(JList jList, String cout) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             listModel.addElement("Station n°" + stationVelos.get(i).getNumber() + "  :  " + cout + "€");
+        }
+        jList.setModel(listModel);
+    }
+
+    void ecrireCoutStation(JList jList, int indiceCout, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
+        DefaultListModel listModel = new DefaultListModel();
+        for (int i = 0; i < stationVelos.size(); i++) {
+            int numeroStation = stationVelos.get(i).getNumber();
+            listModel.addElement("Station n°" + numeroStation + "  :  " + coutsParStation.get(numeroStation).get(indiceCout) + "€");
         }
         jList.setModel(listModel);
     }
@@ -215,11 +267,10 @@ public class Interface extends JFrame {
         CaretListener update = new CaretListener() {
             public void caretUpdate(CaretEvent e) {
                 JTextField text = (JTextField) e.getSource();
-                // TODO : check jFormattedTextField si bien un nombre
                 String value = text.getText();
                 if (!value.isEmpty()) {
                     System.out.println(value);
-                    ecrireCoutStation(jList, value, stationVelos);
+                    ecrireCoutStation(jList, value);
                 }
             }
         };
@@ -468,16 +519,6 @@ public class Interface extends JFrame {
         jpanel_parametrage.setLayout(new GridBagLayout());
         jpanel_parametrage.setPreferredSize(new Dimension(800, 600));
         tabbedPane1.addTab("Paramètres avancés", jpanel_parametrage);
-        chargerFichierConfigurationButton = new JButton();
-        chargerFichierConfigurationButton.setHorizontalAlignment(0);
-        chargerFichierConfigurationButton.setText("Charger fichier configuration");
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 5, 5, 0);
-        jpanel_parametrage.add(chargerFichierConfigurationButton, gbc);
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridBagLayout());
         panel6.setPreferredSize(new Dimension(600, 200));
@@ -616,6 +657,29 @@ public class Interface extends JFrame {
         panel13.add(scrollPane4, gbc);
         list4 = new JList();
         scrollPane4.setViewportView(list4);
+        final JPanel panel15 = new JPanel();
+        panel15.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 5, 5, 0);
+        jpanel_parametrage.add(panel15, gbc);
+        panel15.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Fichier configuration"));
+        downloadConfigButton = new JButton();
+        downloadConfigButton.setHorizontalAlignment(11);
+        downloadConfigButton.setHorizontalTextPosition(11);
+        downloadConfigButton.setText("Télécharger");
+        panel15.add(downloadConfigButton);
+        chargerFichierConfigurationButton = new JButton();
+        chargerFichierConfigurationButton.setHorizontalAlignment(0);
+        chargerFichierConfigurationButton.setText("Charger");
+        panel15.add(chargerFichierConfigurationButton);
+        labelFichierConfig = new JLabel();
+        labelFichierConfig.setBackground(new Color(-1));
+        labelFichierConfig.setText("Aucun fichier sélectionné");
+        panel15.add(labelFichierConfig);
     }
 
     /**
