@@ -16,6 +16,8 @@ import vls.StationVelo.ParamPremierNiveau;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.CaretListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 
 import java.awt.*;
@@ -25,6 +27,9 @@ import java.util.*;
 import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
+import static graphic.Interface.NiveauPrecision.PRECISION_BASSE;
+import static graphic.Interface.NiveauPrecision.PRECISION_HAUTE;
+import static graphic.Interface.NiveauPrecision.PRECISION_MOYENNE;
 import static vls.StationVelo.*;
 import static vls.StationVelo.ParamPremierNiveau.*;
 
@@ -63,6 +68,7 @@ public class Interface extends JFrame {
     private WebEngine engine;
 
     private ArrayList<StationVelo> stationVelos = parserFichier();
+    private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
 
     public Interface() {
 
@@ -210,7 +216,11 @@ public class Interface extends JFrame {
 
         // =================== gestion precision ===================
 
-        //slider1.setMinorTickSpacing(1);
+        slider1.addChangeListener(event -> {
+            int value = slider1.getValue();
+            System.out.println("value : " + value);
+            niveauPrecision = NiveauPrecision.values()[value];
+        });
 
         // =================== bouton valider ===================
 
@@ -367,40 +377,6 @@ public class Interface extends JFrame {
         }
 
         return true;
-    }
-
-    private void createScene() {
-
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-
-                WebView view = new WebView();
-                engine = view.getEngine();
-                engine.load(getClass().getResource("Connector.html").toExternalForm());
-
-                jfxPanel.setScene(new Scene(view));
-            }
-        });
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null) return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
-        }
-        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     {
@@ -731,4 +707,61 @@ public class Interface extends JFrame {
     public JComponent $$$getRootComponent$$$() {
         return jpanel_root;
     }
+
+
+    enum NiveauPrecision {
+
+        PRECISION_BASSE(1, 1),
+        PRECISION_MOYENNE(2, 2),
+        PRECISION_HAUTE(4, 4);
+
+        int nombrePaliers;
+        int nombreIterations;
+
+        NiveauPrecision(int nombrePaliers, int nombreIterations) {
+            this.nombrePaliers = nombrePaliers;
+            this.nombreIterations = nombreIterations;
+        }
+    }
+
+
+    // ===================================================
+    // ====== interface dynamique - ne pas toucher =======
+    // ===================================================
+
+
+    private void createScene() {
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+
+                WebView view = new WebView();
+                engine = view.getEngine();
+                engine.load(getClass().getResource("Connector.html").toExternalForm());
+
+                jfxPanel.setScene(new Scene(view));
+            }
+        });
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null) return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+    }
+
 }
