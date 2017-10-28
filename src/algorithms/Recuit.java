@@ -10,7 +10,12 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	private int temperatureInit;
 	private float reducTemp;
 	private int minimize;
-
+	
+	private int nbAcc;
+	private int bestCost;
+	private ArrayList<Type1> best1;
+	private ArrayList<Type2> best2;
+	
 	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, float reducTemp) 
 	{
 		this.p = p;
@@ -25,13 +30,21 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 		{
 			minimize = -1;
 		}
+		best1 = new ArrayList<>();
+		best2 = new ArrayList<>();
 		initTemp();
 	}
 	
 	private void initTemp()
 	{
-		//TODO
 		temperatureInit = 5;
+		Probleme<Type1, Type2> p2 = p.clone();
+		do 
+		{
+			temperatureInit *= 2;
+			solve(p2);
+		}while(nbAcc/(float)(nbPaliers*nbIters) < 0.8);
+		
 	}
 	
 	@Override
@@ -48,6 +61,8 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 		ArrayList<Type1> varPremIter = p.getVarPremNiv();
 		ArrayList<Type2> varDeuxIter = p.getVarDeuxNiv();
 		temperature = temperatureInit;
+		nbAcc = 0;
+		bestCost = p.fonctionObj();
 		
 		for(int i=0;i<nbPaliers;i ++)
 		{
@@ -61,30 +76,37 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 				System.out.print(varPremIter+ "|");
 				valObjIter = p.fonctionObj(varPremIter, varDeuxIter);
 				System.out.print(valObjIter + "|");
-				if(valObjIter*minimize <= valObj*minimize)
-				{
-					p.setVarPremNiv(varPremIter);
-					p.setVarDeuxNiv(varDeuxIter);
-					System.out.print("Acceptée");
-					System.out.println("|" + temperature);
-					continue;
-				}
-				else
+				if(!(valObjIter*minimize <= valObj*minimize))
 				{
 					double p1 = Math.exp(-(valObjIter-valObj)/(double) temperature);
 					double p2 = Math.random();
 					System.out.print("("+p1+", "+p2+") ");
-					if(p1 >= p2)
+					if(!(p1 >= p2))
 					{
-						p.setVarPremNiv(varPremIter);
-						p.setVarDeuxNiv(varDeuxIter);
-						System.out.print("Acceptée");
+						System.out.print("Refusée");
 						System.out.println("|" + temperature);
 						continue;
 					}
-					System.out.print("Refusée");
 				}
+				p.setVarPremNiv(varPremIter);
+				p.setVarDeuxNiv(varDeuxIter);
+				if(valObjIter<bestCost)
+				{
+					bestCost = valObjIter;
+					best1.clear();
+					best2.clear();
+					for(Type1 t1 : varPremIter)
+					{
+						best1.add(t1);
+					}
+					for(Type2 t2 : varDeuxIter)
+					{
+						best2.add(t2);
+					}
+				}
+				System.out.print("Acceptée");
 				System.out.println("|" + temperature);
+				nbAcc++;
 			}
 			temperature = (int) (temperature*reducTemp);
 		}

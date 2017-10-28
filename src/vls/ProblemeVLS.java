@@ -20,6 +20,17 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		this.minimize = true;
 	}
 	
+	public ProblemeVLS clone() 
+	{
+		ArrayList<StationVelo> s = new ArrayList<>();
+		for(StationVelo sv : this.stations)
+		{
+			s.add(sv.clone());
+		}
+		return new ProblemeVLS(s);
+	}
+	
+	
 	@Override
 	public int fonctionObj(ArrayList<Integer> vars1, ArrayList<ArrayList<Integer>> vars2) 
 	{
