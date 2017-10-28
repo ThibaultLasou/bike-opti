@@ -47,10 +47,14 @@ public class StationVelo {
 		this(nom, number, bikeStands, address, position, availableBikes);
 		this.availableBikeStands = availableBikeStands;
 	}
+
+	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes, int availableBikeStands) {
+		this(number, bikeStands, address, position, availableBikes);
+		this.availableBikeStands = availableBikeStands;
+	}
 	
 	@Override
-	protected StationVelo clone() 
-	{
+	protected StationVelo clone() {
 		StationVelo s = new StationVelo(this.number, this.bikeStands, this.address, this.position, this.availableBikes, this.availableBikeStands);
 		s.setC(this.c);
 		s.setK(this.k);
