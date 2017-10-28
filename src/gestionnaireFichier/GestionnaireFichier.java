@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static vls.StationVelo.VarPremierNiveau.*;
+import static vls.StationVelo.ParamPremierNiveau.*;
 
 public class GestionnaireFichier {
 

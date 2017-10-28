@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import vls.StationVelo;
+import vls.StationVelo.ParamPremierNiveau;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -25,7 +26,7 @@ import java.util.List;
 
 import static gestionnaireFichier.GestionnaireFichier.*;
 import static vls.StationVelo.*;
-import static vls.StationVelo.VarPremierNiveau.*;
+import static vls.StationVelo.ParamPremierNiveau.*;
 
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
@@ -280,7 +281,7 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    private void ecrireCoutStation(JList jList, VarPremierNiveau varPremierNiveau, String cout) {
+    private void ecrireCoutStation(JList jList, ParamPremierNiveau varPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             StationVelo stationVelo = stationVelos.get(i);
@@ -290,7 +291,7 @@ public class Interface extends JFrame {
         jList.setModel(listModel);
     }
 
-    private void ecrireCoutStation(JList jList, VarPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
+    private void ecrireCoutStation(JList jList, ParamPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             int numeroStation = stationVelos.get(i).getNumber();
@@ -303,7 +304,7 @@ public class Interface extends JFrame {
     // ================ listener ==================
     // ============================================
 
-    private void appliquerCoutPartoutListener(JTextField jText, JList jList, VarPremierNiveau varPremierNiveau) {
+    private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau varPremierNiveau) {
         CaretListener update = e -> {
             JTextField text = (JTextField) e.getSource();
             String value = text.getText();

@@ -114,7 +114,7 @@ public class StationVelo {
 		this.k = k;
 	}
 
-	public void setVarPremierNiveau(VarPremierNiveau var, int cvwk){
+	public void setVarPremierNiveau(ParamPremierNiveau var, int cvwk){
 		switch(var.indice){
 			case INDICE_COUT_C: setC(cvwk); break;
 			case INDICE_COUT_V: setV(cvwk); break;
@@ -123,7 +123,7 @@ public class StationVelo {
 		}
 	}
 
-	public enum VarPremierNiveau {
+	public enum ParamPremierNiveau {
 		varC("c", INDICE_COUT_C),
 		varV("v", INDICE_COUT_V),
 		varW("w", INDICE_COUT_W),
@@ -132,12 +132,13 @@ public class StationVelo {
 		public String nom;
 		public int indice;
 
-		VarPremierNiveau(String nom, int indice) { }
+		ParamPremierNiveau(String nom, int indice) { }
 
 	}
 
-	public static class Position extends Point {
-
+	@SuppressWarnings("serial")
+	public static class Position extends Point 
+	{
 		private double lng;
 		private double lat;
 
