@@ -9,108 +9,154 @@
         </style>
      <!--API KEY => ?key=AIzaSyD6pfIv1Vlg2JdiMkhPyYYSJkJW2ZQZw7E-->
   <script type="text/javascript" src="http://maps.google.com/maps/api/js"></script>
-     <script id="markers"></script>
-  <script type="text/javascript">
-            function initialize(stations) {
-                var latlng = new google.maps.LatLng(48.864716, 2.349014);
-                var myOptions = { 
-                    zoom: 12,
-                    center: latlng, 
-                    mapTypeId: google.maps.MapTypeId.ROADMAP, 
-                    disableDoubleClickZoom: false, 
-                    keyboardShortcuts: true, 
-                    scrollwheel: true, 
-                    draggable: true, 
-                    disableDefaultUI: false, // Completly disable all controls. 
-                    mapTypeControl: false, // Allow to change map type. 
-                    overviewMapControl: false, // Small window of overview. 
-                    panControl: false, // Disc used to pan the map. 
-                    rotateControl: false, // Scale slider? 
-                    navigationControl: false, // Scale slider? 
-                    streetViewControl: false, // Place a streetview camera. 
-                    scaleControl: false, // Scale slider? 
-                    zoomControl: false, // Scale slider? 
-                    backgroundColor: "#666970"
-                }; 
-                
-                document.geocoder = new google.maps.Geocoder(); 
-                document.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+     <script type="text/javascript">
+         function initialize(stations) {
+             var latlng = new google.maps.LatLng(48.864716, 2.349014);
+             var myOptions = {
+                 zoom: 12,
+                 center: latlng,
+                 mapTypeId: google.maps.MapTypeId.ROADMAP,
+                 disableDoubleClickZoom: false,
+                 keyboardShortcuts: true,
+                 scrollwheel: true,
+                 draggable: true,
+                 disableDefaultUI: false, // Completly disable all controls.
+                 mapTypeControl: false, // Allow to change map type.
+                 overviewMapControl: false, // Small window of overview.
+                 panControl: false, // Disc used to pan the map.
+                 rotateControl: false, // Scale slider?
+                 navigationControl: false, // Scale slider?
+                 streetViewControl: false, // Place a streetview camera.
+                 scaleControl: false, // Scale slider?
+                 zoomControl: false, // Scale slider?
+                 backgroundColor: "#666970"
+             };
 
-                document.zoomIn = function zoomIn() { 
-                    var zoomLevel = document.map.getZoom(); 
-                    if (zoomLevel <= 20) 
-                        document.map.setZoom(zoomLevel + 1); 
-                };
-  
-                document.zoomOut = function zoomOut() { 
-                    var zoomLevel = document.map.getZoom(); 
-                    if (zoomLevel > 0) 
-                        document.map.setZoom(zoomLevel - 1); 
-                };
-  
-                document.setMapTypeRoad = function setMapTypeRoad() { 
-                    document.map.setMapTypeId(google.maps.MapTypeId.ROADMAP); 
-                };
-                document.setMapTypeSatellite = function setMapTypeSatellite() { 
-                    document.map.setMapTypeId(google.maps.MapTypeId.SATELLITE); 
-                };
-                document.setMapTypeHybrid = function setMapTypeHybrid() { 
-                    document.map.setMapTypeId(google.maps.MapTypeId.HYBRID); 
-                };
-                document.setMapTypeTerrain = function setMapTypeTerrain() { 
-                    document.map.setMapTypeId(google.maps.MapTypeId.TERRAIN); 
-                };
+             document.geocoder = new google.maps.Geocoder();
+             document.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 
-                document.goToLocation = function goToLocation(searchString) { 
-                    document.geocoder.geocode({'address': searchString}, function (results, status) { 
-                        if (status == google.maps.GeocoderStatus.OK) { 
-                            document.map.setCenter(results[0].geometry.location); 
-                        } else { 
-                            alert("Geocode was not successful for the following reason: " + status); 
-                        } 
-                    }); 
-                };
+             document.zoomIn = function zoomIn() {
+                 var zoomLevel = document.map.getZoom();
+                 if (zoomLevel <= 20)
+                     document.map.setZoom(zoomLevel + 1);
+             };
 
-                var markers = [];
+             document.zoomOut = function zoomOut() {
+                 var zoomLevel = document.map.getZoom();
+                 if (zoomLevel > 0)
+                     document.map.setZoom(zoomLevel - 1);
+             };
 
-                stations.forEach(function(station) {
-                    var marker = new google.maps.Marker({
-                        position: station.position,
-                        map: document.map,
-                        title: station.nom
-                    });
-                    var infowindow = new google.maps.InfoWindow({
-                        content: station.details.replace("&lt;", "<").replace("&gt;", ">")
-                    });
-                    marker.addListener('click', function () {
-                        infowindow.open(document.map, marker);
-                        visibilityMarkers(markers, false);
-                        visibilityMarker(marker, true);
-                    });
-                    google.maps.event.addListener(infowindow,'closeclick',function(){
-                        visibilityMarkers(markers, true);
-                    });
-                    markers.push(marker);
-                });
-            } 
-        </script> 
-  <script>
-        class StationVelo {
-            constructor(nom, position, details) {
-                this.nom = nom;
-                this.position = position;
-                this.details = details;
-            }
-        }
-        function visibilityMarkers(markers, visibility){
-            markers.forEach(function(marker) {
-                visibilityMarker(marker, visibility);
-            });
-        }
-        function visibilityMarker(marker, visibility) {
-            marker.setVisible(visibility);
-        }
-  </script>
+             document.setMapTypeRoad = function setMapTypeRoad() {
+                 document.map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+             };
+             document.setMapTypeSatellite = function setMapTypeSatellite() {
+                 document.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+             };
+             document.setMapTypeHybrid = function setMapTypeHybrid() {
+                 document.map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+             };
+             document.setMapTypeTerrain = function setMapTypeTerrain() {
+                 document.map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+             };
+
+             document.goToLocation = function goToLocation(searchString) {
+                 document.geocoder.geocode({'address': searchString}, function (results, status) {
+                     if (status == google.maps.GeocoderStatus.OK) {
+                         document.map.setCenter(results[0].geometry.location);
+                     } else {
+                         alert("Geocode was not successful for the following reason: " + status);
+                     }
+                 });
+             };
+
+             var lineSymbol = {
+                 path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW
+             };
+
+             var lienNomStationMarkers = [];
+
+             stations.forEach(function(station) {
+
+                 var marker = new google.maps.Marker({
+                     position: station.position,
+                     map: document.map,
+                     title: station.nom
+                 });
+
+                 lienNomStationMarkers[station.nom] = marker;
+             });
+
+             for(var key in lienNomStationMarkers) {
+                 console.log(lienNomStationMarkers[key]);
+             };
+
+             stations.forEach(function(station) {
+
+                 var marker = lienNomStationMarkers[station.nom];
+
+                 var infowindow = new google.maps.InfoWindow({
+                     content: station.details.replace("&lt;", "<").replace("&gt;", ">")
+                 });
+
+                 var stationLines = [];
+
+                 (station.demandesStochastiques).forEach(function (nomStation) {
+                     var line = new google.maps.Polyline({
+                         path: [station.position, lienNomStationMarkers[nomStation].position],
+                         icons: [{
+                             icon: lineSymbol,
+                             offset: '100%'
+                         }],
+                         visible:false,
+                         map: document.map,
+                         name:nomStation
+                     });
+                     stationLines.push(line);
+                 });
+
+                 marker.addListener('click', function () {
+                     infowindow.open(document.map, marker);
+                     visibilityMarkers(lienNomStationMarkers, false);
+                     visibilityArrows(stationLines, lienNomStationMarkers, true);
+                     visibilityElement(marker, true);
+                 });
+                 google.maps.event.addListener(infowindow,'closeclick',function(){
+                     visibilityArrows(stationLines, lienNomStationMarkers, false);
+                     visibilityMarkers(lienNomStationMarkers, true);
+                 });
+             });
+
+
+         }
+     </script>
+     <script>
+         class StationVelo {
+             constructor(nom, position, details, demandesStochastiques) {
+                 this.nom = nom;
+                 this.position = position;
+                 this.details = details;
+                 this.demandesStochastiques = demandesStochastiques; // [[1.2,5.2],[5.2,7.8]]
+             }
+         }
+         function visibilityArrows(arrows, dico, visibility){
+             arrows.forEach(function(arrow) {
+                 visibilityElement(arrow, visibility);
+                 visibilityElement(dico[arrow.name], visibility);
+                 dico[arrow.name].clickable = !visibility;
+                 if(visibility) { dico[arrow.name].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); }
+                 else { dico[arrow.name].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png'); }
+             });
+         }
+         function visibilityMarkers(elements, visibility){
+             for(var key in elements) {
+                 visibilityElement(elements[key], visibility);
+             }
+         }
+         function visibilityElement(elem, visibility) {
+             elem.setVisible(visibility);
+         }
+     </script>
   <script id="stations">const stations = [];</script>
  </head>
      <body onload="initialize(stations)">

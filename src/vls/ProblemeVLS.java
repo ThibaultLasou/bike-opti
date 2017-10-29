@@ -5,6 +5,8 @@ import java.util.Random;
 
 import algorithms.Probleme;
 
+import static vls.StationVelo.lienNumberId;
+
 public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 {
 	public ArrayList<StationVelo> stations;
@@ -16,6 +18,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		for(int i=0;i<stations.size();i++)
 		{
 			stations.get(i).pbID = i;
+			lienNumberId.put(i, stations.get(i));
 		}
 		this.minimize = true;
 	}

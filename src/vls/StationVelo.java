@@ -2,6 +2,7 @@ package vls;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class StationVelo {
 
@@ -25,12 +26,18 @@ public class StationVelo {
 	public int w; // cout pas de place
 	public int k; // capacite
 	//Parametres stochastiques
-	public ArrayList<Integer> demande; // demande stochastique
+	public ArrayList<Integer> demande = new ArrayList<>(); // demande stochastique
+
+	public static HashMap<Integer, StationVelo> lienNumberId = new HashMap<>();
 	
 	public int x;
-	public ArrayList<Integer> B;
+	public ArrayList<Integer> B = new ArrayList<>();;
+
+	public StationVelo() {
+	}
 
 	public StationVelo(int number, int bikeStands, String address, Position position, int availableBikes) {
+		this();
 		this.number = number;
 		this.bikeStands = bikeStands;
 		this.address = address;
@@ -203,6 +210,26 @@ public class StationVelo {
 
 	}
 
+	public void genererDemandesStochastiques() {
+		//System.out.println("lienNumberId.size() : " + lienNumberId.size());
+		for(int i = 0; i < 5; i++){
+			B.add((int) (Math.random()*10));
+		}
+	}
+
+	public ArrayList<String> genererPositionsDemandesStochastiques() {
+		genererDemandesStochastiques();
+		ArrayList<String> stationsArrives = new ArrayList<>();
+		for(int i = 0; i < B.size(); i++) {
+			try {
+				stationsArrives.add("\"" + lienNumberId.get(i).getNom() + "\"");
+			} catch (Exception e) {
+
+			}
+		}
+		return stationsArrives;
+	}
+
 	@SuppressWarnings("serial")
 	public static class Position extends Point 
 	{
@@ -220,6 +247,11 @@ public class StationVelo {
 
 		public double getLat() {
 			return lat;
+		}
+
+		@Override
+		public String toString() {
+			return "{lat:" + lat + ",lng:" + lng + "}";
 		}
 	}
 }

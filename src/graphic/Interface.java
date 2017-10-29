@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.jsoup.Jsoup;
+import vls.ProblemeVLS;
 import vls.StationVelo;
 import vls.StationVelo.ParamPremierNiveau;
 
@@ -76,11 +77,13 @@ public class Interface extends JFrame {
     private WebEngine engine;
 
     private ArrayList<StationVelo> stationVelos = parserFichier();
+
     private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
     private boolean[] parametresFixes = {false, false, false, false};
 
     public Interface() {
-
+        //TODO : A SUPPRIMER
+        new ProblemeVLS(stationVelos);
         this.setTitle("Vélib");
         //this.setContentPane(jpanel_root);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -755,7 +758,8 @@ public class Interface extends JFrame {
     private String genererMarqueur(StationVelo stationVelo) {
         return "new StationVelo(\"" + stationVelo.getNom()
                 + "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
-                + "}," + "\"" + genererInfoMarqueur(stationVelo) + "\"" + ")";
+                + "}," + "\"" + genererInfoMarqueur(stationVelo) + "\""
+                + ", " + stationVelo.genererPositionsDemandesStochastiques() + ")";
     }
 
     private String genererInfoLigne(String etiquette, int valeur) {
@@ -772,6 +776,7 @@ public class Interface extends JFrame {
         info += genererInfoLigne("Coût v", stationVelo.getV());
         info += genererInfoLigne("Coût w", stationVelo.getW());
         info += genererInfoLigne("Capacité k", stationVelo.getK());
+        info += genererInfoLigne("x", stationVelo.getX());
         info += "</div></html>";
         return info;
     }
