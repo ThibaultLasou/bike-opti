@@ -294,6 +294,7 @@ public class Interface extends JFrame {
         recuitDeterministeRadioButton.setSelected(false);
         radioStochastiqueRadioButton.setSelected(false);
         SAARadioButton.setSelected(false);
+        createScene();
     }
 
     private void effacerAffichage(JLabel labelFichierConfig) {
