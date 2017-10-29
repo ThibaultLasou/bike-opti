@@ -81,7 +81,8 @@
                  var marker = new google.maps.Marker({
                      position: station.position,
                      map: document.map,
-                     title: station.nom
+                     title: station.nom,
+                     source:true
                  });
 
                  lienNomStationMarkers[station.nom] = marker;
@@ -117,13 +118,17 @@
 
                  marker.addListener('click', function () {
                      infowindow.open(document.map, marker);
-                     visibilityMarkers(lienNomStationMarkers, false);
-                     visibilityArrows(stationLines, lienNomStationMarkers, true);
-                     visibilityElement(marker, true);
+                     if(marker.source) {
+                         visibilityMarkers(lienNomStationMarkers, false);
+                         visibilityArrows(stationLines, lienNomStationMarkers, true);
+                         visibilityElement(marker, true);
+                     }
                  });
                  google.maps.event.addListener(infowindow,'closeclick',function(){
-                     visibilityArrows(stationLines, lienNomStationMarkers, false);
-                     visibilityMarkers(lienNomStationMarkers, true);
+                     if(marker.source) {
+                         visibilityArrows(stationLines, lienNomStationMarkers, false);
+                         visibilityMarkers(lienNomStationMarkers, true);
+                     }
                  });
              });
 
@@ -143,7 +148,8 @@
              arrows.forEach(function(arrow) {
                  visibilityElement(arrow, visibility);
                  visibilityElement(dico[arrow.name], visibility);
-                 dico[arrow.name].clickable = !visibility;
+                 //dico[arrow.name].clickable = !visibility;
+                 dico[arrow.name].source = !visibility;
                  if(visibility) { dico[arrow.name].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png'); }
                  else { dico[arrow.name].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png'); }
              });
