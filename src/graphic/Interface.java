@@ -196,6 +196,7 @@ public class Interface extends JFrame {
                             effacerAffichage(textField3);
                             effacerAffichage(textField4);
                             labelFichierConfig.setText("Fichier chargé de " + path);
+                            createScene();
                         } catch (Exception e1) {
                         }
                     }
@@ -354,6 +355,7 @@ public class Interface extends JFrame {
                     System.out.println(value);
                     ecrireCoutStation(jList, varPremierNiveau, value);
                     parametresFixes[varPremierNiveau.indice] = true;
+                    createScene();
                 }
             } catch (Exception ex) {
             }
