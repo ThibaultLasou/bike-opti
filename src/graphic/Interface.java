@@ -753,7 +753,15 @@ public class Interface extends JFrame {
     private String genererMarqueur(StationVelo stationVelo) {
         return "new StationVelo(\"" + stationVelo.getNom()
                 + "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
-                + "}," + "\"" + stationVelo.getNom() + "\"" + ")";
+                + "}," + "\"" + genererInfoMarqueur(stationVelo) + "\"" + ")";
+    }
+
+    private String genererInfoMarqueur(StationVelo stationVelo) {
+        String info = "<html><div>";
+        info += "<b>" + stationVelo.getNom() + "</b><br/>";
+        info += "Numéro : " + stationVelo.getNumber();
+        info += "</div></html>";
+        return info;
     }
 
     private void createScene() {
@@ -765,11 +773,12 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Document doc = Jsoup.parse(file, "UTF-8");
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 div.text(creerMarqueurs());
+                System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-                engine.loadContent(doc.toString());
+                engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));
             } catch (IOException e) {

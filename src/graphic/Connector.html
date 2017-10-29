@@ -80,7 +80,7 @@
                         title: station.nom
                     });
                     var infowindow = new google.maps.InfoWindow({
-                        content: station.details
+                        content: station.details.replace("&lt;", "<").replace("&gt;", ">")
                     });
                     marker.addListener('click', function () {
                         infowindow.open(document.map, marker);
