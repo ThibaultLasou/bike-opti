@@ -756,10 +756,20 @@ public class Interface extends JFrame {
                 + "}," + "\"" + genererInfoMarqueur(stationVelo) + "\"" + ")";
     }
 
+    private String genererInfoLigne(String etiquette, int valeur) {
+        return "<b>" + etiquette + " : </b>" + valeur + "<br/>";
+    }
+
     private String genererInfoMarqueur(StationVelo stationVelo) {
         String info = "<html><div>";
         info += "<b>" + stationVelo.getNom() + "</b><br/>";
-        info += "Numéro : " + stationVelo.getNumber();
+        info += genererInfoLigne("Capacité", stationVelo.getBikeStands());
+        info += genererInfoLigne("Vélos disponibles", stationVelo.getAvailableBikes());
+        info += genererInfoLigne("Supports de vélos disponibles", stationVelo.getAvailableBikeStands());
+        info += genererInfoLigne("Coût c", stationVelo.getC());
+        info += genererInfoLigne("Coût v", stationVelo.getV());
+        info += genererInfoLigne("Coût w", stationVelo.getW());
+        info += genererInfoLigne("Capacité k", stationVelo.getK());
         info += "</div></html>";
         return info;
     }

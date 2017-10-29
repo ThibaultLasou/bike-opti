@@ -106,6 +106,38 @@ public class StationVelo {
 		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum() - Bj, 0);	
 	}
 
+	public int getAvailableBikeStands() {
+		return availableBikeStands;
+	}
+
+	public int getC() {
+		return c;
+	}
+
+	public int getV() {
+		return v;
+	}
+
+	public int getW() {
+		return w;
+	}
+
+	public int getK() {
+		return k;
+	}
+
+	public ArrayList<Integer> getDemande() {
+		return demande;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public ArrayList<Integer> getB() {
+		return B;
+	}
+
 	public String getNom() {
 		return nom;
 	}
