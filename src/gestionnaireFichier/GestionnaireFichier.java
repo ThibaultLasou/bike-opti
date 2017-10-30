@@ -1,5 +1,6 @@
 package gestionnaireFichier;
 
+import vls.ScenarioVLS;
 import vls.StationVelo;
 
 import org.json.JSONArray;
@@ -8,6 +9,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static vls.StationVelo.ParamPremierNiveau.*;
@@ -74,6 +76,37 @@ public class GestionnaireFichier {
         return stationsVelo;
     }
 
+    public static ArrayList<ScenarioVLS> parserScenars() {
+
+        ArrayList<ScenarioVLS> scenarii = new ArrayList<>();
+        File folder = new File("assets/scenarios");
+        for(File scenar : folder.listFiles()) 
+        {
+	        try {
+	        	String jsonData = readFile(scenar.getAbsolutePath());
+	        	HashMap<Integer, HashMap<Integer, Integer>> Bs = new HashMap<>();
+	            JSONObject jobj = new JSONObject(jsonData);
+	            Iterator<String> i = jobj.keys();
+	            while(i.hasNext())
+	            {
+	            	String stationOri = i.next();
+	            	HashMap<Integer, Integer> b = new HashMap<>();
+	            	JSONObject oriJson = new JSONObject(jobj.get(stationOri));
+	            	Iterator<String> j = oriJson.keys();
+	            	while(j.hasNext())
+	            	{
+	            		String v = j.next();
+	            		b.put(Integer.parseInt(v), oriJson.getInt(v));
+	            	}
+	            	Bs.put(Integer.parseInt(stationOri), b);
+	            }
+	            scenarii.add(new ScenarioVLS(Bs));
+	        } catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	        }
+        }
+        return scenarii;
+    }
 
     public static boolean creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
         PrintWriter pw = null;
