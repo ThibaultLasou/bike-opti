@@ -12,7 +12,7 @@ import algorithms.Recuit;
  */
 public class MainVLS
 {
-    public static void main (String[] args)
+/*    public static void main (String[] args)
     {
         ArrayList<StationVelo> svs = new ArrayList<>();
         svs.add(new StationVelo(0,0,"",null,0));
@@ -60,7 +60,7 @@ public class MainVLS
         svs.get(2).B.add(1,8);
         svs.get(2).B.add(2,0);
         
-        ProblemeVLS p = new ProblemeVLS(svs);
+        ProblemeVLS p = new ProblemeVLS(svs, null);
         Recuit<Integer, ArrayList<Integer>> r = new Recuit<Integer, ArrayList<Integer>>(p, 5, 5, 0.8f);
         
         System.out.println(p.stations.get(0).getOmoins(p.sumOfBj(0, p.getVarDeuxNiv())));
@@ -71,5 +71,5 @@ public class MainVLS
         {
         	System.out.println(s.pbID + " : " + s.x);
         }
-    }
+    }*/
 }
