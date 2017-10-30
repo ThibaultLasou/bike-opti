@@ -14,6 +14,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.jsoup.Jsoup;
 import vls.ProblemeVLS;
+import vls.ScenarioVLS;
 import vls.StationVelo;
 import vls.StationVelo.ParamPremierNiveau;
 
@@ -77,13 +78,14 @@ public class Interface extends JFrame {
     private WebEngine engine;
 
     private ArrayList<StationVelo> stationVelos = parserFichier();
+    private ArrayList<ScenarioVLS> scenarii = parserScenars();
 
     private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
     private boolean[] parametresFixes = {false, false, false, false};
 
     public Interface() {
         //TODO : A SUPPRIMER
-        new ProblemeVLS(stationVelos);
+        new ProblemeVLS(stationVelos, scenarii);
         this.setTitle("Vélib");
         //this.setContentPane(jpanel_root);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -795,6 +797,7 @@ public class Interface extends JFrame {
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
+                System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));
