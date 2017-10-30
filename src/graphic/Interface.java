@@ -44,6 +44,9 @@ import static graphic.Interface.NiveauPrecision.PRECISION_MOYENNE;
 import static vls.StationVelo.*;
 import static vls.StationVelo.ParamPremierNiveau.*;
 
+/**
+ * Permet le lancement du programme avec l'interface graphique
+ */
 public class Interface extends JFrame {
     private JPanel jpanel_lancement;
 
@@ -96,6 +99,7 @@ public class Interface extends JFrame {
         JMenuBar bar = new JMenuBar();
 
         JMenu menuFichier = new JMenu("Fichier");
+        // reinitialise l'interface
         JMenuItem menuItemNouveau = new JMenuItem(new AbstractAction("My Menu Item") {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -103,6 +107,7 @@ public class Interface extends JFrame {
             }
         });
         menuItemNouveau.setText("Nouvelle simulation");
+        // sauvegarde les resultats dans un fichier texte
         JMenuItem menuItemSauvegarder = new JMenuItem(new AbstractAction("My Menu Item 2") {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -119,7 +124,7 @@ public class Interface extends JFrame {
             }
         });
         menuItemSauvegarder.setText("Sauvegarder résultats");
-
+        // ferme le programme
         JMenuItem menuItemQuitter = new JMenuItem(new AbstractAction("My Menu Item 2") {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -133,19 +138,16 @@ public class Interface extends JFrame {
         menuFichier.add(menuItemQuitter);
 
         JMenu menuAide = new JMenu("Aide");
+        // affiche le manuel utilisateur sous format pdf dans une nouvelle fenetre
         menuAide.addMenuListener(new MenuListener() {
             @Override
             public void menuSelected(MenuEvent e) {
                 afficherManuelUtilisateur();
             }
-
             @Override
-            public void menuDeselected(MenuEvent e) {
-            }
-
+            public void menuDeselected(MenuEvent e) { }
             @Override
-            public void menuCanceled(MenuEvent e) {
-            }
+            public void menuCanceled(MenuEvent e) { }
         });
 
         bar.add(menuFichier);
@@ -158,6 +160,7 @@ public class Interface extends JFrame {
         // ======== Paramétrage avancé =========
         // =====================================
 
+        // permet de telecharger le fichier csv modèle
         downloadConfigButton.addActionListener(e -> {
                     MyJFileChooser jFileChooser = new MyJFileChooser();
                     if (jFileChooser.getCheminChoisi() != null) {
@@ -176,6 +179,7 @@ public class Interface extends JFrame {
                 }
         );
 
+        // permet de charger le fichier csv
         chargerFichierConfigurationButton.addActionListener(e -> {
                     MyJFileChooser jFileChooser = new MyJFileChooser();
                     if (jFileChooser.getCheminChoisi() != null) {
@@ -206,6 +210,7 @@ public class Interface extends JFrame {
                 }
         );
 
+        // applique un listener sur les zones de texte
         appliquerCoutPartoutListener(textField1, list1, varC);
         appliquerCoutPartoutListener(textField2, list2, varV);
         appliquerCoutPartoutListener(textField3, list3, varW);
@@ -273,6 +278,10 @@ public class Interface extends JFrame {
         this.setVisible(true);
     }
 
+    /**
+     * Retourne l'objet courant this
+     * @return this
+     */
     private Interface This() {
         return this;
     }
@@ -281,6 +290,9 @@ public class Interface extends JFrame {
     // ================ écriture ==================
     // ============================================
 
+    /**
+     * Reinitialise l'interface graphique
+     */
     private void nouvelleSimulation() {
         // parametrages avances
         labelFichierConfig.setText("Aucun fichier sélectionné");
@@ -305,41 +317,57 @@ public class Interface extends JFrame {
         labelFichierConfig.setText("");
     }
 
+    /**
+     * Reinitialise un JTextComponent
+     * @param jTextComponent le JTextComponent à réinitialiser
+     */
     private void effacerAffichage(JTextComponent jTextComponent) {
         jTextComponent.setText("");
     }
 
+    /**
+     * Reinitialise un JList
+     * @param jList le JList à réinitialiser
+     */
     private void effacerAffichage(JList jList) {
         jList.setListData(new Vector());
     }
 
+    /**
+     * Ecrit un texte et ajoute une nouvelle ligne dans la fenêtre de resultat
+     * @param texte le texte à ecrire
+     */
     public void ecrireResultat(String texte) {
         textAreaResultat.append(texte + '\n');
     }
 
-    private void ecrireCoutStation(JList jList, ArrayList<String> couts) {
-        DefaultListModel listModel = new DefaultListModel();
-        for (int i = 0; i < couts.size(); i++) {
-            listModel.addElement("Station " + (i + 1) + couts.get(i));
-        }
-        jList.setModel(listModel);
-    }
-
-    private void ecrireCoutStation(JList jList, ParamPremierNiveau varPremierNiveau, String cout) {
+    /**
+     * Ecrit le cout de la variable de premier niveau associe dans une jlist
+     * @param jList la jlist dans laquelle afficher les stations
+     * @param paramPremierNiveau la variable de premier niveau associe
+     * @param cout le cout
+     */
+    private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             StationVelo stationVelo = stationVelos.get(i);
             listModel.addElement("Station n°" + stationVelo.getNumber() + "  :  " + cout + "€");
-            stationVelo.setParamPremierNiveau(varPremierNiveau, Integer.valueOf(cout));
+            stationVelo.setParamPremierNiveau(paramPremierNiveau, Integer.valueOf(cout));
         }
         jList.setModel(listModel);
     }
 
-    private void ecrireCoutStation(JList jList, ParamPremierNiveau var, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
+    /**
+     * Ecrit le cout de la variable de premier niveau associe dans une jlist
+     * @param jList la jlist dans laquelle afficher les stations
+     * @param paramPremierNiveau la variable de premier niveau associe
+     * @param coutsParStation les couts pour chaque stations
+     */
+    private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
         for (int i = 0; i < stationVelos.size(); i++) {
             int numeroStation = stationVelos.get(i).getNumber();
-            listModel.addElement("Station n°" + numeroStation + "  :  " + coutsParStation.get(numeroStation).get(var.indice) + "€");
+            listModel.addElement("Station n°" + numeroStation + "  :  " + coutsParStation.get(numeroStation).get(paramPremierNiveau.indice) + "€");
         }
         jList.setModel(listModel);
     }
@@ -348,16 +376,23 @@ public class Interface extends JFrame {
     // ================ listener ==================
     // ============================================
 
-    private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau varPremierNiveau) {
+    /**
+     * Applique le listener qui permet d'ajouter la valeur entree à toutes les stations dans la liste
+     * @param jText la valeur entrée
+     * @param jList la liste dans laquelle afficher les stations
+     * @param paramPremierNiveau le parametre voulu
+     */
+    private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau paramPremierNiveau) {
         CaretListener update = e -> {
             JTextField text = (JTextField) e.getSource();
             String value = text.getText();
             try {
                 if (!value.isEmpty()) {
+                    // permet au try catch de verifier s'il s'agit bien d'un integer
                     Integer.valueOf(value);
-                    System.out.println(value);
-                    ecrireCoutStation(jList, varPremierNiveau, value);
-                    parametresFixes[varPremierNiveau.indice] = true;
+                    ecrireCoutStation(jList, paramPremierNiveau, value);
+                    parametresFixes[paramPremierNiveau.indice] = true;
+                    // reinit l'interface graphique
                     createScene();
                 }
             } catch (Exception ex) {
@@ -370,12 +405,20 @@ public class Interface extends JFrame {
     // ========= verification input user ==========
     // ============================================
 
+    /**
+     * Verifier que l'utilisateur a bien choisi un algorithme
+     * @return true si au moins un algorithme est sélectionné
+     */
     private boolean verifSelectionAlgo() {
         return recuitDeterministeRadioButton.isSelected()
                 || radioStochastiqueRadioButton.isSelected()
                 || SAARadioButton.isSelected();
     }
 
+    /**
+     * Verification de tous les parametres necessaires au lancement du programme
+     * @return true si l'utilisateur a entré toutes les valeurs necessaires
+     */
     private boolean verificationInputUser() {
 
         if (!verifSelectionAlgo()) {
@@ -394,6 +437,9 @@ public class Interface extends JFrame {
         return true;
     }
 
+    /**
+     * Affiche le manuel utilisateur dans une nouvelle fenetre
+     */
     private void afficherManuelUtilisateur() {
         JFrame frame = new JFrame();
         frame.setTitle("Aide");
@@ -722,6 +768,9 @@ public class Interface extends JFrame {
         return jpanel_root;
     }
 
+    /**
+     * Permet de généraliser le niveau de précision pour le curseur de la précision
+     */
     enum NiveauPrecision {
 
         PRECISION_BASSE(1, 1),
@@ -742,6 +791,10 @@ public class Interface extends JFrame {
     // ====== interface dynamique - ne pas toucher =======
     // ===================================================
 
+    /**
+     * Creer les marqueurs sous forme de chaine de caracteres
+     * @return les marqueurs sous format chaine de caracteres executables en javascript
+     */
     private String creerMarqueurs() {
         String content = "";
         for (StationVelo stationVelo : stationVelos) {
@@ -755,6 +808,11 @@ public class Interface extends JFrame {
         return content;
     }
 
+    /**
+     * Genere un marqueur Maps sous format chaine de caractere à partir d'un objet StationVelo
+     * @param stationVelo la station de velo
+     * @return le marqueur sous forme de chaine de caracteres
+     */
     private String genererMarqueur(StationVelo stationVelo) {
         return "new StationVelo(\"" + stationVelo.getNom()
                 + "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
@@ -762,10 +820,21 @@ public class Interface extends JFrame {
                 + ", " + stationVelo.genererPositionsDemandesStochastiques() + ")";
     }
 
+    /**
+     * Genere le modele d'affichage pour une ligne dans l'infowindow
+     * @param etiquette le nom du parametre
+     * @param valeur la valeur du parametre
+     * @return l'affichage sous forme de chaine de caractere en html
+     */
     private String genererInfoLigne(String etiquette, int valeur) {
         return "<b>" + etiquette + " : </b>" + valeur + "<br/>";
     }
 
+    /**
+     * Genere l'infowindow en fonction des valeurs de la station de velo
+     * @param stationVelo la station de velo
+     * @return l'infowindow javascript voulu
+     */
     private String genererInfoMarqueur(StationVelo stationVelo) {
         String info = "<html><div>";
         info += "<b>" + stationVelo.getNom() + "</b><br/>";
@@ -781,14 +850,19 @@ public class Interface extends JFrame {
         return info;
     }
 
+    /**
+     * Lance le browser
+     */
     private void createScene() {
 
         Platform.runLater(() -> {
 
             try {
+                // recupere le fichier modele html dans les ressources
                 File file = new File("src/graphic/Connector.html");
                 org.jsoup.nodes.Document doc = Jsoup.parse(file, "UTF-8");
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
+                // injecte les marqueurs
                 div.text(creerMarqueurs());
                 System.out.println(creerMarqueurs());
 
