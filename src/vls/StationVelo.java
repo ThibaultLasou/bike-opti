@@ -212,7 +212,6 @@ public class StationVelo {
 
 	public ArrayList<String> genererPositionsDemandesStochastiques() {
 		ArrayList<String> stationsArrives = new ArrayList<>();
-		System.out.println(B);
 		for(int i = 0; i < B.size(); i++) {
 			try {
 				if(B.get(i) != 0)
@@ -223,7 +222,6 @@ public class StationVelo {
 
 			}
 		}
-		System.out.println(stationsArrives);
 		return stationsArrives;
 	}
 

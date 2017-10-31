@@ -61,8 +61,6 @@ public class GestionnaireFichier {
         ArrayList<StationVelo> stationsVelo = new ArrayList<>();
         try {
             String jsonData = readFileFromAssets("velib.json");
-
-            System.out.println(jsonData);
             JSONObject jobj = new JSONObject(jsonData);
             JSONArray jarr = new JSONArray(jobj.getJSONArray("main").toString());
 
@@ -83,7 +81,6 @@ public class GestionnaireFichier {
 
                 stationsVelo.add(new StationVelo(nom, number, bikeStands, address, positionStation, availableBikes, availableBikeStands));
             }
-            System.out.println(stationsVelo);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -186,7 +183,6 @@ public class GestionnaireFichier {
         try {
             String csvFile = readFile(chemin);
             String[] csvLignes = csvFile.split(NOUVELLE_LIGNE);
-            System.out.println("csvLignes size : " + csvLignes.length);
             for (int l = 1; l < csvLignes.length; l++) {
                 ArrayList<Integer> couts = new ArrayList<>();
                 String[] elements = csvLignes[l].split(SEPARATION);
@@ -200,7 +196,6 @@ public class GestionnaireFichier {
         } catch (Exception ne) {
             throw new Exception();
         }
-        System.out.println("size stations : " + stations.size());
         return stations;
     }
 

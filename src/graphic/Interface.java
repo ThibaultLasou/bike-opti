@@ -37,6 +37,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -279,6 +280,9 @@ public class Interface extends JFrame {
                 super.mouseClicked(e);
                 if (verificationInputUser()) {
                     JOptionPane.showMessageDialog(null, "C'est parti !");
+                    ecrireResultat("[" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "]");
+                    ecrireResultat("Exécution de l'algorithme en cours...");
+
                     recuit.setPrecision(niveauPrecision);
                     if (recuitDeterministeRadioButton.isSelected()) {
                         p.deterministe();
@@ -290,7 +294,8 @@ public class Interface extends JFrame {
                         p.stochastique();
                         saa.solve();
                     }
-                    textAreaResultat.setText(p.toStringResults());
+                    ecrireResultat(p.toStringResults());
+                    ecrireResultat("Exécution terminée.");
 
                 }
             }
@@ -368,6 +373,7 @@ public class Interface extends JFrame {
      * @param texte le texte à ecrire
      */
     public void ecrireResultat(String texte) {
+        System.out.println(texte);
         textAreaResultat.append(texte + '\n');
     }
 
@@ -874,12 +880,10 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 // injecte les marqueurs
                 div.text(creerMarqueurs());
-                // System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-                // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));
