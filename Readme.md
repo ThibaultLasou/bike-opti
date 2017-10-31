@@ -9,12 +9,13 @@ Le but du projet est de réaliser un logiciel permettant de résoudre le problè
 + Thibault Lasou
  
 ### Bibliothèques nécessaires
-###### Disponible dans le dossier lib
+###### Disponibles dans le dossier lib
 + forms_rt.jar
 + json-20172018.jar
 + jsoup-1.10.3.jar
-+ CPlex
++ CPlex (non disponible dans le dossier lib)
 
 ### Configuration utilisée
 + Système d'exploitation : Linux
 + SDK : Java 1.8.0_151
++ Version Java : 8
