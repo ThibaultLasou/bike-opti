@@ -106,7 +106,7 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 			temperature = (int) (temperature*reducTemp);
 		}
 	}
-
+	
 	public void setPrecision(NiveauPrecision niveauPrecision) 
 	{
 		if(this.nbPaliers != niveauPrecision.nombrePaliers && this.nbIters != niveauPrecision.nombreIterations) 

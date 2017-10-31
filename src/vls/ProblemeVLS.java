@@ -200,7 +200,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		String a = "";
 		for(int i=0;i<stations.size();i++)
 		{
-			a += stations.get(i).getNumber() + stations.get(i).getX()+'\n';
+			a += stations.get(i).getNumber() + " : "+ stations.get(i).getX()+'\n';
 		}
 		return a;
 	}
