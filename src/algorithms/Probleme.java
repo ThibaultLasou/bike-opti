@@ -2,9 +2,10 @@ package algorithms;
 
 import java.util.ArrayList;
 
-abstract public class Probleme<Type1, Type2>
+abstract public class Probleme<Type1, TypeS extends Scenario>
 {
-	protected ArrayList<? extends Scenario> scenarios; /*Liste des scenarios*/
+	protected ArrayList<TypeS> scenarios; /*Liste des scenarios*/
+	protected int nbScenar;	
 	protected boolean minimize; /* Booléen valant “true”  si le problème est une minimisation, “false” si c’est une maximisation*/
 	
 	final public double fonctionObj()
@@ -27,5 +28,5 @@ abstract public class Probleme<Type1, Type2>
 	abstract public void setVarPremNiv(ArrayList<Type1> vars);
 	
 	/*Retourne un clone du problème.*/
-	abstract public Probleme<Type1, Type2> clone();
+	abstract public Probleme<Type1, TypeS> clone();
 }

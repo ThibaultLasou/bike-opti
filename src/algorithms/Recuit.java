@@ -2,7 +2,9 @@ package algorithms;
 
 import java.util.ArrayList;
 
-public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
+import graphic.Interface.NiveauPrecision;
+
+public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, TypeS>
 {
 	private int nbPaliers;//Nombre de paliers de l’algorithme
 	private int nbIters;//Nombre d’itérations de l’algorithme
@@ -11,17 +13,13 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	private int minimize;/*Entier valant 1 si le problème est une minimisation, -1 si c’est une maximisation. 
 							Utile pour inverser les comparaisons.*/
 
-	
 	private int nbAcc;//Nombre d’acceptations
 	private double bestCost;//Valeur objectif de la solution optimale
 	private ArrayList<Type1> best1;//Valeurs de la solution optimale
-	private ArrayList<Type2> best2;
 	
-	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, double reducTemp) 
+	public Recuit(Probleme<Type1, TypeS> p, NiveauPrecision niveauPrecision, double reducTemp) 
 	{
 		this.p = p;
-		this.nbPaliers = nbPaliers;
-		this.nbIters = nbPaliers;
 		this.reducTemp = reducTemp;
 		if(p.minimize)
 		{
@@ -32,14 +30,13 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 			minimize = -1;
 		}
 		best1 = new ArrayList<>();
-		best2 = new ArrayList<>();
-		initTemp();
+		temperatureInit = -1;
 	}
 	
 	private void initTemp()
 	{
 		temperatureInit = 5;
-		Probleme<Type1, Type2> p2 = p.clone();
+		Probleme<Type1, TypeS> p2 = p.clone();
 		do 
 		{
 			temperatureInit *= 2;
@@ -54,8 +51,12 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 		solve(this.p);
 	}
 	
-	public void solve(Probleme<Type1, Type2> p)
+	public void solve(Probleme<Type1, TypeS> p)
 	{
+		if(temperatureInit == -1)
+		{
+			initTemp();
+		}
 		double valObj;
 		double valObjIter;
 		double temperature;
@@ -93,7 +94,6 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 				{
 					bestCost = valObjIter;
 					best1.clear();
-					best2.clear();
 					for(Type1 t1 : varPremIter)
 					{
 						best1.add(t1);
@@ -104,6 +104,16 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 				nbAcc++;
 			}
 			temperature = (int) (temperature*reducTemp);
+		}
+	}
+
+	public void setPrecision(NiveauPrecision niveauPrecision) 
+	{
+		if(this.nbPaliers != niveauPrecision.nombrePaliers && this.nbIters != niveauPrecision.nombreIterations) 
+		{
+			this.nbPaliers = niveauPrecision.nombrePaliers;
+			this.nbIters = niveauPrecision.nombreIterations;
+			this.temperatureInit = -1;
 		}
 	}
 }

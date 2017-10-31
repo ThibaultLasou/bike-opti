@@ -7,11 +7,9 @@ import algorithms.Probleme;
 
 import static vls.StationVelo.lienNumberId;
 
-public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
+public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 {
 	public ArrayList<StationVelo> stations;
-	//private ArrayList<ScenarioVLS> scenarios;
-	private int nbScenar;
 	
 	public ProblemeVLS(ArrayList<StationVelo> stations, ArrayList<ScenarioVLS> scenarios) 
 	{
@@ -25,6 +23,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		this.minimize = true;
 		this.scenarios = scenarios;
 		nbScenar = scenarios.size();
+		setScenario(this.scenarios.get(0));
 	}
 	
 	public ProblemeVLS clone() 
@@ -68,36 +67,38 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 	{
 		for(int i=0;i<vars1.size();i++)
 		{
-			StationVelo s = stations.get(i);
+			StationVelo sv = stations.get(i);
 			// 1a
-			if(!(vars1.get(i) <= s.k))
+			if(!(vars1.get(i) <= sv.k))
 			{
 				return false;
 			}
-			//1b
-			for(int j=0;j<stations.size();j++)
+			for(int s=0;s<nbScenar;s++)
 			{
-				//TODO
-				if(!(s.B.get(j) == s.demande.get(j)))
+				//1b
+				for(int j=0;j<stations.size();j++)
+				{
+					if(!(sv.B.get(j) == sv.demande.get(j)-sv.getImoins_J(j)))
+					{
+						return false;
+					}
+				}
+				// 1c
+				int Ij = 0;
+				for(int j=0;j<stations.size();j++)
+				{
+					Ij += sv.getImoins_J(j, vars1.get(i));
+				}
+				if(!(sv.getIplus(vars1.get(i))-Ij == vars1.get(i) - sv.demande.stream().mapToInt(Integer::intValue).sum()))
 				{
 					return false;
 				}
-			}
-			// 1c
-			int Ij = 0;
-			for(int j=0;j<stations.size();j++)
-			{
-				Ij += s.getImoins_J(j, vars1.get(i));
-			}
-			if(!(s.getIplus(vars1.get(i))-Ij == vars1.get(i) - s.demande.stream().mapToInt(Integer::intValue).sum()))
-			{
-				return false;
-			}
-			//1d
-			if(!(s.getOplus(vars1.get(i), sumOfBj(i))-s.getOmoins(vars1.get(i), sumOfBj(i)) == 
-					s.k - vars1.get(i) + stations.get(i).B.stream().mapToInt(Integer::intValue).sum() - sumOfBj(i)))
-			{
-				return false;
+				//1d
+				if(!(sv.getOplus(vars1.get(i), sumOfBj(i))-sv.getOmoins(vars1.get(i), sumOfBj(i)) == 
+						sv.k - vars1.get(i) + stations.get(i).B.stream().mapToInt(Integer::intValue).sum() - sumOfBj(i)))
+				{
+					return false;
+				}
 			}
 		}
 		return true;
@@ -176,12 +177,31 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 				StationVelo staDest = lienNumberId.get(stationOriID);
 				staOri.demande.set(staDest.pbID, s.Xis.get(stationOriID).get(stationDestID));
 			}
-			// TODO déterminer une vraie valeur pour B
 		}
+		// TODO déterminer une vraie valeur pour B
 		for(StationVelo stati : stations)
 		{
 			stati.B = (ArrayList<Integer>) stati.demande.clone();
 		}
-		
+	}
+
+	public void deterministe() 
+	{
+		nbScenar = 1;
+	}
+
+	public void stochastique() 
+	{
+		nbScenar = scenarios.size();
+	}
+
+	public String toStringResults() 
+	{
+		String a = "";
+		for(int i=0;i<stations.size();i++)
+		{
+			a += stations.get(i).getNumber() + stations.get(i).getX()+'\n';
+		}
+		return a;
 	}
 }

@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import algorithms.Recuit;
 import algorithms.SAA;
+import algorithms.Scenario;
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -68,7 +69,7 @@ public class Interface extends JFrame {
     private JTextArea textArea6;
     private JRadioButton recuitDeterministeRadioButton;
     private JSlider slider1;
-    private JRadioButton radioStochastiqueRadioButton;
+    private JRadioButton recuitStochastiqueRadioButton;
     private JTextArea textAreaResultat;
     private JButton chargerFichierConfigurationButton;
     private JTextField textField1;
@@ -83,12 +84,17 @@ public class Interface extends JFrame {
     private ArrayList<StationVelo> stationVelos = parserFichier();
     private ArrayList<ScenarioVLS> scenarii = parserScenars();
 
+    private ProblemeVLS p;
+    private Recuit<Integer, ScenarioVLS> recuit;
+    private SAA<Integer, ScenarioVLS> saa;
     private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
     private boolean[] parametresFixes = {false, false, false};
 
     public Interface() {
-        //TODO : A SUPPRIMER
-        ProblemeVLS p = new ProblemeVLS(stationVelos, scenarii);
+		p = new ProblemeVLS(stationVelos, scenarii);
+		recuit = new Recuit<Integer, ScenarioVLS>(p, niveauPrecision, 0.8);
+		saa = new SAA<Integer, ScenarioVLS>(5, recuit);
+		
         this.setTitle("Vélib");
         //this.setContentPane(jpanel_root);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -148,12 +154,10 @@ public class Interface extends JFrame {
             }
 
             @Override
-            public void menuDeselected(MenuEvent e) {
-            }
+            public void menuDeselected(MenuEvent e) {}
 
             @Override
-            public void menuCanceled(MenuEvent e) {
-            }
+            public void menuCanceled(MenuEvent e) { }
         });
 
         bar.add(menuFichier);
@@ -228,12 +232,12 @@ public class Interface extends JFrame {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
-                radioStochastiqueRadioButton.setSelected(false);
+                recuitStochastiqueRadioButton.setSelected(false);
                 SAARadioButton.setSelected(false);
             }
         });
 
-        radioStochastiqueRadioButton.addMouseListener(new MouseAdapter() {
+        recuitStochastiqueRadioButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
@@ -247,7 +251,7 @@ public class Interface extends JFrame {
             public void mouseClicked(MouseEvent mouseEvent) {
                 super.mouseClicked(mouseEvent);
                 recuitDeterministeRadioButton.setSelected(false);
-                radioStochastiqueRadioButton.setSelected(false);
+                recuitStochastiqueRadioButton.setSelected(false);
             }
         });
 
@@ -266,6 +270,24 @@ public class Interface extends JFrame {
                 super.mouseClicked(e);
                 if (verificationInputUser()) {
                     JOptionPane.showMessageDialog(null, "C'est parti !");
+					recuit.setPrecision(niveauPrecision);
+                    if(recuitDeterministeRadioButton.isSelected()) 
+                    {
+                    	p.deterministe();
+                    	recuit.solve();
+                    }
+                    else if(recuitStochastiqueRadioButton.isSelected())
+                    {
+                    	p.stochastique();
+                    	recuit.solve();
+                    }
+                    else if(SAARadioButton.isSelected())
+                    {
+                    	p.stochastique();
+                    	saa.solve();
+                    }
+                    textAreaResultat.setText(p.toStringResults());
+                    
                 }
             }
         });
@@ -278,12 +300,6 @@ public class Interface extends JFrame {
 
         this.pack();
         this.setVisible(true);
-
-        p.stations.get(0).setV(1);
-        Recuit<Integer, ArrayList<Integer>> r = new Recuit<Integer, ArrayList<Integer>>(p, 5, 5, 0.8);
-        //r.solve();
-        SAA<Integer, ArrayList<Integer>> saa = new SAA<>(5, r);
-        saa.solve();
     }
 
     /**
@@ -291,7 +307,8 @@ public class Interface extends JFrame {
      *
      * @return this
      */
-    private Interface This() {
+    private Interface This()
+	{
         return this;
     }
 
@@ -315,7 +332,7 @@ public class Interface extends JFrame {
         // lancement
         effacerAffichage(textAreaResultat);
         recuitDeterministeRadioButton.setSelected(false);
-        radioStochastiqueRadioButton.setSelected(false);
+        recuitStochastiqueRadioButton.setSelected(false);
         SAARadioButton.setSelected(false);
         createScene();
     }
@@ -326,7 +343,7 @@ public class Interface extends JFrame {
 
     /**
      * Reinitialise un JTextComponent
-     *
+	 *
      * @param jTextComponent le JTextComponent à réinitialiser
      */
     private void effacerAffichage(JTextComponent jTextComponent) {
@@ -354,9 +371,9 @@ public class Interface extends JFrame {
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
      *
-     * @param jList              la jlist dans laquelle afficher les stations
+     * @param jList la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param cout               le cout
+     * @param cout le cout
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
@@ -370,10 +387,9 @@ public class Interface extends JFrame {
 
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
-     *
-     * @param jList              la jlist dans laquelle afficher les stations
+     * @param jList la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param coutsParStation    les couts pour chaque stations
+     * @param coutsParStation les couts pour chaque stations
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
@@ -391,8 +407,8 @@ public class Interface extends JFrame {
     /**
      * Applique le listener qui permet d'ajouter la valeur entree à toutes les stations dans la liste
      *
-     * @param jText              la valeur entrée
-     * @param jList              la liste dans laquelle afficher les stations
+     * @param jText la valeur entrée
+     * @param jList la liste dans laquelle afficher les stations
      * @param paramPremierNiveau le parametre voulu
      */
     private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau paramPremierNiveau) {
@@ -426,7 +442,7 @@ public class Interface extends JFrame {
      */
     private boolean verifSelectionAlgo() {
         return recuitDeterministeRadioButton.isSelected()
-                || radioStochastiqueRadioButton.isSelected()
+                || recuitStochastiqueRadioButton.isSelected()
                 || SAARadioButton.isSelected();
     }
 
@@ -537,14 +553,14 @@ public class Interface extends JFrame {
         recuitDeterministeRadioButton.setText("Recuit déterministe");
         recuitDeterministeRadioButton.setVerticalAlignment(1);
         panel2.add(recuitDeterministeRadioButton);
-        radioStochastiqueRadioButton = new JRadioButton();
-        radioStochastiqueRadioButton.setActionCommand("Radio Stoch");
-        radioStochastiqueRadioButton.setAlignmentY(0.0f);
-        radioStochastiqueRadioButton.setLabel("Recuit stochastique");
-        radioStochastiqueRadioButton.setMargin(new Insets(0, 1, 0, 1));
-        radioStochastiqueRadioButton.setText("Recuit stochastique");
-        radioStochastiqueRadioButton.setVerticalAlignment(1);
-        panel2.add(radioStochastiqueRadioButton);
+        recuitStochastiqueRadioButton = new JRadioButton();
+        recuitStochastiqueRadioButton.setActionCommand("Radio Stoch");
+        recuitStochastiqueRadioButton.setAlignmentY(0.0f);
+        recuitStochastiqueRadioButton.setLabel("Recuit stochastique");
+        recuitStochastiqueRadioButton.setMargin(new Insets(0, 1, 0, 1));
+        recuitStochastiqueRadioButton.setText("Recuit stochastique");
+        recuitStochastiqueRadioButton.setVerticalAlignment(1);
+        panel2.add(recuitStochastiqueRadioButton);
         SAARadioButton = new JRadioButton();
         SAARadioButton.setAlignmentY(0.0f);
         SAARadioButton.setAutoscrolls(false);
@@ -755,14 +771,14 @@ public class Interface extends JFrame {
     /**
      * Permet de généraliser le niveau de précision pour le curseur de la précision
      */
-    enum NiveauPrecision {
+    public enum NiveauPrecision {
 
         PRECISION_BASSE(1, 1),
         PRECISION_MOYENNE(2, 2),
         PRECISION_HAUTE(4, 4);
 
-        int nombrePaliers;
-        int nombreIterations;
+        public int nombrePaliers;
+        public int nombreIterations;
 
         NiveauPrecision(int nombrePaliers, int nombreIterations) {
             this.nombrePaliers = nombrePaliers;
@@ -810,7 +826,7 @@ public class Interface extends JFrame {
      * Genere le modele d'affichage pour une ligne dans l'infowindow
      *
      * @param etiquette le nom du parametre
-     * @param valeur    la valeur du parametre
+     * @param valeur la valeur du parametre
      * @return l'affichage sous forme de chaine de caractere en html
      */
     private String genererInfoLigne(String etiquette, int valeur) {
@@ -852,12 +868,12 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 // injecte les marqueurs
                 div.text(creerMarqueurs());
-                // System.out.println(creerMarqueurs());
+               // System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-                // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
+               // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));
