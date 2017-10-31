@@ -10,7 +10,7 @@ import static vls.StationVelo.lienNumberId;
 public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 {
 	public ArrayList<StationVelo> stations;
-	private ArrayList<ScenarioVLS> scenarios;
+	//private ArrayList<ScenarioVLS> scenarios;
 	private int nbScenar;
 	
 	public ProblemeVLS(ArrayList<StationVelo> stations, ArrayList<ScenarioVLS> scenarios) 
@@ -34,7 +34,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		{
 			s.add(sv.clone());
 		}
-		return new ProblemeVLS(s, scenarios);
+		return new ProblemeVLS(s, (ArrayList<ScenarioVLS>) scenarios);
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class ProblemeVLS extends Probleme<Integer, ArrayList<Integer>>
 		}
 		for(int s=0;s<nbScenar;s++)
 		{
-			setScenario(scenarios.get(s));
+			setScenario((ScenarioVLS) scenarios.get(s));
 			int valS = 0;
 			for(int i=0;i<stations.size();i++)
 			{

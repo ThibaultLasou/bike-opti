@@ -21,7 +21,8 @@ public class SAA<Type1 extends Number, Type2> extends Algorithme<Type1, Type2>{
 		solutionMoyenne = new ArrayList<>();
 		echantillon = new ArrayList<>();
 		solutionSAA = new ArrayList<>();
-		this.echantillonNprime = algo.p.clone();
+		this.p = this.algo.p;
+		this.echantillonNprime = p.clone();
 		/* Initialization de l'echantillons Nprime */
 		ArrayList<Scenario> scenario = new ArrayList<>();
 		scenario = (ArrayList<Scenario>) algo.p.scenarios.subList(algo.p.scenarios.size()/2,algo.p.scenarios.size()-1);

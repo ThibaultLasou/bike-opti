@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 {
-	private Probleme<Type1, Type2> p;
 	private int nbPaliers;
 	private int nbIters;
 	private double temperatureInit;

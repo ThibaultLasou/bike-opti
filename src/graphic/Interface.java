@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import algorithms.Recuit;
+import algorithms.SAA;
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -282,7 +283,9 @@ public class Interface extends JFrame {
         
         p.stations.get(0).setV(1);
         Recuit<Integer, ArrayList<Integer>> r = new Recuit<Integer, ArrayList<Integer>>(p, 5, 5, 0.8);
-        r.solve();
+        //r.solve();
+        SAA<Integer, ArrayList<Integer>> saa = new SAA<>(5, r);
+        saa.solve();
     }
 
     /**

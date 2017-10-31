@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 abstract public class Probleme<Type1, Type2>
 {
-	protected ArrayList<Scenario> scenarios;
+	protected ArrayList<? extends Scenario> scenarios;
 	protected boolean minimize; // true : minimisation, false : maximisation
 	
 	final public double fonctionObj()
