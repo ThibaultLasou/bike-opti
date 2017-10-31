@@ -63,7 +63,6 @@ public class Interface extends JFrame {
     private JList list1;
     private JList list2;
     private JList list3;
-    private JList list4;
     private JPanel jpanel_result_txt;
     private JPanel jpanel_results;
     private JTextArea textArea6;
@@ -75,7 +74,6 @@ public class Interface extends JFrame {
     private JTextField textField1;
     private JTextField textField2;
     private JTextField textField3;
-    private JTextField textField4;
     private JButton downloadConfigButton;
     private JLabel labelFichierConfig;
 
@@ -86,7 +84,7 @@ public class Interface extends JFrame {
     private ArrayList<ScenarioVLS> scenarii = parserScenars();
 
     private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
-    private boolean[] parametresFixes = {false, false, false, false};
+    private boolean[] parametresFixes = {false, false, false};
 
     public Interface() {
         //TODO : A SUPPRIMER
@@ -148,10 +146,14 @@ public class Interface extends JFrame {
             public void menuSelected(MenuEvent e) {
                 afficherManuelUtilisateur();
             }
+
             @Override
-            public void menuDeselected(MenuEvent e) { }
+            public void menuDeselected(MenuEvent e) {
+            }
+
             @Override
-            public void menuCanceled(MenuEvent e) { }
+            public void menuCanceled(MenuEvent e) {
+            }
         });
 
         bar.add(menuFichier);
@@ -195,17 +197,14 @@ public class Interface extends JFrame {
                                 stationVelo.setParamPremierNiveau(varC, cout.get(varC.indice));
                                 stationVelo.setParamPremierNiveau(varV, cout.get(varV.indice));
                                 stationVelo.setParamPremierNiveau(varW, cout.get(varW.indice));
-                                stationVelo.setParamPremierNiveau(varK, cout.get(varK.indice));
                             }
-                            parametresFixes = new boolean[]{true, true, true, true};
+                            parametresFixes = new boolean[]{true, true, true};
                             ecrireCoutStation(list1, varC, coutsFichierConfig);
                             ecrireCoutStation(list2, varV, coutsFichierConfig);
                             ecrireCoutStation(list3, varW, coutsFichierConfig);
-                            ecrireCoutStation(list4, varK, coutsFichierConfig);
                             effacerAffichage(textField1);
                             effacerAffichage(textField2);
                             effacerAffichage(textField3);
-                            effacerAffichage(textField4);
                             labelFichierConfig.setText("Fichier chargé de " + path);
                             createScene();
                         } catch (Exception e1) {
@@ -218,7 +217,6 @@ public class Interface extends JFrame {
         appliquerCoutPartoutListener(textField1, list1, varC);
         appliquerCoutPartoutListener(textField2, list2, varV);
         appliquerCoutPartoutListener(textField3, list3, varW);
-        appliquerCoutPartoutListener(textField4, list4, varK);
 
         // =====================================
         // ============ Lancement ==============
@@ -280,7 +278,7 @@ public class Interface extends JFrame {
 
         this.pack();
         this.setVisible(true);
-        
+
         p.stations.get(0).setV(1);
         Recuit<Integer, ArrayList<Integer>> r = new Recuit<Integer, ArrayList<Integer>>(p, 5, 5, 0.8);
         //r.solve();
@@ -290,6 +288,7 @@ public class Interface extends JFrame {
 
     /**
      * Retourne l'objet courant this
+     *
      * @return this
      */
     private Interface This() {
@@ -309,12 +308,10 @@ public class Interface extends JFrame {
         effacerAffichage(textField1);
         effacerAffichage(textField2);
         effacerAffichage(textField3);
-        effacerAffichage(textField4);
         effacerAffichage(list1);
         effacerAffichage(list2);
         effacerAffichage(list3);
-        effacerAffichage(list4);
-        parametresFixes = new boolean[]{false, false, false, false};
+        parametresFixes = new boolean[]{false, false, false};
         // lancement
         effacerAffichage(textAreaResultat);
         recuitDeterministeRadioButton.setSelected(false);
@@ -329,6 +326,7 @@ public class Interface extends JFrame {
 
     /**
      * Reinitialise un JTextComponent
+     *
      * @param jTextComponent le JTextComponent à réinitialiser
      */
     private void effacerAffichage(JTextComponent jTextComponent) {
@@ -337,6 +335,7 @@ public class Interface extends JFrame {
 
     /**
      * Reinitialise un JList
+     *
      * @param jList le JList à réinitialiser
      */
     private void effacerAffichage(JList jList) {
@@ -345,6 +344,7 @@ public class Interface extends JFrame {
 
     /**
      * Ecrit un texte et ajoute une nouvelle ligne dans la fenêtre de resultat
+     *
      * @param texte le texte à ecrire
      */
     public void ecrireResultat(String texte) {
@@ -353,9 +353,10 @@ public class Interface extends JFrame {
 
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
-     * @param jList la jlist dans laquelle afficher les stations
+     *
+     * @param jList              la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param cout le cout
+     * @param cout               le cout
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
@@ -369,9 +370,10 @@ public class Interface extends JFrame {
 
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
-     * @param jList la jlist dans laquelle afficher les stations
+     *
+     * @param jList              la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param coutsParStation les couts pour chaque stations
+     * @param coutsParStation    les couts pour chaque stations
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
@@ -388,8 +390,9 @@ public class Interface extends JFrame {
 
     /**
      * Applique le listener qui permet d'ajouter la valeur entree à toutes les stations dans la liste
-     * @param jText la valeur entrée
-     * @param jList la liste dans laquelle afficher les stations
+     *
+     * @param jText              la valeur entrée
+     * @param jList              la liste dans laquelle afficher les stations
      * @param paramPremierNiveau le parametre voulu
      */
     private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau paramPremierNiveau) {
@@ -418,6 +421,7 @@ public class Interface extends JFrame {
 
     /**
      * Verifier que l'utilisateur a bien choisi un algorithme
+     *
      * @return true si au moins un algorithme est sélectionné
      */
     private boolean verifSelectionAlgo() {
@@ -428,6 +432,7 @@ public class Interface extends JFrame {
 
     /**
      * Verification de tous les parametres necessaires au lancement du programme
+     *
      * @return true si l'utilisateur a entré toutes les valeurs necessaires
      */
     private boolean verificationInputUser() {
@@ -716,60 +721,28 @@ public class Interface extends JFrame {
         list3 = new JList();
         scrollPane3.setViewportView(list3);
         final JPanel panel11 = new JPanel();
-        panel11.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel4.add(panel11, gbc);
-        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "<html>Capacité k<sub>i</sub></html>"));
-        final JPanel panel12 = new JPanel();
-        panel12.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel11.add(panel12, gbc);
-        textField4 = new JTextField();
-        textField4.setName("k");
-        textField4.setPreferredSize(new Dimension(40, 26));
-        panel12.add(textField4);
-        final JScrollPane scrollPane4 = new JScrollPane();
-        gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel11.add(scrollPane4, gbc);
-        list4 = new JList();
-        scrollPane4.setViewportView(list4);
-        final JPanel panel13 = new JPanel();
-        panel13.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        panel11.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 5, 5, 0);
-        jpanel_parametrage.add(panel13, gbc);
-        panel13.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Fichier configuration"));
+        jpanel_parametrage.add(panel11, gbc);
+        panel11.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Fichier configuration"));
         downloadConfigButton = new JButton();
         downloadConfigButton.setHorizontalAlignment(11);
         downloadConfigButton.setHorizontalTextPosition(11);
         downloadConfigButton.setText("Télécharger");
-        panel13.add(downloadConfigButton);
+        panel11.add(downloadConfigButton);
         chargerFichierConfigurationButton = new JButton();
         chargerFichierConfigurationButton.setHorizontalAlignment(0);
         chargerFichierConfigurationButton.setText("Charger");
-        panel13.add(chargerFichierConfigurationButton);
+        panel11.add(chargerFichierConfigurationButton);
         labelFichierConfig = new JLabel();
         labelFichierConfig.setBackground(new Color(-1));
         labelFichierConfig.setText("Aucun fichier sélectionné");
-        panel13.add(labelFichierConfig);
+        panel11.add(labelFichierConfig);
     }
 
     /**
@@ -804,6 +777,7 @@ public class Interface extends JFrame {
 
     /**
      * Creer les marqueurs sous forme de chaine de caracteres
+     *
      * @return les marqueurs sous format chaine de caracteres executables en javascript
      */
     private String creerMarqueurs() {
@@ -821,6 +795,7 @@ public class Interface extends JFrame {
 
     /**
      * Genere un marqueur Maps sous format chaine de caractere à partir d'un objet StationVelo
+     *
      * @param stationVelo la station de velo
      * @return le marqueur sous forme de chaine de caracteres
      */
@@ -833,8 +808,9 @@ public class Interface extends JFrame {
 
     /**
      * Genere le modele d'affichage pour une ligne dans l'infowindow
+     *
      * @param etiquette le nom du parametre
-     * @param valeur la valeur du parametre
+     * @param valeur    la valeur du parametre
      * @return l'affichage sous forme de chaine de caractere en html
      */
     private String genererInfoLigne(String etiquette, int valeur) {
@@ -843,6 +819,7 @@ public class Interface extends JFrame {
 
     /**
      * Genere l'infowindow en fonction des valeurs de la station de velo
+     *
      * @param stationVelo la station de velo
      * @return l'infowindow javascript voulu
      */
@@ -875,12 +852,12 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 // injecte les marqueurs
                 div.text(creerMarqueurs());
-               // System.out.println(creerMarqueurs());
+                // System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-               // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
+                // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));

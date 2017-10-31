@@ -9,7 +9,6 @@ public class StationVelo {
 	public static final int INDICE_COUT_C = 0;
 	public static final int INDICE_COUT_V = 1;
 	public static final int INDICE_COUT_W = 2;
-	public static final int INDICE_CAPACITE_K = 3;
 
 	private int number;
 	private String nom;
@@ -192,15 +191,13 @@ public class StationVelo {
 			case INDICE_COUT_C: setC(cvwk); break;
 			case INDICE_COUT_V: setV(cvwk); break;
 			case INDICE_COUT_W: setW(cvwk); break;
-			case INDICE_CAPACITE_K: setK(cvwk); break;
 		}
 	}
 
 	public enum ParamPremierNiveau {
 		varC("c", INDICE_COUT_C),
 		varV("v", INDICE_COUT_V),
-		varW("w", INDICE_COUT_W),
-		varK("k", INDICE_CAPACITE_K);
+		varW("w", INDICE_COUT_W);
 
 		public String nom;
 		public int indice;
@@ -213,7 +210,6 @@ public class StationVelo {
 	}
 
 	public void genererDemandesStochastiques() {
-		//System.out.println("lienNumberId.size() : " + lienNumberId.size());
 		for(int i = 0; i < 5; i++){
 			B.add((int) (Math.random()*10));
 		}

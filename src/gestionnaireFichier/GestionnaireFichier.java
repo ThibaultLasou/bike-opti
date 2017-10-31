@@ -146,7 +146,6 @@ public class GestionnaireFichier {
         couts.add(varC.nom);
         couts.add(varV.nom);
         couts.add(varW.nom);
-        couts.add(varK.nom);
         int min = 100, max = 8000;
         try {
             pw = new PrintWriter(cheminFichier + NOM_DEFAUT_FICHIER_CONFIG, "UTF-8");

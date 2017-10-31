@@ -341,47 +341,6 @@
                       </scrollpane>
                     </children>
                   </grid>
-                  <grid id="82453" layout-manager="GridBagLayout">
-                    <constraints>
-                      <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                      <gridbag weightx="1.0" weighty="1.0"/>
-                    </constraints>
-                    <properties/>
-                    <border type="etched" title="&lt;html&gt;Capacité k&lt;sub&gt;i&lt;/sub&gt;&lt;/html&gt;"/>
-                    <children>
-                      <grid id="85785" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
-                        <constraints>
-                          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                          <gridbag weightx="1.0" weighty="0.0"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children>
-                          <component id="85144" class="javax.swing.JTextField" binding="textField4" default-binding="true">
-                            <constraints/>
-                            <properties>
-                              <name value="k"/>
-                              <preferredSize width="40" height="26"/>
-                            </properties>
-                          </component>
-                        </children>
-                      </grid>
-                      <scrollpane id="f729e">
-                        <constraints>
-                          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                          <gridbag weightx="1.0" weighty="1.0"/>
-                        </constraints>
-                        <properties/>
-                        <border type="none"/>
-                        <children>
-                          <component id="a03b8" class="javax.swing.JList" binding="list4" default-binding="true">
-                            <constraints/>
-                            <properties/>
-                          </component>
-                        </children>
-                      </scrollpane>
-                    </children>
-                  </grid>
                 </children>
               </grid>
               <grid id="dcc9" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
