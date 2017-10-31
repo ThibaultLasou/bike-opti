@@ -7,9 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static vls.StationVelo.ParamPremierNiveau.*;
@@ -89,6 +87,7 @@ public class GestionnaireFichier {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        stationsVelo.sort((lhs, rhs) -> lhs.getNumber() < rhs.getNumber() ? -1 : 1);
         return stationsVelo;
     }
 
