@@ -20,6 +20,12 @@ public class GestionnaireFichier {
     private final static String SEPARATION = ",";
     private final static String NOUVELLE_LIGNE = ";";
 
+    /**
+     * Recupere le contenu d'un fichier en local et le transforme en chaine de caractere
+     * @param path le chemin vers le fichier
+     * @return le contenu du fichier sous forme de chaine de caractere
+     * @throws FileNotFoundException si le fichier n'est pas trouvé
+     */
     public static String readFile(String path) throws FileNotFoundException {
         String result = "";
         try {
@@ -38,10 +44,20 @@ public class GestionnaireFichier {
         return result;
     }
 
+    /**
+     * Recupere le contenu d'un fichier stocké dans les assets
+     * @param filename le nom du fichier
+     * @return le contenu du fichier
+     * @throws FileNotFoundException si le fichier n'est pas trouvé
+     */
     public static String readFileFromAssets(String filename) throws FileNotFoundException {
         return readFile("assets/" + filename);
     }
 
+    /**
+     * Parse le fichier json des stations de vélos
+     * @return la liste des stations de vélos parsées
+     */
     public static ArrayList<StationVelo> parserFichier() {
 
         ArrayList<StationVelo> stationsVelo = new ArrayList<>();
@@ -118,6 +134,12 @@ public class GestionnaireFichier {
         return scenarii;
     }
 
+    /**
+     * Créé un fichier de configuration
+     * @param numeroStations les numeros des stations
+     * @param cheminFichier le chemin vers ou creer le fichier
+     * @return true si succes, false sinon
+     */
     public static boolean creerFichierConfiguration(ArrayList<Integer> numeroStations, String cheminFichier) {
         PrintWriter pw = null;
         ArrayList<String> couts = new ArrayList<>();
@@ -156,6 +178,11 @@ public class GestionnaireFichier {
         return true;
     }
 
+    /**
+     * Parse le fichier de configuration
+     * @param chemin le chemin vers le fichier de config
+     * @return les stations et les couts parsés
+     */
     public static HashMap<Integer, ArrayList<Integer>> parserFichierConfiguration(String chemin) throws Exception {
         HashMap<Integer, ArrayList<Integer>> stations = new HashMap<>();
         try {
