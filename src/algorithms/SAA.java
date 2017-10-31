@@ -5,13 +5,28 @@ import java.util.List;
 
 public class SAA<Type1 extends Number, Type2> extends Algorithme<Type1, Type2>{
 
+	/*Nombre d’échantillons utilisés lors de la résolution du problème.*/
 	private int nbEchantillons;
+	
+	/*Algorithme utilisé pour résoudre le problème pour chaque échantillon*/
 	private Algorithme <Type1, Type2> algo;
+	
+	/*Echantillons de l’algorithme SAA*/ 
 	private ArrayList<Probleme<Type1,Type2>> echantillon;
+	
+	/*Moyenne des solutions optimales des echantillons*/
 	private ArrayList<Type1> solutionMoyenne;
+	
+	/*Moyenne des valeurs objectifs des echantillons*/
 	private float valObjMoyenne;
+	
+	/*Echantillon N’ de l’algorithme SAA(*/
 	private Probleme<Type1,Type2> echantillonNprime;
+	
+	/*solutions optimale trouvée par SAA*/
 	private ArrayList<Type1> solutionSAA;
+	
+	/*valeur objectif trouvée par SAA*/
 	private double valObjSAA;
 	
 	public SAA(int nbEchantillons, Algorithme<Type1, Type2> algo)
