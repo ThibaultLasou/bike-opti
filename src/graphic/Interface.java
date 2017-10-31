@@ -121,12 +121,19 @@ public class Interface extends JFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 MyJFileChooser jFileChooser = new MyJFileChooser();
                 if (jFileChooser.getCheminChoisi() != null) {
-                    String path = jFileChooser.getCheminChoisi() + "/" + jFileChooser.NOM_FICHIER_DEFAUT;
+                    String path = jFileChooser.getCheminChoisi()/* + "/" + jFileChooser.NOM_FICHIER_DEFAUT*/;
                     try {
                         PrintWriter writer = new PrintWriter(path, "UTF-8");
                         writer.println(textAreaResultat.getText());
                         writer.close();
                     } catch (Exception e) {
+                        path = jFileChooser.getCheminChoisi() + "/" + jFileChooser.NOM_FICHIER_DEFAUT;
+                        try {
+                            PrintWriter writer = new PrintWriter(path, "UTF-8");
+                            writer.println(textAreaResultat.getText());
+                            writer.close();
+                        } catch (Exception ex) {
+                        }
                     }
                 }
             }
