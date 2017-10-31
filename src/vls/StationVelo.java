@@ -27,7 +27,8 @@ public class StationVelo {
 	//Parametres stochastiques
 	public ArrayList<Integer> demande = new ArrayList<>(); // demande stochastique
 
-	public static HashMap<Integer, StationVelo> lienNumberId = new HashMap<>();
+	public static HashMap<Integer, StationVelo> lienNumberStation = new HashMap<>();
+	public static HashMap<Integer, StationVelo> lienIdStation = new HashMap<>();
 	
 	public int x;
 	public ArrayList<Integer> B = new ArrayList<>();;
@@ -209,18 +210,14 @@ public class StationVelo {
 
 	}
 
-	public void genererDemandesStochastiques() {
-		for(int i = 0; i < 5; i++){
-			B.add((int) (Math.random()*10));
-		}
-	}
-
 	public ArrayList<String> genererPositionsDemandesStochastiques() {
-		genererDemandesStochastiques();
 		ArrayList<String> stationsArrives = new ArrayList<>();
 		for(int i = 0; i < B.size(); i++) {
 			try {
-				stationsArrives.add("\"" + lienNumberId.get(i).getNom() + "\"");
+				if(B.get(i) != 0)
+				{
+					stationsArrives.add("\"" + lienIdStation.get(i).getNom() + "\"");
+				}
 			} catch (Exception e) {
 
 			}

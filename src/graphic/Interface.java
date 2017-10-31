@@ -1,4 +1,4 @@
-package graphic;
+			package graphic;
 
 
 import com.intellij.uiDesigner.core.GridConstraints;

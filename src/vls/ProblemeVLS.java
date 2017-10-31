@@ -5,8 +5,6 @@ import java.util.Random;
 
 import algorithms.Probleme;
 
-import static vls.StationVelo.lienNumberId;
-
 public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 {
 	public ArrayList<StationVelo> stations;
@@ -18,12 +16,13 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		{
 			stations.get(i).pbID = i;
 			stations.get(i).x = stations.get(i).k/2;
-			lienNumberId.put(stations.get(i).getNumber(), stations.get(i));
+			StationVelo.lienNumberStation.put(stations.get(i).getNumber(), stations.get(i));
+			StationVelo.lienIdStation.put(i, stations.get(i));
 		}	
 		this.minimize = true;
 		this.scenarios = scenarios;
 		nbScenar = scenarios.size();
-		setScenario(this.scenarios.get(0));
+		setScenario(this.scenarios.get(0	));
 	}
 	
 	public ProblemeVLS clone() 
@@ -171,10 +170,10 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		}
 		for(Integer stationOriID : s.Xis.keySet()) 
 		{
-			StationVelo staOri = lienNumberId.get(stationOriID);
+			StationVelo staOri = StationVelo.lienNumberStation.get(stationOriID);
 			for(Integer stationDestID : s.Xis.get(stationOriID).keySet())
 			{
-				StationVelo staDest = lienNumberId.get(stationOriID);
+				StationVelo staDest = StationVelo.lienNumberStation.get(stationOriID);
 				staOri.demande.set(staDest.pbID, s.Xis.get(stationOriID).get(stationDestID));
 			}
 		}
@@ -196,7 +195,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 	}
 
 	public String toStringResults() 
-	{
+	{	
 		String a = "";
 		for(int i=0;i<stations.size();i++)
 		{

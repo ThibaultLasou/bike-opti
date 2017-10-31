@@ -37,41 +37,7 @@ public class SAA<Type1 extends Number, TypeS extends Scenario> extends Algorithm
 		echantillon = new ArrayList<>();
 		solutionSAA = new ArrayList<>();
 		this.p = this.algo.p;
-		this.echantillonNprime = p.clone();
-		/* Initialization de l'echantillons Nprime */
-		ArrayList<TypeS> scenario = new ArrayList<>();
-		for(int i = algo.p.scenarios.size()/2;i<algo.p.scenarios.size()-1;i++)
-		{
-			scenario.add(algo.p.scenarios.get(i));
-		}
-		echantillonNprime.scenarios = scenario;
-		echantillonNprime.nbScenar = echantillonNprime.scenarios.size();
-
-		/* Initialisation des echantillons */
-		int tailleListe = (algo.p.scenarios.size()/2)/nbEchantillons; // taille de la liste des scenarios des echantillons
-		for(int i=0; i<nbEchantillons-1;i++)
-		{
-			Probleme<Type1,TypeS> pb = algo.p.clone();
-			ArrayList<TypeS> MyScenario = new ArrayList<>();
-			for(int j = i*tailleListe;j<i*tailleListe+tailleListe-1;j++)
-			{
-				MyScenario.add(algo.p.scenarios.get(j));
-			}
-			pb.scenarios = MyScenario;
-			pb.nbScenar = pb.scenarios.size();
-			echantillon.add(pb);
-		}
 		
-		/* Traitement du dernier element de la liste des scenarios */
-		Probleme<Type1,TypeS> pb = algo.p.clone();
-		ArrayList<TypeS> LastScenario = new ArrayList<>();
-		for(int j = nbEchantillons*tailleListe;j<nbEchantillons*tailleListe+tailleListe%nbEchantillons;j++)
-		{
-			LastScenario.add(algo.p.scenarios.get(j));
-		}
-		pb.scenarios = LastScenario ;
-		pb.nbScenar = pb.scenarios.size();
-		echantillon.add(pb);
 	}
 	
 	/* Calcul de la moyenne des solutions optimales de la moyenne des valeurs objectif*/
@@ -109,6 +75,7 @@ public class SAA<Type1 extends Number, TypeS extends Scenario> extends Algorithm
 
 	@Override
 	public void solve(Probleme<Type1, TypeS> p) {
+		init();
 		calculMoyennes();
 		double min  = Double.MAX_VALUE;
 		for(int i=0;i<this.nbEchantillons;i++)
@@ -120,5 +87,45 @@ public class SAA<Type1 extends Number, TypeS extends Scenario> extends Algorithm
 				this.solutionSAA = this.echantillon.get(i).getVarPremNiv();
 			}
 		}
+		p.setVarPremNiv(solutionSAA);
+	}
+	
+	public void init()
+	{
+		this.echantillonNprime = p.clone();
+		/* Initialization de l'echantillons Nprime */
+		ArrayList<TypeS> scenario = new ArrayList<>();
+		for(int i = algo.p.scenarios.size()/2;i<algo.p.scenarios.size()-1;i++)
+		{
+			scenario.add(algo.p.scenarios.get(i));
+		}
+		echantillonNprime.scenarios = scenario;
+		echantillonNprime.nbScenar = echantillonNprime.scenarios.size();
+
+		/* Initialisation des echantillons */
+		int tailleListe = (algo.p.scenarios.size()/2)/nbEchantillons; // taille de la liste des scenarios des echantillons
+		for(int i=0; i<nbEchantillons-1;i++)
+		{
+			Probleme<Type1,TypeS> pb = algo.p.clone();
+			ArrayList<TypeS> MyScenario = new ArrayList<>();
+			for(int j = i*tailleListe;j<i*tailleListe+tailleListe-1;j++)
+			{
+				MyScenario.add(algo.p.scenarios.get(j));
+			}
+			pb.scenarios = MyScenario;
+			pb.nbScenar = pb.scenarios.size();
+			echantillon.add(pb);
+		}
+		
+		/* Traitement du dernier element de la liste des scenarios */
+		Probleme<Type1,TypeS> pb = algo.p.clone();
+		ArrayList<TypeS> LastScenario = new ArrayList<>();
+		for(int j = nbEchantillons*tailleListe;j<nbEchantillons*tailleListe+tailleListe%nbEchantillons;j++)
+		{
+			LastScenario.add(algo.p.scenarios.get(j));
+		}
+		pb.scenarios = LastScenario;
+		pb.nbScenar = pb.scenarios.size();
+		echantillon.add(pb);
 	}
 }
