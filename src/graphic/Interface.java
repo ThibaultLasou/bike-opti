@@ -4,6 +4,7 @@ package graphic;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
+import algorithms.Recuit;
 import gestionnaireFichier.MyJFileChooser;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -85,7 +86,7 @@ public class Interface extends JFrame {
 
     public Interface() {
         //TODO : A SUPPRIMER
-        new ProblemeVLS(stationVelos, scenarii);
+        ProblemeVLS p = new ProblemeVLS(stationVelos, scenarii);
         this.setTitle("Vélib");
         //this.setContentPane(jpanel_root);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -273,6 +274,10 @@ public class Interface extends JFrame {
 
         this.pack();
         this.setVisible(true);
+        
+        p.stations.get(0).setV(1);
+        Recuit<Integer, ArrayList<Integer>> r = new Recuit<Integer, ArrayList<Integer>>(p, 5, 5, 0.8);
+        r.solve();
     }
 
     private Interface This() {
@@ -357,7 +362,7 @@ public class Interface extends JFrame {
             try {
                 if (!value.isEmpty()) {
                     Integer.valueOf(value);
-                    System.out.println(value);
+                    //System.out.println(value);
                     ecrireCoutStation(jList, varPremierNiveau, value);
                     parametresFixes[varPremierNiveau.indice] = true;
                     createScene();
@@ -792,12 +797,12 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Document doc = Jsoup.parse(file, "UTF-8");
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 div.text(creerMarqueurs());
-                System.out.println(creerMarqueurs());
+               // System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-                System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
+               // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));

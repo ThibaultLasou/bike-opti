@@ -1,5 +1,10 @@
 package graphic;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import gestionnaireFichier.GestionnaireFichier;
+import vls.ScenarioVLS;
 
 /**
  * @author Patrice Camousseigt

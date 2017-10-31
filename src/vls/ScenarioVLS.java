@@ -1,13 +1,17 @@
 package vls;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ScenarioVLS 
+import algorithms.Scenario;
+
+public class ScenarioVLS extends Scenario
 {
-	public HashMap<Integer, HashMap<Integer, Integer>> Bs; // StationDépart, stationArrivée, quantité
+	public HashMap<Integer, HashMap<Integer, Integer>> Xis; // StationDépart, stationArrivée, quantité
+	public ArrayList<ArrayList<Integer>> Bs;
 	
-	public ScenarioVLS(HashMap<Integer, HashMap<Integer, Integer>> Bs)
+	public ScenarioVLS(HashMap<Integer, HashMap<Integer, Integer>> Xis)
 	{
-		this.Bs = Bs;
+		this.Xis = Xis;
 	}
 }

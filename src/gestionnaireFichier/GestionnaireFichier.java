@@ -80,7 +80,17 @@ public class GestionnaireFichier {
 
         ArrayList<ScenarioVLS> scenarii = new ArrayList<>();
         File folder = new File("assets/scenarios");
-        for(File scenar : folder.listFiles()) 
+        for(File scenar : folder.listFiles(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File dir, String name) {
+				if(name.endsWith(".json") && name.startsWith("scen"))
+				{
+					return true;
+				}
+				return false;
+			}
+		})) 
         {
 	        try {
 	        	String jsonData = readFile(scenar.getAbsolutePath());
@@ -91,7 +101,7 @@ public class GestionnaireFichier {
 	            {
 	            	String stationOri = i.next();
 	            	HashMap<Integer, Integer> b = new HashMap<>();
-	            	JSONObject oriJson = new JSONObject(jobj.get(stationOri));
+	            	JSONObject oriJson = (JSONObject) jobj.get(stationOri);
 	            	Iterator<String> j = oriJson.keys();
 	            	while(j.hasNext())
 	            	{

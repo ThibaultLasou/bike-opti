@@ -7,16 +7,16 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	private Probleme<Type1, Type2> p;
 	private int nbPaliers;
 	private int nbIters;
-	private int temperatureInit;
-	private float reducTemp;
+	private double temperatureInit;
+	private double reducTemp;
 	private int minimize;
 	
 	private int nbAcc;
-	private int bestCost;
+	private double bestCost;
 	private ArrayList<Type1> best1;
 	private ArrayList<Type2> best2;
 	
-	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, float reducTemp) 
+	public Recuit(Probleme<Type1, Type2> p, int nbPaliers, int nbIters, double reducTemp) 
 	{
 		this.p = p;
 		this.nbPaliers = nbPaliers;
@@ -55,11 +55,10 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 	
 	public void solve(Probleme<Type1, Type2> p)
 	{
-		int valObj;
-		int valObjIter;
-		int temperature;
+		double valObj;
+		double valObjIter;
+		double temperature;
 		ArrayList<Type1> varPremIter = p.getVarPremNiv();
-		ArrayList<Type2> varDeuxIter = p.getVarDeuxNiv();
 		temperature = temperatureInit;
 		nbAcc = 0;
 		bestCost = p.fonctionObj();
@@ -72,9 +71,9 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 				System.out.print(j + "|");
 				valObj = p.fonctionObj();
 				System.out.print(valObj + "|");
-				p.voisinage(varPremIter, varDeuxIter);
+				p.voisinage(varPremIter);
 				System.out.print(varPremIter+ "|");
-				valObjIter = p.fonctionObj(varPremIter, varDeuxIter);
+				valObjIter = p.fonctionObj(varPremIter);
 				System.out.print(valObjIter + "|");
 				if(!(valObjIter*minimize <= valObj*minimize))
 				{
@@ -89,7 +88,6 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 					}
 				}
 				p.setVarPremNiv(varPremIter);
-				p.setVarDeuxNiv(varDeuxIter);
 				if(valObjIter<bestCost)
 				{
 					bestCost = valObjIter;
@@ -98,10 +96,6 @@ public class Recuit<Type1, Type2> extends Algorithme<Type1, Type2>
 					for(Type1 t1 : varPremIter)
 					{
 						best1.add(t1);
-					}
-					for(Type2 t2 : varDeuxIter)
-					{
-						best2.add(t2);
 					}
 				}
 				System.out.print("Acceptée");

@@ -43,6 +43,8 @@ public class StationVelo {
 		this.address = address;
 		this.position = position;
 		this.availableBikes = availableBikes;
+		this.k = this.bikeStands;
+		
 	}
 
 	public StationVelo(String nom, int number, int bikeStands, String address, Position position, int availableBikes) {
@@ -73,42 +75,42 @@ public class StationVelo {
 		return s;
 	}
 	
-	public int getImoins_J(int j, int x, ArrayList<Integer> B)
+	public int getImoins_J(int j, int x)
 	{
 		return Math.max(B.get(j)-x,0);
 	}
 	
 	public int getImoins_J(int j)
 	{
-		return getImoins_J(j, x, B);
+		return getImoins_J(j, x);
 	}
 	
 	public int getIplus()
 	{
-		return getIplus(x, B);
+		return getIplus(x);
 	}
 	
-	public int getIplus(int x, ArrayList<Integer> B)
+	public int getIplus(int x)
 	{
 		return Math.max(x-B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 	
 	public int getOmoins(int Bj)
 	{
-		return getOmoins(x, B, Bj);
+		return getOmoins(x, Bj);
 	}
 
-	public int getOmoins(int x, ArrayList<Integer>B, int Bj)
+	public int getOmoins(int x, int Bj)
 	{	
 		return Math.max(Bj - k + x - B.stream().mapToInt(Integer::intValue).sum(),0);
 	}
 	
 	public int getOplus(int Bj)
 	{
-		return getOplus(x, B, Bj);	
+		return getOplus(x, Bj);	
 	}
 	
-	public int getOplus(int x, ArrayList<Integer>B, int Bj)
+	public int getOplus(int x, int Bj)
 	{
 		return Math.max(k - x + B.stream().mapToInt(Integer::intValue).sum() - Bj, 0);	
 	}
