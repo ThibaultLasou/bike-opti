@@ -22,7 +22,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		this.minimize = true;
 		this.scenarios = scenarios;
 		nbScenar = scenarios.size();
-		setScenario(this.scenarios.get(0	));
+		setScenario(this.scenarios.get(0));
 	}
 	
 	public ProblemeVLS clone() 
@@ -173,7 +173,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 			StationVelo staOri = StationVelo.lienNumberStation.get(stationOriID);
 			for(Integer stationDestID : s.Xis.get(stationOriID).keySet())
 			{
-				StationVelo staDest = StationVelo.lienNumberStation.get(stationOriID);
+				StationVelo staDest = StationVelo.lienNumberStation.get(stationDestID);
 				staOri.demande.set(staDest.pbID, s.Xis.get(stationOriID).get(stationDestID));
 			}
 		}

@@ -16,5 +16,6 @@ public class ScenarioVLS extends Scenario
 	public ScenarioVLS(HashMap<Integer, HashMap<Integer, Integer>> Xis)
 	{
 		this.Xis = Xis;
+		System.out.println(Xis);
 	}
 }
