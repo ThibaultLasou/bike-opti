@@ -91,10 +91,10 @@ public class Interface extends JFrame {
     private boolean[] parametresFixes = {false, false, false};
 
     public Interface() {
-		p = new ProblemeVLS(stationVelos, scenarii);
-		recuit = new Recuit<Integer, ScenarioVLS>(p, niveauPrecision, 0.8);
-		saa = new SAA<Integer, ScenarioVLS>(5, recuit);
-		
+        p = new ProblemeVLS(stationVelos, scenarii);
+        recuit = new Recuit<Integer, ScenarioVLS>(p, niveauPrecision, 0.8);
+        saa = new SAA<Integer, ScenarioVLS>(5, recuit);
+
         this.setTitle("Vélib");
         //this.setContentPane(jpanel_root);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -154,10 +154,12 @@ public class Interface extends JFrame {
             }
 
             @Override
-            public void menuDeselected(MenuEvent e) {}
+            public void menuDeselected(MenuEvent e) {
+            }
 
             @Override
-            public void menuCanceled(MenuEvent e) { }
+            public void menuCanceled(MenuEvent e) {
+            }
         });
 
         bar.add(menuFichier);
@@ -270,24 +272,19 @@ public class Interface extends JFrame {
                 super.mouseClicked(e);
                 if (verificationInputUser()) {
                     JOptionPane.showMessageDialog(null, "C'est parti !");
-					recuit.setPrecision(niveauPrecision);
-                    if(recuitDeterministeRadioButton.isSelected()) 
-                    {
-                    	p.deterministe();
-                    	recuit.solve();
-                    }
-                    else if(recuitStochastiqueRadioButton.isSelected())
-                    {
-                    	p.stochastique();
-                    	recuit.solve();
-                    }
-                    else if(SAARadioButton.isSelected())
-                    {
-                    	p.stochastique();
-                    	saa.solve();
+                    recuit.setPrecision(niveauPrecision);
+                    if (recuitDeterministeRadioButton.isSelected()) {
+                        p.deterministe();
+                        recuit.solve();
+                    } else if (recuitStochastiqueRadioButton.isSelected()) {
+                        p.stochastique();
+                        recuit.solve();
+                    } else if (SAARadioButton.isSelected()) {
+                        p.stochastique();
+                        saa.solve();
                     }
                     textAreaResultat.setText(p.toStringResults());
-                    
+
                 }
             }
         });
@@ -307,8 +304,7 @@ public class Interface extends JFrame {
      *
      * @return this
      */
-    private Interface This()
-	{
+    private Interface This() {
         return this;
     }
 
@@ -343,7 +339,7 @@ public class Interface extends JFrame {
 
     /**
      * Reinitialise un JTextComponent
-	 *
+     *
      * @param jTextComponent le JTextComponent à réinitialiser
      */
     private void effacerAffichage(JTextComponent jTextComponent) {
@@ -371,9 +367,9 @@ public class Interface extends JFrame {
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
      *
-     * @param jList la jlist dans laquelle afficher les stations
+     * @param jList              la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param cout le cout
+     * @param cout               le cout
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, String cout) {
         DefaultListModel listModel = new DefaultListModel();
@@ -387,9 +383,10 @@ public class Interface extends JFrame {
 
     /**
      * Ecrit le cout de la variable de premier niveau associe dans une jlist
-     * @param jList la jlist dans laquelle afficher les stations
+     *
+     * @param jList              la jlist dans laquelle afficher les stations
      * @param paramPremierNiveau la variable de premier niveau associe
-     * @param coutsParStation les couts pour chaque stations
+     * @param coutsParStation    les couts pour chaque stations
      */
     private void ecrireCoutStation(JList jList, ParamPremierNiveau paramPremierNiveau, HashMap<Integer, ArrayList<Integer>> coutsParStation) {
         DefaultListModel listModel = new DefaultListModel();
@@ -407,8 +404,8 @@ public class Interface extends JFrame {
     /**
      * Applique le listener qui permet d'ajouter la valeur entree à toutes les stations dans la liste
      *
-     * @param jText la valeur entrée
-     * @param jList la liste dans laquelle afficher les stations
+     * @param jText              la valeur entrée
+     * @param jList              la liste dans laquelle afficher les stations
      * @param paramPremierNiveau le parametre voulu
      */
     private void appliquerCoutPartoutListener(JTextField jText, JList jList, ParamPremierNiveau paramPremierNiveau) {
@@ -624,8 +621,10 @@ public class Interface extends JFrame {
         label3.setHorizontalAlignment(0);
         label3.setText("Résultats");
         jpanel_result_txt.add(label3, BorderLayout.NORTH);
+        final JScrollPane scrollPane1 = new JScrollPane();
+        jpanel_result_txt.add(scrollPane1, BorderLayout.CENTER);
         textAreaResultat = new JTextArea();
-        jpanel_result_txt.add(textAreaResultat, BorderLayout.CENTER);
+        scrollPane1.setViewportView(textAreaResultat);
         jpanel_parametrage = new JPanel();
         jpanel_parametrage.setLayout(new GridBagLayout());
         jpanel_parametrage.setPreferredSize(new Dimension(800, 600));
@@ -662,16 +661,16 @@ public class Interface extends JFrame {
         textField1.setName("c");
         textField1.setPreferredSize(new Dimension(40, 26));
         panel6.add(textField1);
-        final JScrollPane scrollPane1 = new JScrollPane();
+        final JScrollPane scrollPane2 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel5.add(scrollPane1, gbc);
+        panel5.add(scrollPane2, gbc);
         list1 = new JList();
-        scrollPane1.setViewportView(list1);
+        scrollPane2.setViewportView(list1);
         final JPanel panel7 = new JPanel();
         panel7.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -694,16 +693,16 @@ public class Interface extends JFrame {
         textField2.setName("v");
         textField2.setPreferredSize(new Dimension(40, 26));
         panel8.add(textField2);
-        final JScrollPane scrollPane2 = new JScrollPane();
+        final JScrollPane scrollPane3 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel7.add(scrollPane2, gbc);
+        panel7.add(scrollPane3, gbc);
         list2 = new JList();
-        scrollPane2.setViewportView(list2);
+        scrollPane3.setViewportView(list2);
         final JPanel panel9 = new JPanel();
         panel9.setLayout(new GridBagLayout());
         gbc = new GridBagConstraints();
@@ -726,16 +725,16 @@ public class Interface extends JFrame {
         textField3.setName("w");
         textField3.setPreferredSize(new Dimension(40, 26));
         panel10.add(textField3);
-        final JScrollPane scrollPane3 = new JScrollPane();
+        final JScrollPane scrollPane4 = new JScrollPane();
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        panel9.add(scrollPane3, gbc);
+        panel9.add(scrollPane4, gbc);
         list3 = new JList();
-        scrollPane3.setViewportView(list3);
+        scrollPane4.setViewportView(list3);
         final JPanel panel11 = new JPanel();
         panel11.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
         gbc = new GridBagConstraints();
@@ -826,7 +825,7 @@ public class Interface extends JFrame {
      * Genere le modele d'affichage pour une ligne dans l'infowindow
      *
      * @param etiquette le nom du parametre
-     * @param valeur la valeur du parametre
+     * @param valeur    la valeur du parametre
      * @return l'affichage sous forme de chaine de caractere en html
      */
     private String genererInfoLigne(String etiquette, int valeur) {
@@ -868,12 +867,12 @@ public class Interface extends JFrame {
                 org.jsoup.nodes.Element div = doc.getElementById("stations");
                 // injecte les marqueurs
                 div.text(creerMarqueurs());
-               // System.out.println(creerMarqueurs());
+                // System.out.println(creerMarqueurs());
 
                 WebView view = new WebView();
                 engine = view.getEngine();
                 engine.setJavaScriptEnabled(true);
-               // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
+                // System.out.println(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
                 engine.loadContent(doc.toString().replace("&lt;", "<").replace("&gt;", ">"));
 
                 jfxPanel.setScene(new Scene(view));

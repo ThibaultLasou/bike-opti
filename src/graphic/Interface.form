@@ -76,7 +76,7 @@
                               <verticalAlignment value="1"/>
                             </properties>
                           </component>
-                          <component id="7a167" class="javax.swing.JRadioButton" binding="radioStochastiqueRadioButton">
+                          <component id="7a167" class="javax.swing.JRadioButton" binding="recuitStochastiqueRadioButton">
                             <constraints/>
                             <properties>
                               <actionCommand value="Radio Stoch"/>
@@ -187,10 +187,17 @@
                               <text value="Résultats"/>
                             </properties>
                           </component>
-                          <component id="dd0" class="javax.swing.JTextArea" binding="textAreaResultat">
+                          <scrollpane id="721ac">
                             <constraints border-constraint="Center"/>
                             <properties/>
-                          </component>
+                            <border type="none"/>
+                            <children>
+                              <component id="dd0" class="javax.swing.JTextArea" binding="textAreaResultat">
+                                <constraints/>
+                                <properties/>
+                              </component>
+                            </children>
+                          </scrollpane>
                         </children>
                       </grid>
                     </children>
