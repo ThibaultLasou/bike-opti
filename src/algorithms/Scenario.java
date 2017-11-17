@@ -1,5 +1,6 @@
 package algorithms;
 
-public abstract class Scenario {
+public abstract class Scenario 
+{
 
 }

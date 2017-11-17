@@ -15,16 +15,25 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		for(int i=0;i<stations.size();i++)
 		{
 			stations.get(i).pbID = i;
-			stations.get(i).x = stations.get(i).k/2;
+			stations.get(i).x = 0;
 			StationVelo.lienNumberStation.put(stations.get(i).getNumber(), stations.get(i));
 			StationVelo.lienIdStation.put(i, stations.get(i));
 		}	
 		this.minimize = true;
 		this.scenarios = scenarios;
 		nbScenar = scenarios.size();
+		for(ScenarioVLS sce : this.scenarios)
+		{
+			// On initialise une station avec le maximum de vélos nécesaires dans un des scénario, sans dépasser k
+			for(StationVelo sta : stations)
+			{
+				sta.x = Math.min(Math.max(sce.Xis.get(sta.getNumber()).values().stream().mapToInt(Integer::intValue).sum(), sta.x),sta.k);
+			}
+		}
 		setScenario(this.scenarios.get(0));
 	}
 	
+	// Retourne un clone du probleme, avec des stations clonées mais la meme liste de scénarios
 	public ProblemeVLS clone() 
 	{
 		ArrayList<StationVelo> s = new ArrayList<>();
@@ -35,6 +44,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		return new ProblemeVLS(s, (ArrayList<ScenarioVLS>) scenarios);
 	}
 	
+	//Calcul de la fonction objectif
 	@Override
 	public double fonctionObj(ArrayList<Integer> vars1) 
 	{
@@ -46,7 +56,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		}
 		for(int s=0;s<nbScenar;s++)
 		{
-			setScenario((ScenarioVLS) scenarios.get(s));
+			setScenario(scenarios.get(s));
 			int valS = 0;
 			for(int i=0;i<stations.size();i++)
 			{
@@ -74,6 +84,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 			}
 			for(int s=0;s<nbScenar;s++)
 			{
+				setScenario(scenarios.get(s));
 				//1b
 				for(int j=0;j<stations.size();j++)
 				{
@@ -112,12 +123,15 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		do
 		{
 			v1bis = (ArrayList<Integer>) vars1.clone();
-			s1 = r.nextInt(v1bis.size());
+			do
+			{
+				s1 = r.nextInt(v1bis.size());
+			}while(v1bis.get(s1)==0);// On ne peux retirer des vélos d'une station vide
 			do
 			{
 				s2 = r.nextInt(v1bis.size());
-			}while(s2 == s1);
-			nbVel = r.nextInt(v1bis.get(s1)-1)+1;
+			}while(s2 == s1); // on veut s1 != s2
+			nbVel = r.nextInt(v1bis.get(s1))+1; // 1 <= nextInt + 1 <= v1bis.get(s1)  -- On retire entre 1 et tous les vélos
 			v1bis.set(s1, v1bis.get(s1)-nbVel);
 			v1bis.set(s2, v1bis.get(s2)+nbVel);
 		}while(!constraints(v1bis));
@@ -158,7 +172,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 		return Bj;
 	}
 	
-	public void setScenario(ScenarioVLS s)
+	public void setScenario(ScenarioVLS s, ArrayList<Integer> vars1)
 	{
 		for(StationVelo sv : stations)
 		{
@@ -177,21 +191,46 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 				staOri.demande.set(staDest.pbID, s.Xis.get(stationOriID).get(stationDestID));
 			}
 		}
-		// TODO déterminer une vraie valeur pour B
+
 		for(StationVelo stati : stations)
 		{
-			stati.B = (ArrayList<Integer>) stati.demande.clone();
+			int nbVelR = vars1.get(stati.pbID);
+			for(int i=0;i<stati.demande.size();i++)
+			{
+				stati.B.add(i, Math.min(stati.demande.get(i), nbVelR));
+				nbVelR -= stati.B.get(i);
+			}
 		}
+	}
+	
+	public void setScenario(ScenarioVLS s)
+	{
+		setScenario(s, getVarPremNiv());
 	}
 
 	public void deterministe() 
 	{
 		nbScenar = 1;
+		for(StationVelo sta : stations)
+		{
+			sta.x = Math.min(scenarios.get(0).Xis.get(sta.getNumber()).values().stream().mapToInt(Integer::intValue).sum(), sta.k);
+		}
+		setScenario(this.scenarios.get(0));
 	}
 
 	public void stochastique() 
 	{
 		nbScenar = scenarios.size();
+		for(ScenarioVLS sce : this.scenarios)
+		{
+			// On initialise une station avec le maximum de vélos nécesaires dans un des scénario, sans dépasser k
+			for(StationVelo sta : stations)
+			{
+				sta.x = Math.min(Math.max(sce.Xis.get(sta.getNumber()).values().stream().mapToInt(Integer::intValue).sum(), sta.x),sta.k);
+			}
+		}
+		setScenario(this.scenarios.get(0));
+
 	}
 
 	public String toStringResults() 
