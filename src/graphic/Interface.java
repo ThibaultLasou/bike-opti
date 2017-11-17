@@ -90,7 +90,7 @@ public class Interface extends JFrame {
 	static private ProblemeVLS p;
 	static private Recuit<Integer, ScenarioVLS> recuit;
 	static private SAA<Integer, ScenarioVLS> saa;
-	
+
 	private NiveauPrecision niveauPrecision = PRECISION_HAUTE;
 	private boolean[] parametresFixes = {false, false, false};
 
@@ -184,50 +184,50 @@ public class Interface extends JFrame {
 
 		// permet de telecharger le fichier csv modèle
 		downloadConfigButton.addActionListener(e -> {
-			MyJFileChooser jFileChooser = new MyJFileChooser();
-			if (jFileChooser.getCheminChoisi() != null) {
-				String path = jFileChooser.getCheminChoisi();
-				ArrayList<Integer> numeroStations = new ArrayList<>();
-				for (StationVelo stationVelo : stationVelos) {
-					numeroStations.add(stationVelo.getNumber());
+					MyJFileChooser jFileChooser = new MyJFileChooser();
+					if (jFileChooser.getCheminChoisi() != null) {
+						String path = jFileChooser.getCheminChoisi();
+						ArrayList<Integer> numeroStations = new ArrayList<>();
+						for (StationVelo stationVelo : stationVelos) {
+							numeroStations.add(stationVelo.getNumber());
+						}
+						boolean fichierCree = creerFichierConfiguration(numeroStations, path);
+						if (fichierCree) {
+							labelFichierConfig.setText("Fichier téléchargé dans " + path + NOM_DEFAUT_FICHIER_CONFIG);
+						} else {
+							labelFichierConfig.setText("Erreur : veuillez sélectionner un dossier.");
+						}
+					}
 				}
-				boolean fichierCree = creerFichierConfiguration(numeroStations, path);
-				if (fichierCree) {
-					labelFichierConfig.setText("Fichier téléchargé dans " + path + NOM_DEFAUT_FICHIER_CONFIG);
-				} else {
-					labelFichierConfig.setText("Erreur : veuillez sélectionner un dossier.");
-				}
-			}
-		}
-				);
+		);
 
 		// permet de charger le fichier csv
 		chargerFichierConfigurationButton.addActionListener(e -> {
-			MyJFileChooser jFileChooser = new MyJFileChooser();
-			if (jFileChooser.getCheminChoisi() != null) {
-				String path = jFileChooser.getCheminChoisi();
-				try {
-					HashMap<Integer, ArrayList<Integer>> coutsFichierConfig = parserFichierConfiguration(path);
-					for (StationVelo stationVelo : stationVelos) {
-						ArrayList<Integer> cout = coutsFichierConfig.get(stationVelo.getNumber());
-						stationVelo.setParamPremierNiveau(varC, cout.get(varC.indice));
-						stationVelo.setParamPremierNiveau(varV, cout.get(varV.indice));
-						stationVelo.setParamPremierNiveau(varW, cout.get(varW.indice));
+					MyJFileChooser jFileChooser = new MyJFileChooser();
+					if (jFileChooser.getCheminChoisi() != null) {
+						String path = jFileChooser.getCheminChoisi();
+						try {
+							HashMap<Integer, ArrayList<Integer>> coutsFichierConfig = parserFichierConfiguration(path);
+							for (StationVelo stationVelo : stationVelos) {
+								ArrayList<Integer> cout = coutsFichierConfig.get(stationVelo.getNumber());
+								stationVelo.setParamPremierNiveau(varC, cout.get(varC.indice));
+								stationVelo.setParamPremierNiveau(varV, cout.get(varV.indice));
+								stationVelo.setParamPremierNiveau(varW, cout.get(varW.indice));
+							}
+							parametresFixes = new boolean[]{true, true, true};
+							ecrireCoutStation(list1, varC, coutsFichierConfig);
+							ecrireCoutStation(list2, varV, coutsFichierConfig);
+							ecrireCoutStation(list3, varW, coutsFichierConfig);
+							effacerAffichage(textField1);
+							effacerAffichage(textField2);
+							effacerAffichage(textField3);
+							labelFichierConfig.setText("Fichier chargé de " + path);
+							createScene();
+						} catch (Exception e1) {
+						}
 					}
-					parametresFixes = new boolean[]{true, true, true};
-					ecrireCoutStation(list1, varC, coutsFichierConfig);
-					ecrireCoutStation(list2, varV, coutsFichierConfig);
-					ecrireCoutStation(list3, varW, coutsFichierConfig);
-					effacerAffichage(textField1);
-					effacerAffichage(textField2);
-					effacerAffichage(textField3);
-					labelFichierConfig.setText("Fichier chargé de " + path);
-					createScene();
-				} catch (Exception e1) {
 				}
-			}
-		}
-				);
+		);
 
 		// applique un listener sur les zones de texte
 		appliquerCoutPartoutListener(textField1, list1, varC);
@@ -280,7 +280,7 @@ public class Interface extends JFrame {
 		recuit = new Recuit<Integer, ScenarioVLS>(p, niveauPrecision, 0.8);
 		saa = new SAA<Integer, ScenarioVLS>(5, recuit);
 
-		
+
 		Executor executor = Executors.newSingleThreadExecutor();
 
 		button_validate.addMouseListener(new MouseAdapter() {
@@ -294,6 +294,8 @@ public class Interface extends JFrame {
 					}
 
 					executor.execute(() -> {
+
+						blocageInputUser(false);
 
 						isExecuting = true;
 
@@ -319,6 +321,8 @@ public class Interface extends JFrame {
 						ecrireResultat("Exécution terminée.");
 
 						isExecuting = false;
+
+						blocageInputUser(true);
 					});
 				}
 			}
@@ -351,21 +355,25 @@ public class Interface extends JFrame {
 	 * Reinitialise l'interface graphique
 	 */
 	private void nouvelleSimulation() {
-		// parametrages avances
-		labelFichierConfig.setText("Aucun fichier sélectionné");
-		effacerAffichage(textField1);
-		effacerAffichage(textField2);
-		effacerAffichage(textField3);
-		effacerAffichage(list1);
-		effacerAffichage(list2);
-		effacerAffichage(list3);
-		parametresFixes = new boolean[]{false, false, false};
-		// lancement
-		effacerAffichage(textAreaResultat);
-		recuitDeterministeRadioButton.setSelected(false);
-		recuitStochastiqueRadioButton.setSelected(false);
-		SAARadioButton.setSelected(false);
-		createScene();
+		if (!isExecuting) {
+			// parametrages avances
+			labelFichierConfig.setText("Aucun fichier sélectionné");
+			effacerAffichage(textField1);
+			effacerAffichage(textField2);
+			effacerAffichage(textField3);
+			effacerAffichage(list1);
+			effacerAffichage(list2);
+			effacerAffichage(list3);
+			parametresFixes = new boolean[]{false, false, false};
+			// lancement
+			effacerAffichage(textAreaResultat);
+			recuitDeterministeRadioButton.setSelected(false);
+			recuitStochastiqueRadioButton.setSelected(false);
+			SAARadioButton.setSelected(false);
+			createScene();
+		} else {
+			JOptionPane.showMessageDialog(null, "Un programme est en cours d'exécution !");
+		}
 	}
 
 	private void effacerAffichage(JLabel labelFichierConfig) {
@@ -468,6 +476,17 @@ public class Interface extends JFrame {
 	// ========= verification input user ==========
 	// ============================================
 
+	private void blocageInputUser(boolean blocage) {
+		recuitDeterministeRadioButton.setEnabled(blocage);
+		recuitStochastiqueRadioButton.setEnabled(blocage);
+		SAARadioButton.setEnabled(blocage);
+		chargerFichierConfigurationButton.setEnabled(blocage);
+		textField1.setEnabled(blocage);
+		textField2.setEnabled(blocage);
+		textField3.setEnabled(blocage);
+		slider1.setEnabled(blocage);
+	}
+
 	/**
 	 * Verifier que l'utilisateur a bien choisi un algorithme
 	 *
@@ -531,9 +550,9 @@ public class Interface extends JFrame {
 	}
 
 	{
-		// GUI initializer generated by IntelliJ IDEA GUI Designer
-		// >>> IMPORTANT!! <<<
-		// DO NOT EDIT OR ADD ANY CODE HERE!
+// GUI initializer generated by IntelliJ IDEA GUI Designer
+// >>> IMPORTANT!! <<<
+// DO NOT EDIT OR ADD ANY CODE HERE!
 		$$$setupUI$$$();
 	}
 
@@ -852,9 +871,9 @@ public class Interface extends JFrame {
 	 */
 	private String genererMarqueur(StationVelo stationVelo) {
 		return "new StationVelo(\"" + stationVelo.getNom()
-		+ "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
-		+ "}," + "\"" + genererInfoMarqueur(stationVelo) + "\""
-		+ ", " + stationVelo.genererPositionsDemandesStochastiques() + ")";
+				+ "\", {lat:" + stationVelo.getPosition().getLat() + ", lng:" + stationVelo.getPosition().getLng()
+				+ "}," + "\"" + genererInfoMarqueur(stationVelo) + "\""
+				+ ", " + stationVelo.genererPositionsDemandesStochastiques() + ")";
 	}
 
 	/**
