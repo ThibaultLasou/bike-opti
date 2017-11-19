@@ -52,7 +52,6 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 	public void solve(Probleme<Type1, TypeS> p)
 	{
 		if(temperatureInit == -1) {
-			System.out.println("temperature init : " + temperatureInit);
 			initTemp();
 		}
 		double valObj;
@@ -62,8 +61,7 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 		temperature = temperatureInit;
 		nbAcc = 0;
 		bestCost = p.fonctionObj();
-		System.out.println("bestCost : " + bestCost);
-		
+
 		for(int i=0;i<nbPaliers;i ++)
 		{
 			System.out.println("Palier "+i);

@@ -91,7 +91,6 @@ public class GestionnaireFichier {
     public static ArrayList<ScenarioVLS> parserScenars() {
 
         ArrayList<ScenarioVLS> scenarii = new ArrayList<>();
-        //File folder = new File("assets/scenarios");
         File folder = new File("assets/data/scenarios");
         for(File scenar : folder.listFiles(new FilenameFilter() {
 			@Override

@@ -9,7 +9,6 @@ abstract public class Probleme<Type1, TypeS extends Scenario>
 	protected boolean minimize; /* Booléen valant “true”  si le problème est une minimisation, “false” si c’est une maximisation*/
 	
 	final public double fonctionObj() {
-		System.out.println("fonctionObj Probleme");
 		return fonctionObj(getVarPremNiv());
 	}
 	/*Evalue la fonction objectif avec les valeurs des variables passées en paramètres*/
