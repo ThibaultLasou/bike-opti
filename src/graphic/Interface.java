@@ -828,8 +828,8 @@ public class Interface extends JFrame {
 	public enum NiveauPrecision {
 
 		PRECISION_BASSE(1, 1),
-		PRECISION_MOYENNE(2, 2),
-		PRECISION_HAUTE(4, 4);
+		PRECISION_MOYENNE(20, 20),
+		PRECISION_HAUTE(100, 100);
 
 		public int nombrePaliers;
 		public int nombreIterations;

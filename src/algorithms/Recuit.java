@@ -33,15 +33,13 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 		temperatureInit = -1;
 	}
 	
-	private void initTemp()
-	{
+	private void initTemp() {
 		temperatureInit = 5;
 		Probleme<Type1, TypeS> p2 = p.clone();
-		do 
-		{
+		do {
 			temperatureInit *= 2;
 			solve(p2);
-		}while(nbAcc/(float)(nbPaliers*nbIters) < 0.8);
+		} while((nbAcc/((float)(nbPaliers*nbIters))) < 0.8);
 		
 	}
 	
@@ -53,8 +51,8 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 	
 	public void solve(Probleme<Type1, TypeS> p)
 	{
-		if(temperatureInit == -1)
-		{
+		if(temperatureInit == -1) {
+			System.out.println("temperature init : " + temperatureInit);
 			initTemp();
 		}
 		double valObj;
@@ -64,6 +62,7 @@ public class Recuit<Type1, TypeS extends Scenario> extends Algorithme<Type1, Typ
 		temperature = temperatureInit;
 		nbAcc = 0;
 		bestCost = p.fonctionObj();
+		System.out.println("bestCost : " + bestCost);
 		
 		for(int i=0;i<nbPaliers;i ++)
 		{

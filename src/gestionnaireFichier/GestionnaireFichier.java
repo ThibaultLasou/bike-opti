@@ -60,7 +60,7 @@ public class GestionnaireFichier {
 
         ArrayList<StationVelo> stationsVelo = new ArrayList<>();
         try {
-            String jsonData = readFileFromAssets("velib.json");
+            String jsonData = readFileFromAssets("data/velib.json");
             JSONObject jobj = new JSONObject(jsonData);
             JSONArray jarr = new JSONArray(jobj.getJSONArray("main").toString());
 
@@ -91,19 +91,14 @@ public class GestionnaireFichier {
     public static ArrayList<ScenarioVLS> parserScenars() {
 
         ArrayList<ScenarioVLS> scenarii = new ArrayList<>();
-        File folder = new File("assets/scenarios");
+        //File folder = new File("assets/scenarios");
+        File folder = new File("assets/data/scenarios");
         for(File scenar : folder.listFiles(new FilenameFilter() {
-			
 			@Override
 			public boolean accept(File dir, String name) {
-				if(name.endsWith(".json") && name.startsWith("scen"))
-				{
-					return true;
-				}
-				return false;
+				return name.endsWith(".json") && name.startsWith("scen");
 			}
-		})) 
-        {
+		})) {
 	        try {
 	        	String jsonData = readFile(scenar.getAbsolutePath());
 	        	HashMap<Integer, HashMap<Integer, Integer>> Bs = new HashMap<>();

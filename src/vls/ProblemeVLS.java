@@ -27,7 +27,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 			// On initialise une station avec le maximum de vélos nécesaires dans un des scénario, sans dépasser k
 			for(StationVelo sta : stations)
 			{
-				sta.x = Math.min(Math.max(sce.Xis.get(sta.getNumber()).values().stream().mapToInt(Integer::intValue).sum(), sta.x),sta.k);
+				sta.x = Math.min(Math.max(sce.Xis.get(sta.getNumber()).values().stream().mapToInt(Integer::intValue).sum(), sta.x), sta.k);
 			}
 		}
 		setScenario(this.scenarios.get(0));
@@ -48,14 +48,18 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 	@Override
 	public double fonctionObj(ArrayList<Integer> vars1) 
 	{
+		System.out.println("fonctionObj ProblemeVLS ----------------------------------");
+		System.out.println("fonctionObj ProblemeVLS 1");
 		double val = 0.0;
 		for(int i=0;i<stations.size();i++)
 		{
 			StationVelo sv = stations.get(i);
 			val += vars1.get(i)*sv.c;
 		}
+		System.out.println("fonctionObj ProblemeVLS 2");
 		for(int s=0;s<nbScenar;s++)
 		{
+			System.out.println("fonctionObj ProblemeVLS scenario : " + s);
 			setScenario(scenarios.get(s));
 			int valS = 0;
 			for(int i=0;i<stations.size();i++)
@@ -69,6 +73,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 			}
 			val += valS*1.0/nbScenar;
 		}
+		System.out.println("fonctionObj ProblemeVLS fin");
 		return val;
 	}
 
@@ -143,13 +148,13 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 	}
 
 	@Override
-	public ArrayList<Integer> getVarPremNiv() 
-	{
+	public ArrayList<Integer> getVarPremNiv() {
+		System.out.println("getVarPremNiv IN");
 		ArrayList<Integer> vars1 = new ArrayList<>();
-		for(StationVelo s : stations)
-		{
+		for(StationVelo s : stations) {
 			vars1.add(s.x);
 		}
+		System.out.println("getVarPremNiv OUT - vars1 size : " + vars1.size());
 		return vars1;
 	}
 
@@ -174,6 +179,7 @@ public class ProblemeVLS extends Probleme<Integer, ScenarioVLS>
 	
 	public void setScenario(ScenarioVLS s, ArrayList<Integer> vars1)
 	{
+		System.out.println("setScenario");
 		for(StationVelo sv : stations)
 		{
 			sv.demande.clear();
